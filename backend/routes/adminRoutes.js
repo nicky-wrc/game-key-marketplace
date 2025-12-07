@@ -10,6 +10,9 @@ router.post('/add-game',
     adminController.addGame
 );
 
-router.post('/add-stock', [authMiddleware, adminMiddleware], adminController.addStock);
+router.post('/add-stock', 
+    [authMiddleware, adminMiddleware, upload.single('image')], 
+    adminController.addStock
+);
 
 module.exports = router;
