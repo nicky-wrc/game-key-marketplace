@@ -4,17 +4,30 @@ const dotenv = require('dotenv');
 const db = require('./db'); 
 const authRoutes = require('./routes/authRoutes');
 const gameRoutes = require('./routes/gameRoutes');
+const walletRoutes = require('./routes/walletRoutes');
+const gachaRoutes = require('./routes/gachaRoutes');
+const transactionRoutes = require('./routes/transactionRoutes'); 
+const couponRoutes = require('./routes/couponRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const path = require('path');
+
 app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/games', gameRoutes);
+app.use('/api/wallet', walletRoutes);
+app.use('/api/gacha', gachaRoutes);
+app.use('/api/transactions', transactionRoutes); 
+app.use('/api/coupons', couponRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get('/', (req, res) => {
     res.send('Hello! Backend is running...');
