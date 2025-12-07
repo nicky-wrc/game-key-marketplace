@@ -5,14 +5,14 @@ const authMiddleware = require('../middleware/authMiddleware');
 const adminMiddleware = require('../middleware/adminMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 
-router.post('/add-game', 
-    [authMiddleware, adminMiddleware, upload.single('image')], 
-    adminController.addGame
-);
+router.get('/games', [authMiddleware, adminMiddleware], adminController.getAllGames);
+router.post('/add-game', [authMiddleware, adminMiddleware, upload.single('image')], adminController.addGame);
+router.put('/games/:id', [authMiddleware, adminMiddleware, upload.single('image')], adminController.updateGame);
+router.delete('/games/:id', [authMiddleware, adminMiddleware], adminController.deleteGame);
 
-router.post('/add-stock', 
-    [authMiddleware, adminMiddleware, upload.single('image')], 
-    adminController.addStock
-);
+router.get('/stocks', [authMiddleware, adminMiddleware], adminController.getAllStocks);
+router.post('/add-stock', [authMiddleware, adminMiddleware, upload.single('image')], adminController.addStock);
+router.put('/stocks/:id', [authMiddleware, adminMiddleware, upload.single('image')], adminController.updateStock);
+router.delete('/stocks/:id', [authMiddleware, adminMiddleware], adminController.deleteStock);
 
 module.exports = router;

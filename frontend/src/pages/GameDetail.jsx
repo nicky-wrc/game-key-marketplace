@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, ShoppingCart, Package, Eye, CheckCircle } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Package, Eye, CheckCircle, AlertCircle } from 'lucide-react';
 
 function GameDetail() {
   const { id } = useParams();
@@ -11,6 +11,7 @@ function GameDetail() {
   const [stocks, setStocks] = useState([]);
   const [selectedStock, setSelectedStock] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [purchasing, setPurchasing] = useState(false);
 
   useEffect(() => {
     fetchGameDetail();
@@ -38,7 +39,8 @@ function GameDetail() {
     }
   };
 
-  const handleBuy = async (codeId) => {
+  // 🔹 ฟังก์ชันซื้อไอดีเฉพาะชิ้น (ส่ง code_id)
+  const handleBuySpecific = async (codeId) => {
     const token = localStorage.getItem('token');
     if (!token) {
       alert('กรุณาเข้าสู่ระบบก่อนซื้อสินค้า');
@@ -46,19 +48,51 @@ function GameDetail() {
       return;
     }
 
-    if (!window.confirm('ยืนยันการซื้อสินค้านี้?')) return;
+    if (!window.confirm('ยืนยันการซื้อไอดีนี้?')) return;
 
+    setPurchasing(true);
     try {
       const res = await axios.post(
         'http://localhost:5000/api/transactions/buy',
-        { game_id: id },
+        { code_id: codeId }, // ส่ง code_id แทน game_id
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      alert(`ซื้อสำเร็จ! 🎉\nรหัสเกมของคุณคือ: ${res.data.game_code}`);
+      alert(`ซื้อสำเร็จ! 🎉\nรหัสเกมของคุณคือ:\n${res.data.game_code}`);
       fetchGameStocks(); // รีเฟรชสต็อก
+      closeDetailModal();
     } catch (err) {
       alert(err.response?.data?.message || 'เกิดข้อผิดพลาดในการซื้อ');
+    } finally {
+      setPurchasing(false);
+    }
+  };
+
+  // 🔹 ฟังก์ชันซื้อแบบสุ่ม (ส่ง game_id)
+  const handleBuyRandom = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('กรุณาเข้าสู่ระบบก่อนซื้อสินค้า');
+      navigate('/login');
+      return;
+    }
+
+    if (!window.confirm('ยืนยันการซื้อแบบสุ่ม?')) return;
+
+    setPurchasing(true);
+    try {
+      const res = await axios.post(
+        'http://localhost:5000/api/transactions/buy',
+        { game_id: id }, // ส่ง game_id สำหรับสุ่ม
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      alert(`ซื้อสำเร็จ! 🎉\nรหัสเกมของคุณคือ:\n${res.data.game_code}`);
+      fetchGameStocks();
+    } catch (err) {
+      alert(err.response?.data?.message || 'เกิดข้อผิดพลาดในการซื้อ');
+    } finally {
+      setPurchasing(false);
     }
   };
 
@@ -138,6 +172,27 @@ function GameDetail() {
                   </div>
                 </div>
               </div>
+
+              {/* ปุ่มซื้อแบบสุ่ม */}
+              {stocks.length > 0 && (
+                <button
+                  onClick={handleBuyRandom}
+                  disabled={purchasing}
+                  className="mt-6 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white px-8 py-4 rounded-xl font-bold transition active:scale-95 shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {purchasing ? (
+                    <>
+                      <AlertCircle className="animate-spin" size={20} />
+                      กำลังซื้อ...
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart size={20} />
+                      ซื้อแบบสุ่ม (฿{Number(game.price).toLocaleString()})
+                    </>
+                  )}
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -147,7 +202,7 @@ function GameDetail() {
       <div className="max-w-7xl mx-auto px-4 mt-12">
         <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
           <div className="w-1 h-8 bg-red-600 rounded-full"></div>
-          รายการไอดีที่มีจำหน่าย
+          รายการไอดีที่มีจำหน่าย (เลือกซื้อเฉพาะชิ้น)
         </h2>
 
         {stocks.length === 0 ? (
@@ -201,8 +256,9 @@ function GameDetail() {
                       ฿{Number(stock.price).toLocaleString()}
                     </div>
                     <button
-                      onClick={() => handleBuy(stock.code_id)}
-                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-bold transition active:scale-95 flex items-center gap-2 shadow-lg"
+                      onClick={() => handleBuySpecific(stock.code_id)}
+                      disabled={purchasing}
+                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-bold transition active:scale-95 flex items-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <ShoppingCart size={18} />
                       ซื้อ
@@ -271,14 +327,21 @@ function GameDetail() {
                   ปิด
                 </button>
                 <button
-                  onClick={() => {
-                    closeDetailModal();
-                    handleBuy(selectedStock.code_id);
-                  }}
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold transition flex items-center justify-center gap-2 shadow-lg"
+                  onClick={() => handleBuySpecific(selectedStock.code_id)}
+                  disabled={purchasing}
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold transition flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <ShoppingCart size={20} />
-                  ซื้อเลย
+                  {purchasing ? (
+                    <>
+                      <AlertCircle className="animate-spin" size={20} />
+                      กำลังซื้อ...
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart size={20} />
+                      ซื้อเลย
+                    </>
+                  )}
                 </button>
               </div>
             </div>
