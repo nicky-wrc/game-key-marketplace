@@ -63,40 +63,6 @@ function Home() {
     }
   };
 
-  const handleBuy = async (gameId) => {
-    const token = localStorage.getItem('token');
-    
-    if (!token) {
-      alert('กรุณาเข้าสู่ระบบก่อนซื้อสินค้า');
-      navigate('/login');
-      return;
-    }
-
-    const couponCode = prompt("มีโค้ดส่วนลดไหม? (ถ้าไม่มีให้กด OK ข้ามไปเลย)");
-
-    if (!window.confirm('ยืนยันการซื้อสินค้านี้?')) return;
-
-    try {
-      const res = await axios.post(
-        'http://localhost:5000/api/transactions/buy',
-        { 
-            game_id: gameId,
-            coupon_code: couponCode
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
-      
-      const paidAmount = res.data.price_paid !== undefined ? res.data.price_paid : '...';
-      alert(`ซื้อสำเร็จ! 🎉 (จ่ายไป ฿${paidAmount})\nรหัสเกมของคุณคือ: ${res.data.game_code}`);
-      
-      fetchUserBalance(); 
-    } catch (err) {
-      alert(err.response?.data?.message || 'เกิดข้อผิดพลาดในการซื้อ');
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-100 font-sans">
       
@@ -204,14 +170,13 @@ function Home() {
                   <h3 className="font-bold text-gray-800 text-lg">เติมเงินเข้าระบบ</h3>
                   <p className="text-xs text-gray-500">Top-up Wallet</p>
               </div>
-              <div onClick={() => navigate('/')} className="bg-white p-4 rounded-xl shadow-lg hover:-translate-y-2 transition cursor-pointer border-b-4 border-blue-500 group">
+              <div onClick={() => navigate('/games')} className="bg-white p-4 rounded-xl shadow-lg hover:-translate-y-2 transition cursor-pointer border-b-4 border-blue-500 group">
                    <div className="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition">
                       <Box className="text-blue-600 group-hover:text-white" />
                   </div>
                   <h3 className="font-bold text-gray-800 text-lg">ไอดีเกมออนไลน์</h3>
                   <p className="text-xs text-gray-500">Game ID Shop</p>
               </div>
-              {/* Card 4: แก้ไขตรงนี้แล้ว (เด้งไป Profile) */}
               <div onClick={() => navigate('/profile')} className="bg-white p-4 rounded-xl shadow-lg hover:-translate-y-2 transition cursor-pointer border-b-4 border-green-500 group">
                    <div className="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center mb-3 group-hover:bg-green-600 transition">
                       <User className="text-green-600 group-hover:text-white" />
@@ -222,7 +187,7 @@ function Home() {
           </div>
       </div>
 
-      {/* 5. Game List */}
+      {/* 5. Game List - แก้ไขให้กดไปหน้ารายละเอียดได้ */}
       <main className="max-w-7xl mx-auto px-4 pb-20">
         <div className="flex items-center gap-3 mb-6">
             <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
@@ -236,7 +201,11 @@ function Home() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {games.map((game) => (
-              <div key={game.game_id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition duration-300 group border border-gray-100">
+              <div 
+                key={game.game_id} 
+                className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition duration-300 group border border-gray-100 cursor-pointer"
+                onClick={() => navigate(`/games/${game.game_id}`)}
+              >
                 <div className="h-48 overflow-hidden relative">
                     <img 
                         src={game.image_url} 
@@ -259,11 +228,14 @@ function Home() {
                     </div>
                     
                     <button 
-                      onClick={() => handleBuy(game.game_id)}
-                      className="bg-red-600 text-white p-3 rounded-xl hover:bg-red-700 transition active:scale-95 shadow-lg shadow-red-200"
-                      title="ใส่ตะกร้า"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/games/${game.game_id}`);
+                      }}
+                      className="bg-red-600 text-white px-4 py-2 rounded-xl hover:bg-red-700 transition active:scale-95 shadow-lg text-sm font-bold"
+                      title="ดูรายละเอียด"
                     >
-                      <ShoppingCart className="w-5 h-5" />
+                      ดูเพิ่ม
                     </button>
                   </div>
                 </div>

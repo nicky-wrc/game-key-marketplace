@@ -1,0 +1,246 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { ArrowLeft, Search, Grid3x3, List, Package, Gamepad2 } from 'lucide-react';
+
+function AllGames() {
+  const [games, setGames] = useState([]);
+  const [filteredGames, setFilteredGames] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState('grid'); // grid or list
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchGames();
+  }, []);
+
+  useEffect(() => {
+    // กรองเกมตามคำค้นหา
+    if (searchQuery.trim() === '') {
+      setFilteredGames(games);
+    } else {
+      const filtered = games.filter(game => 
+        game.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        game.platform.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        game.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredGames(filtered);
+    }
+  }, [searchQuery, games]);
+
+  const fetchGames = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/games');
+      setGames(res.data);
+      setFilteredGames(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100">
+      
+      {/* Header */}
+      <div className="bg-gradient-to-r from-red-900 to-black text-white">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <button 
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 text-gray-300 hover:text-white transition mb-6"
+          >
+            <ArrowLeft size={20} />
+            <span>กลับหน้าหลัก</span>
+          </button>
+
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div>
+              <h1 className="text-4xl font-black mb-2 flex items-center gap-3">
+                <Gamepad2 className="w-10 h-10" />
+                ไอดีเกมออนไลน์ทั้งหมด
+              </h1>
+              <p className="text-gray-300">
+                เลือกซื้อเกมที่คุณชอบ มีให้เลือก {games.length} เกม
+              </p>
+            </div>
+
+            {/* View Toggle */}
+            <div className="flex items-center gap-2 bg-white/10 p-1 rounded-lg">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`p-2 rounded transition ${viewMode === 'grid' ? 'bg-white text-red-600' : 'text-white hover:bg-white/20'}`}
+                title="แสดงแบบตาราง"
+              >
+                <Grid3x3 size={20} />
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`p-2 rounded transition ${viewMode === 'list' ? 'bg-white text-red-600' : 'text-white hover:bg-white/20'}`}
+                title="แสดงแบบรายการ"
+              >
+                <List size={20} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Search Bar */}
+      <div className="bg-white shadow-md border-b sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="relative max-w-2xl">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="ค้นหาเกม, แพลตฟอร์ม..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none text-gray-700 font-medium"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+          
+          {searchQuery && (
+            <p className="text-sm text-gray-500 mt-2">
+              พบ {filteredGames.length} รายการจาก "{searchQuery}"
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Games Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {loading ? (
+          <div className="text-center py-20">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-red-600 border-t-transparent"></div>
+            <p className="text-gray-500 mt-4">กำลังโหลดข้อมูล...</p>
+          </div>
+        ) : filteredGames.length === 0 ? (
+          <div className="text-center py-20">
+            <Package className="w-20 h-20 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-500 text-xl">ไม่พบเกมที่ค้นหา</p>
+            <button
+              onClick={() => setSearchQuery('')}
+              className="mt-4 text-red-600 hover:text-red-700 font-bold"
+            >
+              ล้างการค้นหา
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* Grid View */}
+            {viewMode === 'grid' && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {filteredGames.map((game) => (
+                  <div
+                    key={game.game_id}
+                    className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition duration-300 group border border-gray-100 cursor-pointer"
+                    onClick={() => navigate(`/games/${game.game_id}`)}
+                  >
+                    <div className="h-48 overflow-hidden relative">
+                      <img
+                        src={game.image_url}
+                        alt={game.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+                      />
+                      <div className="absolute top-3 left-3 bg-black/80 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm uppercase">
+                        {game.platform}
+                      </div>
+                    </div>
+
+                    <div className="p-5">
+                      <h4 className="font-extrabold text-lg text-gray-800 truncate mb-1">
+                        {game.name}
+                      </h4>
+                      <p className="text-xs text-gray-500 mb-4 h-8 line-clamp-2">
+                        {game.description}
+                      </p>
+
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-[10px] text-gray-400 line-through">
+                            ฿{Number(game.price * 1.2).toFixed(0)}
+                          </p>
+                          <p className="text-xl font-black text-red-600">
+                            ฿{Number(game.price).toLocaleString()}
+                          </p>
+                        </div>
+                        <button className="bg-red-600 text-white px-4 py-2 rounded-xl hover:bg-red-700 transition active:scale-95 shadow-lg text-sm font-bold">
+                          ดูเพิ่ม
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* List View */}
+            {viewMode === 'list' && (
+              <div className="space-y-4">
+                {filteredGames.map((game) => (
+                  <div
+                    key={game.game_id}
+                    className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 group border border-gray-100 cursor-pointer"
+                    onClick={() => navigate(`/games/${game.game_id}`)}
+                  >
+                    <div className="flex flex-col md:flex-row">
+                      {/* Image */}
+                      <div className="md:w-64 h-48 md:h-auto overflow-hidden relative flex-shrink-0">
+                        <img
+                          src={game.image_url}
+                          alt={game.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+                        />
+                        <div className="absolute top-3 left-3 bg-black/80 text-white text-xs font-bold px-3 py-1 rounded backdrop-blur-sm uppercase">
+                          {game.platform}
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                          <h4 className="font-extrabold text-2xl text-gray-800 mb-2">
+                            {game.name}
+                          </h4>
+                          <p className="text-gray-600 mb-4 line-clamp-2">
+                            {game.description}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm text-gray-400 line-through">
+                              ฿{Number(game.price * 1.2).toFixed(0)}
+                            </p>
+                            <p className="text-3xl font-black text-red-600">
+                              ฿{Number(game.price).toLocaleString()}
+                            </p>
+                          </div>
+                          <button className="bg-red-600 text-white px-6 py-3 rounded-xl hover:bg-red-700 transition active:scale-95 shadow-lg font-bold">
+                            ดูรายละเอียด
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default AllGames;
