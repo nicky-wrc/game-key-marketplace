@@ -9,21 +9,25 @@ import Admin from './pages/Admin';
 import Profile from './pages/Profile';
 import GameDetail from './pages/GameDetail';
 import AllGames from './pages/AllGames';
+import ToastContainer from './components/ToastContainer';
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/topup" element={<TopUp />} />
-      <Route path="/gacha" element={<Gacha />} />
-      <Route path="/inventory" element={<Inventory />} />
-      <Route path="/admin" element={<Admin />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/games" element={<AllGames />} /> {}
-      <Route path="/games/:id" element={<GameDetail />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/topup" element={<TopUp />} />
+        <Route path="/gacha" element={<Gacha />} />
+        <Route path="/inventory" element={<Inventory />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/games" element={<AllGames />} />
+        <Route path="/games/:id" element={<GameDetail />} />
+      </Routes>
+      <ToastContainer />
+    </>
   );
 }
 

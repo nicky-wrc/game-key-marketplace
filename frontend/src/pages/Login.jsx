@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Mail, Lock, LogIn } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom'; // เพิ่ม Link, useNavigate
-import axios from 'axios'; // เพิ่ม axios
+import { Mail, Lock, LogIn, Gamepad2 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { showToast } from '../components/ToastContainer';
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -26,14 +27,13 @@ function Login() {
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       
-      alert('เข้าสู่ระบบสำเร็จ! 🎉');
+      showToast('เข้าสู่ระบบสำเร็จ! 🎉', 'success');
       
       // 3. ย้ายไปหน้าแรก
       navigate('/'); 
     } catch (err) {
       console.error(err);
-      // แสดงข้อความ Error จาก Backend หรือข้อความทั่วไป
-      alert(err.response?.data?.message || 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+      showToast(err.response?.data?.message || 'อีเมลหรือรหัสผ่านไม่ถูกต้อง', 'error');
     } finally {
       setIsLoading(false);
     }
@@ -46,13 +46,37 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-red-900 via-red-800 to-black flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }}></div>
+      </div>
+
+      <div className="w-full max-w-md relative z-10">
+        {/* Logo/Brand */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-red-600 to-black rounded-xl flex items-center justify-center shadow-lg shadow-red-500/40">
+              <Gamepad2 className="w-8 h-8 text-white" />
+            </div>
+            <div className="text-left">
+              <h1 className="text-3xl font-black tracking-tighter text-white italic leading-none">
+                NICKY<span className="text-red-400">KEY</span>
+              </h1>
+              <p className="text-[10px] font-bold text-gray-400 tracking-[0.25em]">
+                GAME STORE
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Card Container */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6 border-2 border-red-500/20">
           {/* Header */}
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mb-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-red-600 to-red-800 rounded-full mb-4 shadow-lg">
               <LogIn className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-3xl font-bold text-gray-800">เข้าสู่ระบบ</h2>
@@ -78,7 +102,7 @@ function Login() {
                   onKeyPress={handleKeyPress}
                   placeholder="your@email.com"
                   required
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-200"
                 />
               </div>
             </div>
@@ -100,7 +124,7 @@ function Login() {
                   onKeyPress={handleKeyPress}
                   placeholder="••••••••"
                   required
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-200"
                 />
               </div>
             </div>
@@ -110,11 +134,11 @@ function Login() {
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                  className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
                 />
                 <span className="ml-2 text-gray-600">จดจำฉันไว้</span>
               </label>
-              <a href="#" className="text-purple-600 hover:text-purple-700 font-medium">
+              <a href="#" className="text-red-600 hover:text-red-700 font-medium">
                 ลืมรหัสผ่าน?
               </a>
             </div>
@@ -123,7 +147,7 @@ function Login() {
             <button
               onClick={handleSubmit}
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transform transition duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-red-600 to-red-800 text-white py-3 rounded-lg font-bold hover:from-red-700 hover:to-red-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transform transition duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-red-500/30"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center">
@@ -149,15 +173,15 @@ function Login() {
           <p className="text-center text-sm text-gray-600">
             ยังไม่มีบัญชี?{' '}
             {/* เปลี่ยน a href เป็น Link เพื่อไม่ให้รีโหลดหน้า */}
-            <Link to="/register" className="text-purple-600 hover:text-purple-700 font-semibold">
+            <Link to="/register" className="text-red-600 hover:text-red-700 font-semibold">
               สมัครสมาชิก
             </Link>
           </p>
         </div>
 
         {/* Footer Text */}
-        <p className="text-center text-white text-sm mt-6">
-          © 2025 GameKey Market. All rights reserved.
+        <p className="text-center text-white/80 text-sm mt-6">
+          © 2025 NICKY<span className="text-red-400">KEY</span>. All rights reserved.
         </p>
       </div>
     </div>

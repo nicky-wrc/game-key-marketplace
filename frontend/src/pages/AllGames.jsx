@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, Search, Grid3x3, List, Package, Gamepad2 } from 'lucide-react';
+import { ArrowLeft, Search, Grid3x3, List, Package, Gamepad2, Filter, ArrowUpDown, Heart } from 'lucide-react';
+import { showToast } from '../components/ToastContainer';
+import { GameCardSkeleton } from '../components/LoadingSkeleton';
 
 function AllGames() {
   const [games, setGames] = useState([]);
@@ -9,25 +11,75 @@ function AllGames() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState('grid'); // grid or list
+  const [selectedPlatform, setSelectedPlatform] = useState('all');
+  const [sortBy, setSortBy] = useState('default'); // default, price-low, price-high, name
+  const [wishlist, setWishlist] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchGames();
+    loadWishlist();
   }, []);
 
   useEffect(() => {
-    // กรองเกมตามคำค้นหา
-    if (searchQuery.trim() === '') {
-      setFilteredGames(games);
-    } else {
-      const filtered = games.filter(game => 
+    let filtered = [...games];
+
+    // กรองตามคำค้นหา
+    if (searchQuery.trim() !== '') {
+      filtered = filtered.filter(game => 
         game.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         game.platform.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        game.description.toLowerCase().includes(searchQuery.toLowerCase())
+        (game.description && game.description.toLowerCase().includes(searchQuery.toLowerCase()))
       );
-      setFilteredGames(filtered);
     }
-  }, [searchQuery, games]);
+
+    // กรองตามแพลตฟอร์ม
+    if (selectedPlatform !== 'all') {
+      filtered = filtered.filter(game => game.platform.toLowerCase() === selectedPlatform.toLowerCase());
+    }
+
+    // เรียงลำดับ
+    switch(sortBy) {
+      case 'price-low':
+        filtered.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+        break;
+      case 'price-high':
+        filtered.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+        break;
+      case 'name':
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      default:
+        break;
+    }
+
+    setFilteredGames(filtered);
+  }, [searchQuery, games, selectedPlatform, sortBy]);
+
+  const loadWishlist = () => {
+    const saved = localStorage.getItem('wishlist');
+    if (saved) {
+      setWishlist(JSON.parse(saved));
+    }
+  };
+
+  const toggleWishlist = (gameId) => {
+    const isInWishlist = wishlist.includes(gameId);
+    const newWishlist = isInWishlist
+      ? wishlist.filter(id => id !== gameId)
+      : [...wishlist, gameId];
+    setWishlist(newWishlist);
+    localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+    showToast(
+      isInWishlist ? 'ลบออกจากรายการโปรดแล้ว' : 'เพิ่มในรายการโปรดแล้ว',
+      isInWishlist ? 'info' : 'success'
+    );
+  };
+
+  const getPlatforms = () => {
+    const platforms = [...new Set(games.map(g => g.platform))];
+    return platforms;
+  };
 
   const fetchGames = async () => {
     try {
@@ -87,32 +139,71 @@ function AllGames() {
         </div>
       </div>
 
-      {/* Search Bar */}
+      {/* Search & Filter Bar */}
       <div className="bg-white shadow-md border-b sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="relative max-w-2xl">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="ค้นหาเกม, แพลตฟอร์ม..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none text-gray-700 font-medium"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="ค้นหาเกม, แพลตฟอร์ม..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none text-gray-700 font-medium"
+              />
+            </div>
+
+            {/* Platform Filter */}
+            <div className="relative">
+              <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <select
+                value={selectedPlatform}
+                onChange={(e) => setSelectedPlatform(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none text-gray-700 font-medium appearance-none bg-white cursor-pointer"
               >
-                ✕
-              </button>
-            )}
+                <option value="all">ทุกแพลตฟอร์ม</option>
+                {getPlatforms().map(platform => (
+                  <option key={platform} value={platform}>{platform}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sort */}
+            <div className="relative">
+              <ArrowUpDown className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none text-gray-700 font-medium appearance-none bg-white cursor-pointer"
+              >
+                <option value="default">เรียงตามค่าเริ่มต้น</option>
+                <option value="price-low">ราคา: ต่ำ → สูง</option>
+                <option value="price-high">ราคา: สูง → ต่ำ</option>
+                <option value="name">ชื่อ: A → Z</option>
+              </select>
+            </div>
           </div>
           
-          {searchQuery && (
-            <p className="text-sm text-gray-500 mt-2">
-              พบ {filteredGames.length} รายการจาก "{searchQuery}"
-            </p>
+          {(searchQuery || selectedPlatform !== 'all') && (
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-500">
+                พบ {filteredGames.length} รายการ
+                {searchQuery && ` จาก "${searchQuery}"`}
+                {selectedPlatform !== 'all' && ` ในแพลตฟอร์ม ${selectedPlatform}`}
+              </p>
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedPlatform('all');
+                  setSortBy('default');
+                }}
+                className="text-sm text-red-600 hover:text-red-700 font-bold"
+              >
+                ล้างทั้งหมด
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -120,9 +211,10 @@ function AllGames() {
       {/* Games Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         {loading ? (
-          <div className="text-center py-20">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-red-600 border-t-transparent"></div>
-            <p className="text-gray-500 mt-4">กำลังโหลดข้อมูล...</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {[...Array(8)].map((_, i) => (
+              <GameCardSkeleton key={i} />
+            ))}
           </div>
         ) : filteredGames.length === 0 ? (
           <div className="text-center py-20">
@@ -155,6 +247,23 @@ function AllGames() {
                       <div className="absolute top-3 left-3 bg-black/80 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm uppercase">
                         {game.platform}
                       </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleWishlist(game.game_id);
+                        }}
+                        className={`absolute top-3 right-3 p-2 rounded-full transition ${
+                          wishlist.includes(game.game_id)
+                            ? 'bg-red-600 text-white'
+                            : 'bg-white/80 text-gray-600 hover:bg-white'
+                        }`}
+                        title={wishlist.includes(game.game_id) ? 'ลบออกจากรายการโปรด' : 'เพิ่มในรายการโปรด'}
+                      >
+                        <Heart 
+                          size={18} 
+                          className={wishlist.includes(game.game_id) ? 'fill-current' : ''}
+                        />
+                      </button>
                     </div>
 
                     <div className="p-5">
@@ -204,6 +313,23 @@ function AllGames() {
                         <div className="absolute top-3 left-3 bg-black/80 text-white text-xs font-bold px-3 py-1 rounded backdrop-blur-sm uppercase">
                           {game.platform}
                         </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleWishlist(game.game_id);
+                          }}
+                          className={`absolute top-3 right-3 p-2 rounded-full transition ${
+                            wishlist.includes(game.game_id)
+                              ? 'bg-red-600 text-white'
+                              : 'bg-white/80 text-gray-600 hover:bg-white'
+                          }`}
+                          title={wishlist.includes(game.game_id) ? 'ลบออกจากรายการโปรด' : 'เพิ่มในรายการโปรด'}
+                        >
+                          <Heart 
+                            size={18} 
+                            className={wishlist.includes(game.game_id) ? 'fill-current' : ''}
+                          />
+                        </button>
                       </div>
 
                       {/* Content */}

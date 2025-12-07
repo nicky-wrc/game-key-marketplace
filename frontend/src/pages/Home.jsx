@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { ShoppingCart, Search, Gift, CreditCard, Box, User, LogOut, ShieldAlert, Gamepad2 } from 'lucide-react';
+import { ShoppingCart, Search, Gift, CreditCard, Box, User, LogOut, ShieldAlert, Gamepad2, X, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { showToast } from '../components/ToastContainer';
+import { GameCardSkeleton } from '../components/LoadingSkeleton';
 
 function Home() {
   const [games, setGames] = useState([]);
+  const [filteredGames, setFilteredGames] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
-  const [balance, setBalance] = useState(0); 
+  const [balance, setBalance] = useState(0);
+  const [wishlist, setWishlist] = useState([]);
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user')); 
 
@@ -15,7 +20,43 @@ function Home() {
     if (user) {
       fetchUserBalance(); 
     }
+    loadWishlist();
   }, []);
+
+  const loadWishlist = () => {
+    const saved = localStorage.getItem('wishlist');
+    if (saved) {
+      setWishlist(JSON.parse(saved));
+    }
+  };
+
+  const toggleWishlist = (gameId, e) => {
+    if (e) e.stopPropagation();
+    const isInWishlist = wishlist.includes(gameId);
+    const newWishlist = isInWishlist
+      ? wishlist.filter(id => id !== gameId)
+      : [...wishlist, gameId];
+    setWishlist(newWishlist);
+    localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+    showToast(
+      isInWishlist ? 'ลบออกจากรายการโปรดแล้ว' : 'เพิ่มในรายการโปรดแล้ว',
+      isInWishlist ? 'info' : 'success'
+    );
+  };
+
+  // ฟิลเตอร์เกมตาม search query
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredGames(games);
+    } else {
+      const filtered = games.filter(game => 
+        game.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        game.platform.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (game.description && game.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+      setFilteredGames(filtered);
+    }
+  }, [searchQuery, games]);
 
   const fetchUserBalance = async () => {
     try {
@@ -35,11 +76,20 @@ function Home() {
     try {
       const res = await axios.get('http://localhost:5000/api/games');
       setGames(res.data);
+      setFilteredGames(res.data);
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
   };
 
   const handleLogout = () => {
@@ -50,16 +100,19 @@ function Home() {
 
   const handleDailyReward = async () => {
     const token = localStorage.getItem('token');
-    if (!token) return alert('กรุณาล็อกอินก่อน');
+    if (!token) {
+      showToast('กรุณาล็อกอินก่อน', 'warning');
+      return;
+    }
 
     try {
       const res = await axios.post('http://localhost:5000/api/wallet/daily', {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert(res.data.message); 
+      showToast(res.data.message, 'success'); 
       fetchUserBalance(); 
     } catch (err) {
-      alert(err.response?.data?.message || 'เกิดข้อผิดพลาด');
+      showToast(err.response?.data?.message || 'เกิดข้อผิดพลาด', 'error');
     }
   };
 
@@ -116,8 +169,23 @@ function Home() {
             {/* Right Icons */}
             <div className="flex items-center gap-4">
                 <div className="relative hidden lg:block">
-                    <input type="text" placeholder="ค้นหา..." className="bg-gray-100 rounded-full px-4 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 w-48" />
-                    <Search className="w-4 h-4 text-gray-400 absolute right-3 top-2" />
+                    <input 
+                      type="text" 
+                      placeholder="ค้นหาเกม..." 
+                      value={searchQuery}
+                      onChange={handleSearch}
+                      className="bg-gray-100 rounded-full px-4 py-1.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 w-48 transition-all" 
+                    />
+                    {searchQuery ? (
+                      <button 
+                        onClick={clearSearch}
+                        className="absolute right-8 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-600 transition"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    ) : (
+                      <Search className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
+                    )}
                 </div>
                 
                 {user && (
@@ -153,8 +221,44 @@ function Home() {
           </div>
       </div>
 
+      {/* Search Bar สำหรับ Mobile */}
+      <div className="max-w-7xl mx-auto px-4 -mt-10 relative z-20 mb-6 lg:hidden">
+        <div className="bg-white rounded-xl shadow-lg p-4">
+          <div className="relative">
+            <input 
+              type="text" 
+              placeholder="ค้นหาเกม..." 
+              value={searchQuery}
+              onChange={handleSearch}
+              className="w-full bg-gray-100 rounded-full px-4 py-3 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-red-500" 
+            />
+            {searchQuery ? (
+              <button 
+                onClick={clearSearch}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-600 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            ) : (
+              <Search className="w-5 h-5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
+            )}
+          </div>
+          {searchQuery && (
+            <div className="mt-3 flex items-center justify-between text-sm">
+              <span className="text-gray-600">พบ {filteredGames.length} รายการ</span>
+              <button 
+                onClick={clearSearch}
+                className="text-red-600 hover:text-red-700 font-bold"
+              >
+                ล้าง
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* 4. Category Grid (เมนูทางลัด) */}
-      <div className="max-w-7xl mx-auto px-4 -mt-10 relative z-20 mb-12">
+      <div className="max-w-7xl mx-auto px-4 -mt-10 relative z-20 mb-12 hidden lg:block">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div onClick={() => navigate('/gacha')} className="bg-white p-4 rounded-xl shadow-lg hover:-translate-y-2 transition cursor-pointer border-b-4 border-red-500 group">
                   <div className="bg-red-100 w-12 h-12 rounded-full flex items-center justify-center mb-3 group-hover:bg-red-600 transition">
@@ -187,20 +291,98 @@ function Home() {
           </div>
       </div>
 
+      {/* Category Grid สำหรับ Mobile (แสดงเมื่อไม่มีการค้นหา) */}
+      {!searchQuery && (
+        <div className="max-w-7xl mx-auto px-4 mb-12 lg:hidden">
+          <div className="grid grid-cols-2 gap-4">
+              <div onClick={() => navigate('/gacha')} className="bg-white p-4 rounded-xl shadow-lg hover:-translate-y-2 transition cursor-pointer border-b-4 border-red-500 group">
+                  <div className="bg-red-100 w-12 h-12 rounded-full flex items-center justify-center mb-3 group-hover:bg-red-600 transition">
+                      <Gift className="text-red-600 group-hover:text-white" />
+                  </div>
+                  <h3 className="font-bold text-gray-800 text-sm">สุ่มของรางวัล</h3>
+              </div>
+              <div onClick={() => navigate('/topup')} className="bg-white p-4 rounded-xl shadow-lg hover:-translate-y-2 transition cursor-pointer border-b-4 border-yellow-500 group">
+                  <div className="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center mb-3 group-hover:bg-yellow-500 transition">
+                      <CreditCard className="text-yellow-600 group-hover:text-white" />
+                  </div>
+                  <h3 className="font-bold text-gray-800 text-sm">เติมเงิน</h3>
+              </div>
+              <div onClick={() => navigate('/games')} className="bg-white p-4 rounded-xl shadow-lg hover:-translate-y-2 transition cursor-pointer border-b-4 border-blue-500 group">
+                   <div className="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition">
+                      <Box className="text-blue-600 group-hover:text-white" />
+                  </div>
+                  <h3 className="font-bold text-gray-800 text-sm">ไอดีเกม</h3>
+              </div>
+              <div onClick={() => navigate('/profile')} className="bg-white p-4 rounded-xl shadow-lg hover:-translate-y-2 transition cursor-pointer border-b-4 border-green-500 group">
+                   <div className="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center mb-3 group-hover:bg-green-600 transition">
+                      <User className="text-green-600 group-hover:text-white" />
+                  </div>
+                  <h3 className="font-bold text-gray-800 text-sm">โปรไฟล์</h3>
+              </div>
+          </div>
+        </div>
+      )}
+
       {/* 5. Game List - แก้ไขให้กดไปหน้ารายละเอียดได้ */}
       <main className="max-w-7xl mx-auto px-4 pb-20">
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
             <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
             <h3 className="text-2xl font-bold text-gray-800 uppercase italic">
-              สินค้า <span className="text-red-600">แนะนำ</span>
+              {searchQuery ? (
+                <>ผลการค้นหา <span className="text-red-600">"{searchQuery}"</span></>
+              ) : (
+                <>สินค้า <span className="text-red-600">แนะนำ</span></>
+              )}
             </h3>
+          </div>
+          {searchQuery && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">
+                พบ {filteredGames.length} รายการ
+              </span>
+              <button 
+                onClick={clearSearch}
+                className="text-sm text-red-600 hover:text-red-700 font-bold flex items-center gap-1"
+              >
+                <X className="w-4 h-4" /> ล้างการค้นหา
+              </button>
+            </div>
+          )}
         </div>
 
         {loading ? (
-          <p className="text-center text-gray-500 py-20">กำลังโหลดข้อมูลสินค้า...</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {[...Array(8)].map((_, i) => (
+              <GameCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : filteredGames.length === 0 ? (
+          <div className="text-center py-20">
+            <div className="bg-white rounded-2xl p-12 shadow-lg max-w-md mx-auto">
+              <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h4 className="text-xl font-bold text-gray-800 mb-2">
+                {searchQuery ? 'ไม่พบผลการค้นหา' : 'ยังไม่มีเกมในระบบ'}
+              </h4>
+              <p className="text-gray-500 mb-6">
+                {searchQuery 
+                  ? `ไม่พบเกมที่ตรงกับ "${searchQuery}" ลองค้นหาด้วยคำอื่นดูสิ!`
+                  : 'รอ Admin เพิ่มเกมเข้ามาในระบบ'
+                }
+              </p>
+              {searchQuery && (
+                <button 
+                  onClick={clearSearch}
+                  className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition font-bold"
+                >
+                  ล้างการค้นหา
+                </button>
+              )}
+            </div>
+          </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {games.map((game) => (
+            {filteredGames.map((game) => (
               <div 
                 key={game.game_id} 
                 className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition duration-300 group border border-gray-100 cursor-pointer"
@@ -215,6 +397,20 @@ function Home() {
                     <div className="absolute top-3 left-3 bg-black/80 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm uppercase">
                         {game.platform}
                     </div>
+                    <button
+                      onClick={(e) => toggleWishlist(game.game_id, e)}
+                      className={`absolute top-3 right-3 p-2 rounded-full transition ${
+                        wishlist.includes(game.game_id)
+                          ? 'bg-red-600 text-white'
+                          : 'bg-white/80 text-gray-600 hover:bg-white'
+                      }`}
+                      title={wishlist.includes(game.game_id) ? 'ลบออกจากรายการโปรด' : 'เพิ่มในรายการโปรด'}
+                    >
+                      <Heart 
+                        size={16} 
+                        className={wishlist.includes(game.game_id) ? 'fill-current' : ''}
+                      />
+                    </button>
                 </div>
 
                 <div className="p-5">

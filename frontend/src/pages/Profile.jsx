@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { User, Mail, Shield, Lock, CreditCard, ShoppingBag, LogOut, Save } from 'lucide-react';
+import { User, Mail, Shield, Lock, CreditCard, ShoppingBag, LogOut, Save, ArrowLeft, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { showToast } from '../components/ToastContainer';
 
 function Profile() {
   const [profile, setProfile] = useState(null);
   const [stats, setStats] = useState({ totalSpent: 0, totalItems: 0 });
+  const [wishlist, setWishlist] = useState([]);
+  const [wishlistGames, setWishlistGames] = useState([]);
   
   // Form เปลี่ยนรหัสผ่าน
   const [passForm, setPassForm] = useState({ oldPassword: '', newPassword: '', confirmPassword: '' });
@@ -15,7 +18,39 @@ function Profile() {
   useEffect(() => {
     fetchProfileData();
     fetchHistoryStats();
+    loadWishlist();
   }, []);
+
+  useEffect(() => {
+    if (wishlist.length > 0) {
+      fetchWishlistGames();
+    }
+  }, [wishlist]);
+
+  const loadWishlist = () => {
+    const saved = localStorage.getItem('wishlist');
+    if (saved) {
+      const ids = JSON.parse(saved);
+      setWishlist(ids);
+    }
+  };
+
+  const fetchWishlistGames = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/games');
+      const games = res.data.filter(g => wishlist.includes(g.game_id));
+      setWishlistGames(games);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const removeFromWishlist = (gameId) => {
+    const newWishlist = wishlist.filter(id => id !== gameId);
+    setWishlist(newWishlist);
+    localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+    showToast('ลบออกจากรายการโปรดแล้ว', 'info');
+  };
 
   const fetchProfileData = async () => {
     try {
@@ -46,7 +81,8 @@ function Profile() {
   const handleChangePassword = async (e) => {
     e.preventDefault();
     if (passForm.newPassword !== passForm.confirmPassword) {
-      return alert('รหัสผ่านใหม่ไม่ตรงกัน');
+      showToast('รหัสผ่านใหม่ไม่ตรงกัน', 'error');
+      return;
     }
 
     try {
@@ -58,10 +94,10 @@ function Profile() {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      alert('เปลี่ยนรหัสผ่านสำเร็จ!');
+      showToast('เปลี่ยนรหัสผ่านสำเร็จ!', 'success');
       setPassForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
     } catch (err) {
-      alert(err.response?.data?.message || 'เปลี่ยนรหัสผ่านไม่สำเร็จ');
+      showToast(err.response?.data?.message || 'เปลี่ยนรหัสผ่านไม่สำเร็จ', 'error');
     }
   };
 
@@ -78,9 +114,14 @@ function Profile() {
       <div className="max-w-5xl mx-auto">
         
         {/* Header */}
-        <h1 className="text-3xl font-black text-gray-800 mb-8 flex items-center gap-2">
-          <User className="w-8 h-8 text-red-600" /> ข้อมูลส่วนตัว (My Profile)
-        </h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-black text-gray-800 flex items-center gap-2">
+            <User className="w-8 h-8 text-red-600" /> ข้อมูลส่วนตัว (My Profile)
+          </h1>
+          <button onClick={() => navigate('/')} className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition bg-white px-4 py-2 rounded-lg hover:bg-gray-50 shadow-sm border border-gray-200">
+            <ArrowLeft size={20} /> กลับหน้าหลัก
+          </button>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
@@ -175,6 +216,49 @@ function Profile() {
                         <Save size={18} /> บันทึกการเปลี่ยนแปลง
                     </button>
                 </form>
+            </div>
+
+            {/* Wishlist Section */}
+            <div className="bg-white p-8 rounded-2xl shadow-lg">
+                <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <Heart className="text-red-600 fill-current" size={20} /> รายการโปรดของฉัน
+                </h3>
+                {wishlist.length === 0 ? (
+                  <p className="text-gray-500 text-center py-8">ยังไม่มีเกมในรายการโปรด</p>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {wishlistGames.map((game) => (
+                      <div 
+                        key={game.game_id}
+                        className="bg-gray-50 rounded-xl p-4 border border-gray-200 hover:border-red-500 transition cursor-pointer group"
+                        onClick={() => navigate(`/games/${game.game_id}`)}
+                      >
+                        <div className="flex items-start gap-3">
+                          <img 
+                            src={game.image_url} 
+                            alt={game.name}
+                            className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-bold text-gray-800 truncate mb-1">{game.name}</h4>
+                            <p className="text-xs text-gray-500 mb-2">{game.platform}</p>
+                            <p className="text-red-600 font-bold">฿{Number(game.price).toLocaleString()}</p>
+                          </div>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeFromWishlist(game.game_id);
+                            }}
+                            className="text-gray-400 hover:text-red-600 transition"
+                            title="ลบออกจากรายการโปรด"
+                          >
+                            <Heart size={18} className="fill-current text-red-600" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
             </div>
 
           </div>

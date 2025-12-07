@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, ShoppingCart, Package, Eye, CheckCircle, AlertCircle } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Package, Eye, CheckCircle, AlertCircle, Ticket, X } from 'lucide-react';
+import { showToast } from '../components/ToastContainer';
 
 function GameDetail() {
   const { id } = useParams();
@@ -12,6 +13,10 @@ function GameDetail() {
   const [selectedStock, setSelectedStock] = useState(null);
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState(false);
+  const [couponCode, setCouponCode] = useState('');
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponValid, setCouponValid] = useState(false);
+  const [checkingCoupon, setCheckingCoupon] = useState(false);
 
   useEffect(() => {
     fetchGameDetail();
@@ -39,30 +44,74 @@ function GameDetail() {
     }
   };
 
+  // 🔹 ฟังก์ชันเช็คคูปอง
+  const handleCheckCoupon = async () => {
+    if (!couponCode.trim()) {
+      showToast('กรุณากรอกโค้ดคูปอง', 'warning');
+      return;
+    }
+
+    setCheckingCoupon(true);
+    try {
+      const res = await axios.post('http://localhost:5000/api/coupons/check', {
+        code: couponCode.toUpperCase()
+      });
+      
+      setCouponDiscount(res.data.discount);
+      setCouponValid(true);
+      showToast(`คูปองใช้ได้! ส่วนลด ${res.data.discount} บาท`, 'success');
+    } catch (err) {
+      setCouponValid(false);
+      setCouponDiscount(0);
+      showToast(err.response?.data?.message || 'คูปองไม่ถูกต้องหรือใช้ไม่ได้', 'error');
+    } finally {
+      setCheckingCoupon(false);
+    }
+  };
+
+  // 🔹 ฟังก์ชันล้างคูปอง
+  const clearCoupon = () => {
+    setCouponCode('');
+    setCouponDiscount(0);
+    setCouponValid(false);
+  };
+
   // 🔹 ฟังก์ชันซื้อไอดีเฉพาะชิ้น (ส่ง code_id)
   const handleBuySpecific = async (codeId) => {
     const token = localStorage.getItem('token');
     if (!token) {
-      alert('กรุณาเข้าสู่ระบบก่อนซื้อสินค้า');
+      showToast('กรุณาเข้าสู่ระบบก่อนซื้อสินค้า', 'warning');
       navigate('/login');
       return;
     }
 
-    if (!window.confirm('ยืนยันการซื้อไอดีนี้?')) return;
+    const stock = stocks.find(s => s.code_id === codeId);
+    const originalPrice = stock ? parseFloat(stock.price) : 0;
+    const finalPrice = Math.max(0, originalPrice - couponDiscount);
+    
+    const confirmMsg = couponValid 
+      ? `ยืนยันการซื้อไอดีนี้?\nราคาเดิม: ฿${originalPrice.toLocaleString()}\nส่วนลด: ฿${couponDiscount.toLocaleString()}\nราคาสุทธิ: ฿${finalPrice.toLocaleString()}`
+      : 'ยืนยันการซื้อไอดีนี้?';
+
+    if (!window.confirm(confirmMsg)) return;
 
     setPurchasing(true);
     try {
       const res = await axios.post(
         'http://localhost:5000/api/transactions/buy',
-        { code_id: codeId }, // ส่ง code_id แทน game_id
+        { 
+          code_id: codeId,
+          coupon_code: couponValid ? couponCode.toUpperCase() : null
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      alert(`ซื้อสำเร็จ! 🎉\nรหัสเกมของคุณคือ:\n${res.data.game_code}`);
+      showToast(`ซื้อสำเร็จ! รหัสเกม: ${res.data.game_code}`, 'success');
       fetchGameStocks(); // รีเฟรชสต็อก
       closeDetailModal();
+      clearCoupon();
     } catch (err) {
-      alert(err.response?.data?.message || 'เกิดข้อผิดพลาดในการซื้อ');
+      showToast(err.response?.data?.message || 'เกิดข้อผิดพลาดในการซื้อ', 'error');
     } finally {
       setPurchasing(false);
     }
@@ -72,25 +121,36 @@ function GameDetail() {
   const handleBuyRandom = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
-      alert('กรุณาเข้าสู่ระบบก่อนซื้อสินค้า');
+      showToast('กรุณาเข้าสู่ระบบก่อนซื้อสินค้า', 'warning');
       navigate('/login');
       return;
     }
 
-    if (!window.confirm('ยืนยันการซื้อแบบสุ่ม?')) return;
+    const originalPrice = game ? parseFloat(game.price) : 0;
+    const finalPrice = Math.max(0, originalPrice - couponDiscount);
+    
+    const confirmMsg = couponValid 
+      ? `ยืนยันการซื้อแบบสุ่ม?\nราคาเดิม: ฿${originalPrice.toLocaleString()}\nส่วนลด: ฿${couponDiscount.toLocaleString()}\nราคาสุทธิ: ฿${finalPrice.toLocaleString()}`
+      : 'ยืนยันการซื้อแบบสุ่ม?';
+
+    if (!window.confirm(confirmMsg)) return;
 
     setPurchasing(true);
     try {
       const res = await axios.post(
         'http://localhost:5000/api/transactions/buy',
-        { game_id: id }, // ส่ง game_id สำหรับสุ่ม
+        { 
+          game_id: id,
+          coupon_code: couponValid ? couponCode.toUpperCase() : null
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      alert(`ซื้อสำเร็จ! 🎉\nรหัสเกมของคุณคือ:\n${res.data.game_code}`);
+      showToast(`ซื้อสำเร็จ! รหัสเกม: ${res.data.game_code}`, 'success');
       fetchGameStocks();
+      clearCoupon();
     } catch (err) {
-      alert(err.response?.data?.message || 'เกิดข้อผิดพลาดในการซื้อ');
+      showToast(err.response?.data?.message || 'เกิดข้อผิดพลาดในการซื้อ', 'error');
     } finally {
       setPurchasing(false);
     }
@@ -173,12 +233,57 @@ function GameDetail() {
                 </div>
               </div>
 
+              {/* ส่วนใส่คูปอง */}
+              <div className="mt-6 bg-gradient-to-r from-yellow-900/50 to-orange-900/50 p-4 rounded-xl border border-yellow-500/30">
+                <div className="flex items-center gap-2 mb-3">
+                  <Ticket className="text-yellow-400" size={20} />
+                  <h3 className="text-lg font-bold text-yellow-400">ใช้คูปองส่วนลด</h3>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="กรอกโค้ดคูปอง..."
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                    className="flex-1 bg-gray-800 border border-gray-600 px-4 py-2 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 font-mono"
+                    disabled={checkingCoupon}
+                  />
+                  {couponValid ? (
+                    <button
+                      onClick={clearCoupon}
+                      className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition flex items-center gap-2"
+                    >
+                      <X size={18} />
+                      ล้าง
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleCheckCoupon}
+                      disabled={checkingCoupon || !couponCode.trim()}
+                      className="bg-yellow-600 hover:bg-yellow-700 px-6 py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed font-bold"
+                    >
+                      {checkingCoupon ? 'กำลังเช็ค...' : 'เช็ค'}
+                    </button>
+                  )}
+                </div>
+                {couponValid && (
+                  <div className="mt-3 bg-green-900/30 border border-green-500/50 p-3 rounded-lg">
+                    <p className="text-green-400 font-bold">
+                      ✅ คูปองใช้ได้! ส่วนลด {couponDiscount.toLocaleString()} บาท
+                    </p>
+                    <p className="text-sm text-gray-400 mt-1">
+                      ราคาเดิม: ฿{Number(game.price).toLocaleString()} → ราคาสุทธิ: ฿{Math.max(0, Number(game.price) - couponDiscount).toLocaleString()}
+                    </p>
+                  </div>
+                )}
+              </div>
+
               {/* ปุ่มซื้อแบบสุ่ม */}
               {stocks.length > 0 && (
                 <button
                   onClick={handleBuyRandom}
                   disabled={purchasing}
-                  className="mt-6 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white px-8 py-4 rounded-xl font-bold transition active:scale-95 shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="mt-4 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white px-8 py-4 rounded-xl font-bold transition active:scale-95 shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {purchasing ? (
                     <>
@@ -188,7 +293,10 @@ function GameDetail() {
                   ) : (
                     <>
                       <ShoppingCart size={20} />
-                      ซื้อแบบสุ่ม (฿{Number(game.price).toLocaleString()})
+                      {couponValid 
+                        ? `ซื้อแบบสุ่ม (฿${Math.max(0, Number(game.price) - couponDiscount).toLocaleString()})`
+                        : `ซื้อแบบสุ่ม (฿${Number(game.price).toLocaleString()})`
+                      }
                     </>
                   )}
                 </button>
@@ -309,14 +417,70 @@ function GameDetail() {
                 </p>
               </div>
 
-              <div className="flex items-center justify-between bg-gradient-to-r from-red-900/50 to-pink-900/50 p-6 rounded-xl mb-6 border border-red-500/30">
+              <div className="flex items-center justify-between bg-gradient-to-r from-red-900/50 to-pink-900/50 p-6 rounded-xl mb-4 border border-red-500/30">
                 <div>
                   <div className="text-sm text-gray-400 mb-1">ราคา</div>
-                  <div className="text-4xl font-black text-red-400">
-                    ฿{Number(selectedStock.price).toLocaleString()}
-                  </div>
+                  {couponValid ? (
+                    <div>
+                      <div className="text-lg text-gray-400 line-through mb-1">
+                        ฿{Number(selectedStock.price).toLocaleString()}
+                      </div>
+                      <div className="text-4xl font-black text-red-400">
+                        ฿{Math.max(0, Number(selectedStock.price) - couponDiscount).toLocaleString()}
+                      </div>
+                      <div className="text-sm text-green-400 mt-1">
+                        ส่วนลด ฿{couponDiscount.toLocaleString()}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-4xl font-black text-red-400">
+                      ฿{Number(selectedStock.price).toLocaleString()}
+                    </div>
+                  )}
                 </div>
                 <CheckCircle className="w-16 h-16 text-green-500" />
+              </div>
+
+              {/* ส่วนใส่คูปองใน Modal */}
+              <div className="bg-gradient-to-r from-yellow-900/50 to-orange-900/50 p-4 rounded-xl mb-6 border border-yellow-500/30">
+                <div className="flex items-center gap-2 mb-3">
+                  <Ticket className="text-yellow-400" size={18} />
+                  <h3 className="text-sm font-bold text-yellow-400">ใช้คูปองส่วนลด</h3>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="กรอกโค้ดคูปอง..."
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                    className="flex-1 bg-gray-900 border border-gray-600 px-3 py-2 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 font-mono text-sm"
+                    disabled={checkingCoupon}
+                  />
+                  {couponValid ? (
+                    <button
+                      onClick={clearCoupon}
+                      className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded-lg transition flex items-center gap-1 text-sm"
+                    >
+                      <X size={16} />
+                      ล้าง
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleCheckCoupon}
+                      disabled={checkingCoupon || !couponCode.trim()}
+                      className="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed font-bold text-sm"
+                    >
+                      {checkingCoupon ? '...' : 'เช็ค'}
+                    </button>
+                  )}
+                </div>
+                {couponValid && (
+                  <div className="mt-2 bg-green-900/30 border border-green-500/50 p-2 rounded-lg">
+                    <p className="text-green-400 font-bold text-sm">
+                      ✅ ส่วนลด {couponDiscount.toLocaleString()} บาท
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="flex gap-4">
@@ -339,7 +503,10 @@ function GameDetail() {
                   ) : (
                     <>
                       <ShoppingCart size={20} />
-                      ซื้อเลย
+                      {couponValid 
+                        ? `ซื้อเลย (฿${Math.max(0, Number(selectedStock.price) - couponDiscount).toLocaleString()})`
+                        : 'ซื้อเลย'
+                      }
                     </>
                   )}
                 </button>

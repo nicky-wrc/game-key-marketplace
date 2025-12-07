@@ -43,28 +43,28 @@ function Inventory() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
+    <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Clock className="text-purple-500" /> ประวัติการสั่งซื้อ & คลังของฉัน
+          <h1 className="text-3xl font-bold flex items-center gap-2 text-gray-800">
+            <Clock className="text-red-600" /> ประวัติการสั่งซื้อ & คลังของฉัน
           </h1>
-          <button onClick={() => navigate('/')} className="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg">
+          <button onClick={() => navigate('/')} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-bold transition">
             กลับหน้าหลัก
           </button>
         </div>
 
         {/* Table */}
-        <div className="bg-gray-800 rounded-xl overflow-hidden shadow-2xl border border-gray-700">
+        <div className="bg-white rounded-xl overflow-hidden shadow-2xl border border-gray-200">
           {loading ? (
-            <div className="p-8 text-center text-gray-400">กำลังโหลดข้อมูล...</div>
+            <div className="p-8 text-center text-gray-600">กำลังโหลดข้อมูล...</div>
           ) : history.length === 0 ? (
-            <div className="p-8 text-center text-gray-400">ยังไม่มีประวัติการซื้อ (ไปช้อปก่อนสิ!)</div>
+            <div className="p-8 text-center text-gray-600">ยังไม่มีประวัติการซื้อ (ไปช้อปก่อนสิ!)</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-purple-900/50 text-purple-200 uppercase text-sm">
+                <thead className="bg-red-600 text-white uppercase text-sm">
                   <tr>
                     <th className="p-4">วันที่</th>
                     <th className="p-4">รายการ / รายละเอียด</th>
@@ -72,32 +72,32 @@ function Inventory() {
                     <th className="p-4 text-center">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-700">
+                <tbody className="divide-y divide-gray-200">
                   {history.map((item) => (
-                    <tr key={item.transaction_id} className="hover:bg-gray-700/50 transition">
-                      <td className="p-4 text-sm text-gray-400 whitespace-nowrap">
+                    <tr key={item.transaction_id} className="hover:bg-gray-50 transition">
+                      <td className="p-4 text-sm text-gray-600 whitespace-nowrap">
                         {formatDate(item.transaction_date)}
                       </td>
                       <td className="p-4">
-                        <div className="font-medium text-white mb-1">
+                        <div className="font-medium text-gray-800 mb-1">
                             {/* แยกชื่อสินค้าออกจากรายละเอียด (ถ้ามี) */}
                             {item.details || 'Unknown Item'}
                         </div>
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${item.status === 'completed' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${item.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                           {item.status}
                         </span>
                       </td>
-                      <td className="p-4 text-right font-bold text-purple-400">
+                      <td className="p-4 text-right font-bold text-red-600">
                         -฿{Number(item.amount).toLocaleString()}
                       </td>
                       <td className="p-4 text-center">
                         {item.details && (
                            <button 
                              onClick={() => handleCopy(item.details, item.transaction_id)}
-                             className="text-gray-400 hover:text-white transition"
+                             className="text-gray-600 hover:text-red-600 transition"
                              title="คัดลอก"
                            >
-                             {copiedId === item.transaction_id ? <Check className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5" />}
+                             {copiedId === item.transaction_id ? <Check className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5" />}
                            </button>
                         )}
                       </td>

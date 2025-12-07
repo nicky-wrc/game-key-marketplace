@@ -1,14 +1,20 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Plus, Database, ShieldAlert, Package, ArrowLeft, Edit2, Trash2, Eye, X } from 'lucide-react';
+import { Plus, Database, ShieldAlert, Package, ArrowLeft, Edit2, Trash2, Eye, X, Ticket, BarChart3, Gift } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { showToast } from '../components/ToastContainer';
 
 function Admin() {
-  const [activeTab, setActiveTab] = useState('manage-games');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [games, setGames] = useState([]);
   const [stocks, setStocks] = useState([]);
+  const [coupons, setCoupons] = useState([]);
+  const [gachaBoxes, setGachaBoxes] = useState([]);
+  const [dashboardStats, setDashboardStats] = useState(null);
   const [editingGame, setEditingGame] = useState(null);
   const [editingStock, setEditingStock] = useState(null);
+  const [editingCoupon, setEditingCoupon] = useState(null);
+  const [editingGachaBox, setEditingGachaBox] = useState(null);
   const navigate = useNavigate();
   
   // State เพิ่มเกม
@@ -22,6 +28,16 @@ function Admin() {
     title: '', description: '', imageFile: null, is_public: false 
   });
 
+  // State เพิ่มคูปอง
+  const [couponForm, setCouponForm] = useState({ 
+    code: '', discount_amount: '', usage_limit: '' 
+  });
+
+  // State เพิ่ม Gacha Box
+  const [gachaBoxForm, setGachaBoxForm] = useState({ 
+    name: '', description: '', price: '', imageFile: null 
+  });
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (!user || user.role !== 'admin') {
@@ -31,6 +47,9 @@ function Admin() {
     }
     fetchGames();
     fetchStocks();
+    fetchCoupons();
+    fetchGachaBoxes();
+    fetchDashboardStats();
   }, []);
 
   const fetchGames = async () => {
@@ -53,6 +72,36 @@ function Admin() {
     } catch (err) { console.error(err); }
   };
 
+  const fetchCoupons = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.get('http://localhost:5000/api/admin/coupons', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCoupons(res.data);
+    } catch (err) { console.error(err); }
+  };
+
+  const fetchGachaBoxes = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.get('http://localhost:5000/api/admin/gacha-boxes', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setGachaBoxes(res.data);
+    } catch (err) { console.error(err); }
+  };
+
+  const fetchDashboardStats = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.get('http://localhost:5000/api/admin/dashboard', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setDashboardStats(res.data);
+    } catch (err) { console.error(err); }
+  };
+
   // ===== เพิ่มเกม =====
   const handleAddGame = async (e) => {
     e.preventDefault();
@@ -70,11 +119,11 @@ function Admin() {
       await axios.post('http://localhost:5000/api/admin/add-game', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert('เพิ่มเกมสำเร็จ! 🎉');
+      showToast('เพิ่มเกมสำเร็จ! 🎉', 'success');
       setGameForm({ name: '', platform: '', description: '', price: '', imageFile: null }); 
       fetchGames(); 
     } catch (err) { 
-      alert('Error: ' + (err.response?.data?.message || 'เพิ่มเกมไม่สำเร็จ')); 
+      showToast(err.response?.data?.message || 'เพิ่มเกมไม่สำเร็จ', 'error'); 
     }
   };
 
@@ -96,11 +145,11 @@ function Admin() {
       await axios.put(`http://localhost:5000/api/admin/games/${editingGame.game_id}`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert('แก้ไขเกมสำเร็จ! ✅');
+      showToast('แก้ไขเกมสำเร็จ! ✅', 'success');
       setEditingGame(null);
       fetchGames();
     } catch (err) {
-      alert('Error: ' + (err.response?.data?.message || 'แก้ไขไม่สำเร็จ'));
+      showToast(err.response?.data?.message || 'แก้ไขไม่สำเร็จ', 'error');
     }
   };
 
@@ -113,18 +162,21 @@ function Admin() {
       await axios.delete(`http://localhost:5000/api/admin/games/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert('ลบเกมสำเร็จ! 🗑️');
+      showToast('ลบเกมสำเร็จ! 🗑️', 'success');
       fetchGames();
       fetchStocks();
     } catch (err) {
-      alert('Error: ' + (err.response?.data?.message || 'ลบไม่สำเร็จ'));
+      showToast(err.response?.data?.message || 'ลบไม่สำเร็จ', 'error');
     }
   };
 
   // ===== เพิ่มสต็อก =====
   const handleAddStock = async (e) => {
     e.preventDefault();
-    if(!stockForm.game_id) return alert('กรุณาเลือกเกมก่อน');
+    if(!stockForm.game_id) {
+      showToast('กรุณาเลือกเกมก่อน', 'warning');
+      return;
+    }
     
     const formData = new FormData();
     formData.append('game_id', stockForm.game_id);
@@ -143,11 +195,11 @@ function Admin() {
       await axios.post('http://localhost:5000/api/admin/add-stock', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert('เพิ่มสินค้าสำเร็จ! 📦');
+      showToast('เพิ่มสินค้าสำเร็จ! 📦', 'success');
       setStockForm({ game_id: stockForm.game_id, code: '', price: '', title: '', description: '', imageFile: null, is_public: false });
       fetchStocks();
     } catch (err) { 
-      alert('Error: ' + (err.response?.data?.message || 'เติมของไม่สำเร็จ')); 
+      showToast(err.response?.data?.message || 'เติมของไม่สำเร็จ', 'error'); 
     }
   };
 
@@ -171,11 +223,11 @@ function Admin() {
       await axios.put(`http://localhost:5000/api/admin/stocks/${editingStock.code_id}`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert('แก้ไขสต็อกสำเร็จ! ✅');
+      showToast('แก้ไขสต็อกสำเร็จ! ✅', 'success');
       setEditingStock(null);
       fetchStocks();
     } catch (err) {
-      alert('Error: ' + (err.response?.data?.message || 'แก้ไขไม่สำเร็จ'));
+      showToast(err.response?.data?.message || 'แก้ไขไม่สำเร็จ', 'error');
     }
   };
 
@@ -188,10 +240,131 @@ function Admin() {
       await axios.delete(`http://localhost:5000/api/admin/stocks/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert('ลบสต็อกสำเร็จ! 🗑️');
+      showToast('ลบสต็อกสำเร็จ! 🗑️', 'success');
       fetchStocks();
     } catch (err) {
-      alert('Error: ' + (err.response?.data?.message || 'ลบไม่สำเร็จ'));
+      showToast(err.response?.data?.message || 'ลบไม่สำเร็จ', 'error');
+    }
+  };
+
+  // ===== เพิ่มคูปอง =====
+  const handleAddCoupon = async (e) => {
+    e.preventDefault();
+    if(!confirm('ยืนยันการเพิ่มคูปองใหม่?')) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post('http://localhost:5000/api/admin/add-coupon', couponForm, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      showToast('เพิ่มคูปองสำเร็จ! 🎫', 'success');
+      setCouponForm({ code: '', discount_amount: '', usage_limit: '' });
+      fetchCoupons();
+    } catch (err) { 
+      showToast(err.response?.data?.message || 'เพิ่มคูปองไม่สำเร็จ', 'error'); 
+    }
+  };
+
+  // ===== แก้ไขคูปอง =====
+  const handleUpdateCoupon = async (e) => {
+    e.preventDefault();
+    if(!confirm('ยืนยันการแก้ไขคูปองนี้?')) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(`http://localhost:5000/api/admin/coupons/${editingCoupon.coupon_id}`, {
+        code: editingCoupon.code,
+        discount_amount: editingCoupon.discount_amount,
+        usage_limit: editingCoupon.usage_limit
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      showToast('แก้ไขคูปองสำเร็จ! ✅', 'success');
+      setEditingCoupon(null);
+      fetchCoupons();
+    } catch (err) {
+      showToast(err.response?.data?.message || 'แก้ไขไม่สำเร็จ', 'error');
+    }
+  };
+
+  // ===== ลบคูปอง =====
+  const handleDeleteCoupon = async (id) => {
+    if(!confirm('ยืนยันการลบคูปองนี้?')) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`http://localhost:5000/api/admin/coupons/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      showToast('ลบคูปองสำเร็จ! 🗑️', 'success');
+      fetchCoupons();
+    } catch (err) {
+      showToast(err.response?.data?.message || 'ลบไม่สำเร็จ', 'error');
+    }
+  };
+
+  // ===== เพิ่ม Gacha Box =====
+  const handleAddGachaBox = async (e) => {
+    e.preventDefault();
+    if(!confirm('ยืนยันการเพิ่มกล่องใหม่?')) return;
+    
+    const formData = new FormData();
+    formData.append('name', gachaBoxForm.name);
+    formData.append('description', gachaBoxForm.description);
+    formData.append('price', gachaBoxForm.price);
+    if (gachaBoxForm.imageFile) formData.append('image', gachaBoxForm.imageFile);
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post('http://localhost:5000/api/admin/add-gacha-box', formData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      showToast('เพิ่มกล่องสำเร็จ! 🎁', 'success');
+      setGachaBoxForm({ name: '', description: '', price: '', imageFile: null });
+      fetchGachaBoxes();
+    } catch (err) { 
+      showToast(err.response?.data?.message || 'เพิ่มกล่องไม่สำเร็จ', 'error'); 
+    }
+  };
+
+  // ===== แก้ไข Gacha Box =====
+  const handleUpdateGachaBox = async (e) => {
+    e.preventDefault();
+    if(!confirm('ยืนยันการแก้ไขกล่องนี้?')) return;
+    
+    const formData = new FormData();
+    formData.append('name', editingGachaBox.name);
+    formData.append('description', editingGachaBox.description);
+    formData.append('price', editingGachaBox.price);
+    formData.append('existing_image', editingGachaBox.image_url);
+    if (editingGachaBox.newImageFile) formData.append('image', editingGachaBox.newImageFile);
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(`http://localhost:5000/api/admin/gacha-boxes/${editingGachaBox.box_id}`, formData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      showToast('แก้ไขกล่องสำเร็จ! ✅', 'success');
+      setEditingGachaBox(null);
+      fetchGachaBoxes();
+    } catch (err) {
+      showToast(err.response?.data?.message || 'แก้ไขไม่สำเร็จ', 'error');
+    }
+  };
+
+  // ===== ลบ Gacha Box =====
+  const handleDeleteGachaBox = async (id) => {
+    if(!confirm('ยืนยันการลบกล่องนี้?\n⚠️ ของในกล่องจะถูกลบด้วย!')) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`http://localhost:5000/api/admin/gacha-boxes/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      showToast('ลบกล่องสำเร็จ! 🗑️', 'success');
+      fetchGachaBoxes();
+    } catch (err) {
+      showToast(err.response?.data?.message || 'ลบไม่สำเร็จ', 'error');
     }
   };
 
@@ -211,7 +384,10 @@ function Admin() {
         </div>
 
         {/* Tabs */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
+          <button onClick={() => setActiveTab('dashboard')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'dashboard' ? 'bg-gradient-to-r from-indigo-600 to-indigo-800 text-white border-2 border-indigo-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+            <BarChart3 size={20} /> Dashboard
+          </button>
           <button onClick={() => setActiveTab('manage-games')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-games' ? 'bg-gradient-to-r from-purple-600 to-purple-800 text-white border-2 border-purple-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
             <Eye size={20} /> จัดการเกม
           </button>
@@ -224,10 +400,133 @@ function Admin() {
           <button onClick={() => setActiveTab('add-stock')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-stock' ? 'bg-gradient-to-r from-blue-600 to-blue-800 text-white border-2 border-blue-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
             <Package size={20} /> เติมสต็อก
           </button>
+          <button onClick={() => setActiveTab('manage-coupons')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-coupons' ? 'bg-gradient-to-r from-yellow-600 to-yellow-800 text-white border-2 border-yellow-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+            <Ticket size={20} /> คูปอง
+          </button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <button onClick={() => setActiveTab('manage-gacha')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-gacha' ? 'bg-gradient-to-r from-pink-600 to-pink-800 text-white border-2 border-pink-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+            <Gift size={20} /> จัดการ Gacha
+          </button>
+          <button onClick={() => setActiveTab('add-gacha')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-gacha' ? 'bg-gradient-to-r from-rose-600 to-rose-800 text-white border-2 border-rose-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+            <Plus size={20} /> เพิ่ม Gacha Box
+          </button>
         </div>
 
         {/* Content */}
         <div className="bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-700">
+          {/* TAB: Dashboard */}
+          {activeTab === 'dashboard' && (
+            <div>
+              <h2 className="text-2xl font-bold mb-6 text-indigo-400 border-l-4 border-indigo-500 pl-4">Dashboard & สถิติ</h2>
+              
+              {!dashboardStats ? (
+                <p className="text-gray-400 text-center py-10">กำลังโหลดข้อมูล...</p>
+              ) : (
+                <>
+                  {/* Overview Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div className="bg-gradient-to-br from-green-600 to-green-800 p-6 rounded-xl shadow-lg">
+                      <div className="text-gray-200 text-sm mb-2">ยอดขายรวม</div>
+                      <div className="text-3xl font-bold text-white">฿{Number(dashboardStats.overview.totalSales).toLocaleString()}</div>
+                    </div>
+                    <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-6 rounded-xl shadow-lg">
+                      <div className="text-gray-200 text-sm mb-2">จำนวนผู้ใช้</div>
+                      <div className="text-3xl font-bold text-white">{dashboardStats.overview.totalUsers.toLocaleString()}</div>
+                    </div>
+                    <div className="bg-gradient-to-br from-purple-600 to-purple-800 p-6 rounded-xl shadow-lg">
+                      <div className="text-gray-200 text-sm mb-2">จำนวนเกม</div>
+                      <div className="text-3xl font-bold text-white">{dashboardStats.overview.totalGames.toLocaleString()}</div>
+                    </div>
+                    <div className="bg-gradient-to-br from-yellow-600 to-yellow-800 p-6 rounded-xl shadow-lg">
+                      <div className="text-gray-200 text-sm mb-2">การซื้อทั้งหมด</div>
+                      <div className="text-3xl font-bold text-white">{dashboardStats.overview.totalTransactions.toLocaleString()}</div>
+                    </div>
+                  </div>
+
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                    <div className="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                      <div className="text-gray-400 text-sm mb-2">สต็อกทั้งหมด</div>
+                      <div className="text-2xl font-bold text-white">{dashboardStats.overview.totalStocks.toLocaleString()}</div>
+                      <div className="text-xs text-gray-500 mt-2">
+                        ขายได้: {dashboardStats.overview.soldStocks} | คงเหลือ: {dashboardStats.overview.availableStocks}
+                      </div>
+                    </div>
+                    <div className="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                      <div className="text-gray-400 text-sm mb-2">คูปองทั้งหมด</div>
+                      <div className="text-2xl font-bold text-white">{dashboardStats.overview.totalCoupons.toLocaleString()}</div>
+                      <div className="text-xs text-gray-500 mt-2">
+                        ใช้แล้ว: {dashboardStats.overview.usedCoupons} | ใช้งานได้: {dashboardStats.overview.totalCoupons - dashboardStats.overview.usedCoupons}
+                      </div>
+                    </div>
+                    <div className="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                      <div className="text-gray-400 text-sm mb-2">อัตราการขาย</div>
+                      <div className="text-2xl font-bold text-white">
+                        {dashboardStats.overview.totalStocks > 0 
+                          ? ((dashboardStats.overview.soldStocks / dashboardStats.overview.totalStocks) * 100).toFixed(1)
+                          : 0}%
+                      </div>
+                      <div className="text-xs text-gray-500 mt-2">
+                        {dashboardStats.overview.soldStocks} / {dashboardStats.overview.totalStocks} ชิ้น
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Top Games */}
+                  <div className="bg-gray-900 p-6 rounded-xl border border-gray-700 mb-8">
+                    <h3 className="text-xl font-bold mb-4 text-purple-400">🏆 เกมที่ขายดีที่สุด (Top 5)</h3>
+                    {dashboardStats.topGames.length === 0 ? (
+                      <p className="text-gray-400">ยังไม่มีข้อมูลการขาย</p>
+                    ) : (
+                      <div className="space-y-3">
+                        {dashboardStats.topGames.map((game, index) => (
+                          <div key={game.game_id} className="flex items-center justify-between bg-gray-800 p-4 rounded-lg">
+                            <div className="flex items-center gap-4">
+                              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white ${
+                                index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : index === 2 ? 'bg-orange-600' : 'bg-gray-700'
+                              }`}>
+                                {index + 1}
+                              </div>
+                              <div>
+                                <div className="font-bold text-white">{game.name}</div>
+                                <div className="text-sm text-gray-400">{game.platform}</div>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-green-400 font-bold">฿{Number(game.revenue).toLocaleString()}</div>
+                              <div className="text-xs text-gray-400">{game.sales_count} ครั้ง</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Daily Revenue */}
+                  <div className="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                    <h3 className="text-xl font-bold mb-4 text-blue-400">📊 รายได้รายวัน (7 วันล่าสุด)</h3>
+                    {dashboardStats.dailyRevenue.length === 0 ? (
+                      <p className="text-gray-400">ยังไม่มีข้อมูล</p>
+                    ) : (
+                      <div className="space-y-3">
+                        {dashboardStats.dailyRevenue.map((day, index) => (
+                          <div key={index} className="flex items-center justify-between bg-gray-800 p-4 rounded-lg">
+                            <div>
+                              <div className="font-bold text-white">{new Date(day.date).toLocaleDateString('th-TH')}</div>
+                              <div className="text-sm text-gray-400">{day.transaction_count} รายการ</div>
+                            </div>
+                            <div className="text-green-400 font-bold text-lg">฿{Number(day.revenue).toLocaleString()}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
           {/* TAB: จัดการเกม */}
           {activeTab === 'manage-games' && (
             <div>
@@ -434,6 +733,171 @@ function Admin() {
               </button>
             </form>
           )}
+
+          {/* TAB: จัดการคูปอง */}
+          {activeTab === 'manage-coupons' && (
+            <div>
+              <h2 className="text-2xl font-bold mb-6 text-yellow-400 border-l-4 border-yellow-500 pl-4">จัดการคูปองทั้งหมด</h2>
+              
+              {coupons.length === 0 ? (
+                <p className="text-gray-400 text-center py-10">ยังไม่มีคูปองในระบบ</p>
+              ) : (
+                <div className="overflow-x-auto mb-6">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-yellow-900/30 text-yellow-300">
+                      <tr>
+                        <th className="p-3">ID</th>
+                        <th className="p-3">โค้ดคูปอง</th>
+                        <th className="p-3">ส่วนลด (บาท)</th>
+                        <th className="p-3">ใช้แล้ว/จำกัด</th>
+                        <th className="p-3">สถานะ</th>
+                        <th className="p-3 text-center">จัดการ</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-700">
+                      {coupons.map((coupon) => (
+                        <tr key={coupon.coupon_id} className="hover:bg-gray-700/30">
+                          <td className="p-3 text-gray-400">#{coupon.coupon_id}</td>
+                          <td className="p-3 font-mono text-yellow-400 font-bold">{coupon.code}</td>
+                          <td className="p-3 text-green-400 font-bold">฿{Number(coupon.discount_amount).toLocaleString()}</td>
+                          <td className="p-3">
+                            <span className="text-white">
+                              {coupon.used_count} / {coupon.usage_limit}
+                            </span>
+                          </td>
+                          <td className="p-3">
+                            <span className={`text-xs px-2 py-1 rounded-full ${coupon.used_count >= coupon.usage_limit ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>
+                              {coupon.used_count >= coupon.usage_limit ? 'เต็มแล้ว' : 'ใช้งานได้'}
+                            </span>
+                          </td>
+                          <td className="p-3 text-center">
+                            <div className="flex gap-2 justify-center">
+                              <button onClick={() => setEditingCoupon(coupon)} className="bg-blue-600 hover:bg-blue-700 p-2 rounded-lg transition" title="แก้ไข">
+                                <Edit2 size={14} />
+                              </button>
+                              <button onClick={() => handleDeleteCoupon(coupon.coupon_id)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="ลบ">
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* Form เพิ่มคูปอง */}
+              <div className="bg-gray-900/50 p-6 rounded-xl border border-yellow-500/30">
+                <h3 className="text-xl font-bold mb-4 text-yellow-400">เพิ่มคูปองใหม่</h3>
+                <form onSubmit={handleAddCoupon} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm text-gray-400 mb-1">โค้ดคูปอง</label>
+                      <input required placeholder="Ex. SAVE50" className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg font-mono text-yellow-400 focus:border-yellow-500 outline-none" 
+                        value={couponForm.code} onChange={e => setCouponForm({...couponForm, code: e.target.value.toUpperCase()})} />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-400 mb-1">ส่วนลด (บาท)</label>
+                      <input required type="number" placeholder="0.00" className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg focus:border-yellow-500 outline-none" 
+                        value={couponForm.discount_amount} onChange={e => setCouponForm({...couponForm, discount_amount: e.target.value})} />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-400 mb-1">จำนวนครั้งที่ใช้ได้</label>
+                      <input required type="number" placeholder="100" className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg focus:border-yellow-500 outline-none" 
+                        value={couponForm.usage_limit} onChange={e => setCouponForm({...couponForm, usage_limit: e.target.value})} />
+                    </div>
+                  </div>
+                  <button type="submit" className="w-full bg-yellow-600 hover:bg-yellow-700 py-3 rounded-xl font-bold text-lg shadow-lg transition">
+                    + เพิ่มคูปอง
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: จัดการ Gacha Boxes */}
+          {activeTab === 'manage-gacha' && (
+            <div>
+              <h2 className="text-2xl font-bold mb-6 text-pink-400 border-l-4 border-pink-500 pl-4">จัดการ Gacha Boxes</h2>
+              
+              {gachaBoxes.length === 0 ? (
+                <p className="text-gray-400 text-center py-10">ยังไม่มีกล่องในระบบ</p>
+              ) : (
+                <div className="overflow-x-auto mb-6">
+                  <table className="w-full text-left">
+                    <thead className="bg-pink-900/30 text-pink-300 text-sm">
+                      <tr>
+                        <th className="p-3">รูป</th>
+                        <th className="p-3">ชื่อกล่อง</th>
+                        <th className="p-3">รายละเอียด</th>
+                        <th className="p-3">ราคา</th>
+                        <th className="p-3 text-center">จัดการ</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-700">
+                      {gachaBoxes.map((box) => (
+                        <tr key={box.box_id} className="hover:bg-gray-700/30">
+                          <td className="p-3">
+                            {box.image_url ? (
+                              <img src={box.image_url} alt={box.name} className="w-16 h-16 object-cover rounded-lg" />
+                            ) : (
+                              <div className="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center">
+                                <Gift className="w-8 h-8 text-gray-500" />
+                              </div>
+                            )}
+                          </td>
+                          <td className="p-3 font-bold text-white">{box.name}</td>
+                          <td className="p-3 text-gray-400 text-sm max-w-xs truncate">{box.description || '-'}</td>
+                          <td className="p-3 text-yellow-400 font-bold">฿{Number(box.price).toLocaleString()}</td>
+                          <td className="p-3 text-center">
+                            <div className="flex gap-2 justify-center">
+                              <button onClick={() => setEditingGachaBox(box)} className="bg-blue-600 hover:bg-blue-700 p-2 rounded-lg transition" title="แก้ไข">
+                                <Edit2 size={16} />
+                              </button>
+                              <button onClick={() => handleDeleteGachaBox(box.box_id)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="ลบ">
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB: เพิ่ม Gacha Box */}
+          {activeTab === 'add-gacha' && (
+            <form onSubmit={handleAddGachaBox} className="space-y-6">
+              <h2 className="text-2xl font-bold mb-6 text-rose-400 border-l-4 border-rose-500 pl-4">เพิ่ม Gacha Box ใหม่</h2>
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">ชื่อกล่อง</label>
+                <input required placeholder="Ex. Premium Box" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-rose-500 outline-none transition" 
+                  value={gachaBoxForm.name} onChange={e => setGachaBoxForm({...gachaBoxForm, name: e.target.value})} />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">รายละเอียด</label>
+                <textarea required placeholder="คำอธิบายกล่อง..." className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg h-32 focus:border-rose-500 outline-none transition" 
+                  value={gachaBoxForm.description} onChange={e => setGachaBoxForm({...gachaBoxForm, description: e.target.value})} />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">ราคา (บาท)</label>
+                  <input required type="number" placeholder="0.00" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-rose-500 outline-none transition" 
+                    value={gachaBoxForm.price} onChange={e => setGachaBoxForm({...gachaBoxForm, price: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">อัปโหลดรูปปกกล่อง</label>
+                  <input type="file" accept="image/*" className="w-full bg-gray-900 border border-gray-600 p-2 rounded-lg focus:border-rose-500 text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-600 file:text-white hover:file:bg-rose-700 cursor-pointer" 
+                    onChange={e => setGachaBoxForm({...gachaBoxForm, imageFile: e.target.files[0]})} />
+                </div>
+              </div>
+              <button type="submit" className="w-full bg-rose-600 hover:bg-rose-700 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-rose-500/30 transition transform hover:-translate-y-1">+ บันทึกกล่อง</button>
+            </form>
+          )}
         </div>
       </div>
 
@@ -544,6 +1008,90 @@ function Admin() {
               <div className="flex gap-4">
                 <button type="button" onClick={() => setEditingStock(null)} className="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold">ยกเลิก</button>
                 <button type="submit" className="flex-1 bg-green-600 hover:bg-green-700 py-3 rounded-xl font-bold">บันทึก</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal แก้ไขคูปอง */}
+      {editingCoupon && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setEditingCoupon(null)}>
+          <div className="bg-gray-800 rounded-2xl max-w-2xl w-full p-8 border-2 border-yellow-500/30" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-yellow-400">แก้ไขคูปอง</h3>
+              <button onClick={() => setEditingCoupon(null)} className="text-gray-400 hover:text-white">
+                <X size={24} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleUpdateCoupon} className="space-y-4">
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">โค้ดคูปอง</label>
+                <input required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg font-mono text-yellow-400 focus:border-yellow-500 outline-none" 
+                  value={editingCoupon.code} onChange={e => setEditingCoupon({...editingCoupon, code: e.target.value.toUpperCase()})} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">ส่วนลด (บาท)</label>
+                  <input required type="number" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-yellow-500 outline-none" 
+                    value={editingCoupon.discount_amount} onChange={e => setEditingCoupon({...editingCoupon, discount_amount: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">จำนวนครั้งที่ใช้ได้</label>
+                  <input required type="number" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-yellow-500 outline-none" 
+                    value={editingCoupon.usage_limit} onChange={e => setEditingCoupon({...editingCoupon, usage_limit: e.target.value})} />
+                </div>
+              </div>
+              <div className="bg-yellow-900/20 p-3 rounded-lg border border-yellow-500/30">
+                <p className="text-sm text-yellow-300">
+                  <strong>ใช้แล้ว:</strong> {editingCoupon.used_count} / {editingCoupon.usage_limit} ครั้ง
+                </p>
+              </div>
+              <div className="flex gap-4">
+                <button type="button" onClick={() => setEditingCoupon(null)} className="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold">ยกเลิก</button>
+                <button type="submit" className="flex-1 bg-yellow-600 hover:bg-yellow-700 py-3 rounded-xl font-bold">บันทึก</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal แก้ไข Gacha Box */}
+      {editingGachaBox && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setEditingGachaBox(null)}>
+          <div className="bg-gray-800 rounded-2xl max-w-2xl w-full p-8 border-2 border-pink-500/30" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-pink-400">แก้ไข Gacha Box</h3>
+              <button onClick={() => setEditingGachaBox(null)} className="text-gray-400 hover:text-white">
+                <X size={24} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleUpdateGachaBox} className="space-y-4">
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">ชื่อกล่อง</label>
+                <input required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-pink-500 outline-none" 
+                  value={editingGachaBox.name} onChange={e => setEditingGachaBox({...editingGachaBox, name: e.target.value})} />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">รายละเอียด</label>
+                <textarea required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg h-24 focus:border-pink-500 outline-none" 
+                  value={editingGachaBox.description} onChange={e => setEditingGachaBox({...editingGachaBox, description: e.target.value})} />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">ราคา</label>
+                <input required type="number" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-pink-500 outline-none" 
+                  value={editingGachaBox.price} onChange={e => setEditingGachaBox({...editingGachaBox, price: e.target.value})} />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">เปลี่ยนรูป (ถ้าต้องการ)</label>
+                <input type="file" accept="image/*" className="w-full bg-gray-900 border border-gray-600 p-2 rounded-lg text-sm text-gray-300" 
+                  onChange={e => setEditingGachaBox({...editingGachaBox, newImageFile: e.target.files[0]})} />
+              </div>
+              <div className="flex gap-4">
+                <button type="button" onClick={() => setEditingGachaBox(null)} className="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold">ยกเลิก</button>
+                <button type="submit" className="flex-1 bg-pink-600 hover:bg-pink-700 py-3 rounded-xl font-bold">บันทึก</button>
               </div>
             </form>
           </div>
