@@ -45,7 +45,7 @@ function Categories() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <div className="bg-gradient-to-r from-red-900 to-black text-white">
+      <div className="bg-gradient-to-r from-red-600 to-red-800 text-white">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <button
             onClick={() => navigate('/')}
