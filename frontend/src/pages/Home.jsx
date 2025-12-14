@@ -236,7 +236,7 @@ function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 font-sans">
+    <div className="min-h-screen bg-gray-100 font-sans">
       <Navbar />
 
       {/* Hero Banner */}

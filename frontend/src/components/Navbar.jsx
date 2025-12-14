@@ -4,7 +4,7 @@ import axiosInstance from '../utils/axios';
 import { 
   Gamepad2, Search, Gift, CreditCard, Box, User, LogOut, ShieldAlert, 
   Bell, ShoppingCart, Menu, X, Heart, TrendingUp, Filter, 
-  ChevronDown, Settings, Package, History, GitCompare, Sun, Moon
+  ChevronDown, Settings, Package, History, GitCompare
 } from 'lucide-react';
 import { showToast } from './ToastContainer';
 
@@ -19,7 +19,6 @@ function Navbar() {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [cartCount, setCartCount] = useState(0);
-  const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const searchRef = useRef(null);
   const userMenuRef = useRef(null);
@@ -34,7 +33,6 @@ function Navbar() {
     } catch (err) {
       console.error('Error parsing user data:', err);
     }
-    checkDarkMode();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -60,25 +58,6 @@ function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const checkDarkMode = () => {
-    const saved = localStorage.getItem('darkMode');
-    const isDark = saved === 'true' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    setDarkMode(isDark);
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    }
-  };
-
-  const toggleDarkMode = () => {
-    const newMode = !darkMode;
-    setDarkMode(newMode);
-    localStorage.setItem('darkMode', newMode.toString());
-    if (newMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
 
   const fetchUserData = async () => {
     try {
@@ -155,7 +134,7 @@ function Navbar() {
       </div>
 
       {/* Main Navbar */}
-      <nav className="bg-white dark:bg-gray-900 shadow-lg sticky top-0 z-50 border-b-2 border-red-600">
+      <nav className="bg-white shadow-lg sticky top-0 z-50 border-b-2 border-red-600">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-20">
             
@@ -168,10 +147,10 @@ function Navbar() {
                 <Gamepad2 className="w-8 h-8 text-white" />
               </div>
               <div className="flex flex-col">
-                <h1 className="text-2xl font-black tracking-tighter text-gray-900 dark:text-white italic leading-none">
+                <h1 className="text-2xl font-black tracking-tighter text-gray-900 italic leading-none">
                   NICKY<span className="text-red-600">KEY</span>
                 </h1>
-                <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 tracking-[0.25em] group-hover:text-red-600 transition">
+                <p className="text-[10px] font-bold text-gray-400 tracking-[0.25em] group-hover:text-red-600 transition">
                   GAME STORE CENTER
                 </p>
               </div>
@@ -187,7 +166,7 @@ function Navbar() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => searchQuery.length > 2 && setShowSearchResults(true)}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-100 dark:bg-gray-800 rounded-full border-2 border-transparent focus:border-red-500 focus:outline-none text-gray-900 dark:text-white transition"
+                  className="w-full pl-12 pr-4 py-3 bg-gray-100 rounded-full border-2 border-transparent focus:border-red-500 focus:outline-none text-gray-900 transition"
                 />
                 {searchQuery && (
                   <button
@@ -203,7 +182,7 @@ function Navbar() {
 
                 {/* Search Results Dropdown */}
                 {showSearchResults && searchResults.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border-2 border-red-200 dark:border-gray-700 max-h-96 overflow-y-auto z-50">
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border-2 border-red-200 max-h-96 overflow-y-auto z-50">
                     {searchResults.map((game) => (
                       <div
                         key={game.game_id}
@@ -212,7 +191,7 @@ function Navbar() {
                           setSearchQuery('');
                           setShowSearchResults(false);
                         }}
-                        className="flex items-center gap-3 p-4 hover:bg-red-50 dark:hover:bg-gray-700 cursor-pointer transition border-b border-gray-100 dark:border-gray-700 last:border-b-0"
+                        className="flex items-center gap-3 p-4 hover:bg-red-50 cursor-pointer transition border-b border-gray-100 last:border-b-0"
                       >
                         <img
                           src={game.image_url}
@@ -221,9 +200,9 @@ function Navbar() {
                           onError={(e) => { e.target.src = 'https://via.placeholder.com/150'; }}
                         />
                         <div className="flex-1">
-                          <h4 className="font-bold text-gray-900 dark:text-white">{game.name}</h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">{game.platform}</p>
-                          <p className="text-red-600 dark:text-red-400 font-bold">฿{Number(game.price || 0).toLocaleString()}</p>
+                          <h4 className="font-bold text-gray-900">{game.name}</h4>
+                          <p className="text-sm text-gray-500">{game.platform}</p>
+                          <p className="text-red-600 font-bold">฿{Number(game.price || 0).toLocaleString()}</p>
                         </div>
                       </div>
                     ))}
@@ -249,10 +228,10 @@ function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setShowUserMenu(false)}
-                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition relative"
+                    className="p-2 rounded-lg hover:bg-gray-100 transition relative"
                     title="การแจ้งเตือน"
                   >
-                    <Bell className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                    <Bell className="w-5 h-5 text-gray-600" />
                     {unreadCount > 0 && (
                       <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                         {unreadCount > 9 ? '9+' : unreadCount}
@@ -266,10 +245,10 @@ function Navbar() {
               {user && (
                 <button
                   onClick={() => navigate('/inventory')}
-                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition relative"
+                  className="p-2 rounded-lg hover:bg-gray-100 transition relative"
                   title="คลังของฉัน"
                 >
-                  <ShoppingCart className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  <ShoppingCart className="w-5 h-5 text-gray-600" />
                   {cartCount > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                       {cartCount > 9 ? '9+' : cartCount}
@@ -294,20 +273,20 @@ function Navbar() {
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                    className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-full hover:bg-gray-200 transition"
                   >
                     <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-white font-bold">
                       {user.username?.charAt(0).toUpperCase() || 'U'}
                     </div>
-                    <ChevronDown className={`w-4 h-4 text-gray-600 dark:text-gray-400 transition ${showUserMenu ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`w-4 h-4 text-gray-600 transition ${showUserMenu ? 'rotate-180' : ''}`} />
                   </button>
 
                   {/* Dropdown Menu */}
                   {showUserMenu && (
-                    <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border-2 border-red-200 dark:border-gray-700 overflow-hidden z-50">
-                      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                        <p className="font-bold text-gray-900 dark:text-white">{user.username}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
+                    <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border-2 border-red-200 overflow-hidden z-50">
+                      <div className="p-4 border-b border-gray-200">
+                        <p className="font-bold text-gray-900">{user.username}</p>
+                        <p className="text-sm text-gray-500">{user.email}</p>
                         {user.role === 'admin' && (
                           <span className="inline-block mt-2 bg-red-600 text-white text-xs px-2 py-1 rounded">Admin</span>
                         )}
@@ -315,36 +294,36 @@ function Navbar() {
                       <div className="py-2">
                         <button
                           onClick={() => { navigate('/profile'); setShowUserMenu(false); }}
-                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-gray-700 transition text-left"
+                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition text-left"
                         >
-                          <User className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                          <span className="text-gray-700 dark:text-gray-300">โปรไฟล์</span>
+                          <User className="w-5 h-5 text-gray-600" />
+                          <span className="text-gray-700">โปรไฟล์</span>
                         </button>
                         <button
                           onClick={() => { navigate('/orders'); setShowUserMenu(false); }}
-                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-gray-700 transition text-left"
+                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition text-left"
                         >
-                          <History className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                          <span className="text-gray-700 dark:text-gray-300">ประวัติการสั่งซื้อ</span>
+                          <History className="w-5 h-5 text-gray-600" />
+                          <span className="text-gray-700">ประวัติการสั่งซื้อ</span>
                         </button>
                         <button
                           onClick={() => { navigate('/inventory'); setShowUserMenu(false); }}
-                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-gray-700 transition text-left"
+                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition text-left"
                         >
-                          <Package className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                          <span className="text-gray-700 dark:text-gray-300">คลังของฉัน</span>
+                          <Package className="w-5 h-5 text-gray-600" />
+                          <span className="text-gray-700">คลังของฉัน</span>
                         </button>
                         <button
                           onClick={() => { navigate('/compare'); setShowUserMenu(false); }}
-                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-gray-700 transition text-left"
+                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition text-left"
                         >
-                          <GitCompare className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                          <span className="text-gray-700 dark:text-gray-300">เปรียบเทียบเกม</span>
+                          <GitCompare className="w-5 h-5 text-gray-600" />
+                          <span className="text-gray-700">เปรียบเทียบเกม</span>
                         </button>
                         {user.role === 'admin' && (
                           <button
                             onClick={() => { navigate('/admin'); setShowUserMenu(false); }}
-                            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-gray-700 transition text-left"
+                            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition text-left"
                           >
                             <ShieldAlert className="w-5 h-5 text-red-600" />
                             <span className="text-red-600 font-bold">Admin Panel</span>
@@ -352,7 +331,7 @@ function Navbar() {
                         )}
                         <button
                           onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-gray-700 transition text-left border-t border-gray-200 dark:border-gray-700 mt-2"
+                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition text-left border-t border-gray-200 mt-2"
                         >
                           <LogOut className="w-5 h-5 text-red-600" />
                           <span className="text-red-600 font-bold">ออกจากระบบ</span>
@@ -399,7 +378,7 @@ function Navbar() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-gray-200 dark:border-gray-700 py-4">
+          <div className="lg:hidden border-t border-gray-200 py-4">
             <div className="space-y-2">
               <MobileNavLink icon={<TrendingUp />} label="หน้าหลัก" onClick={() => { navigate('/'); setMobileMenuOpen(false); }} />
               <MobileNavLink icon={<CreditCard />} label="เติมเงิน" onClick={() => { navigate('/topup'); setMobileMenuOpen(false); }} />
@@ -419,7 +398,7 @@ function Navbar() {
                   placeholder="ค้นหาเกม..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-full border-2 border-transparent focus:border-red-500 focus:outline-none text-gray-900 dark:text-white"
+                  className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-full border-2 border-transparent focus:border-red-500 focus:outline-none text-gray-900"
                 />
               </div>
             </div>
@@ -438,7 +417,7 @@ function NavLink({ icon, label, onClick, highlight = false }) {
       className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition ${
         highlight
           ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white hover:from-yellow-500 hover:to-orange-600 animate-pulse'
-          : 'text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-gray-800'
+          : 'text-gray-700 hover:bg-red-50'
       }`}
     >
       {icon}
@@ -455,7 +434,7 @@ function MobileNavLink({ icon, label, onClick, highlight = false }) {
       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
         highlight
           ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white'
-          : 'text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-gray-800'
+          : 'text-gray-700 hover:bg-red-50'
       }`}
     >
       {icon}
