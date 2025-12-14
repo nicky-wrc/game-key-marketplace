@@ -61,10 +61,14 @@ function AllGames() {
 
   const fetchWishlist = async () => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      
       const res = await axiosInstance.get('/api/wishlist');
-      setWishlist(res.data.map(item => item.game_id));
+      setWishlist(res.data.map(item => parseInt(item.game_id)));
     } catch (err) {
       console.error('Failed to fetch wishlist', err);
+      // ไม่แสดง error ถ้ายังไม่ได้ login
     }
   };
 
