@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import { ArrowLeft, Gamepad2, Package } from 'lucide-react';
 import { GameCardSkeleton } from '../components/LoadingSkeleton';
 import StarRating from '../components/StarRating';
@@ -22,7 +22,7 @@ function Categories() {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/categories');
+      const res = await axiosInstance.get('/api/categories');
       setCategories(res.data);
     } catch (err) {
       console.error(err);
@@ -32,7 +32,7 @@ function Categories() {
   const fetchCategoryGames = async (categoryId) => {
     try {
       setLoading(true);
-      const res = await axios.get(`http://localhost:5000/api/categories/${categoryId}`);
+      const res = await axiosInstance.get(`/api/categories/${categoryId}`);
       setSelectedCategory(res.data.category);
       setGames(res.data.games);
     } catch (err) {

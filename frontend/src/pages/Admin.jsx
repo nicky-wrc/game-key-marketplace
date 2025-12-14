@@ -385,30 +385,30 @@ function Admin() {
 
         {/* Tabs */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
-          <button onClick={() => setActiveTab('dashboard')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'dashboard' ? 'bg-gradient-to-r from-indigo-600 to-indigo-800 text-white border-2 border-indigo-400' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
+          <button onClick={() => setActiveTab('dashboard')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'dashboard' ? 'bg-gradient-to-r from-red-600 to-red-800 text-white border-2 border-red-400 shadow-lg' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
             <BarChart3 size={20} /> Dashboard
           </button>
-          <button onClick={() => setActiveTab('manage-games')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-games' ? 'bg-gradient-to-r from-purple-600 to-purple-800 text-white border-2 border-purple-400' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
+          <button onClick={() => setActiveTab('manage-games')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-games' ? 'bg-gradient-to-r from-red-600 to-red-800 text-white border-2 border-red-400 shadow-lg' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
             <Eye size={20} /> จัดการเกม
           </button>
-          <button onClick={() => setActiveTab('add-game')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-game' ? 'bg-gradient-to-r from-red-600 to-red-800 text-white border-2 border-red-400' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
+          <button onClick={() => setActiveTab('add-game')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-game' ? 'bg-gradient-to-r from-red-600 to-red-800 text-white border-2 border-red-400 shadow-lg' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
             <Plus size={20} /> เพิ่มเกม
           </button>
-          <button onClick={() => setActiveTab('manage-stocks')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-stocks' ? 'bg-gradient-to-r from-green-600 to-green-800 text-white border-2 border-green-400' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
+          <button onClick={() => setActiveTab('manage-stocks')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-stocks' ? 'bg-gradient-to-r from-red-600 to-red-800 text-white border-2 border-red-400 shadow-lg' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
             <Database size={20} /> จัดการสต็อก
           </button>
-          <button onClick={() => setActiveTab('add-stock')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-stock' ? 'bg-gradient-to-r from-blue-600 to-blue-800 text-white border-2 border-blue-400' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
+          <button onClick={() => setActiveTab('add-stock')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-stock' ? 'bg-gradient-to-r from-red-600 to-red-800 text-white border-2 border-red-400 shadow-lg' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
             <Package size={20} /> เติมสต็อก
           </button>
-          <button onClick={() => setActiveTab('manage-coupons')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-coupons' ? 'bg-gradient-to-r from-yellow-600 to-yellow-800 text-white border-2 border-yellow-400' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
+          <button onClick={() => setActiveTab('manage-coupons')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-coupons' ? 'bg-gradient-to-r from-red-600 to-red-800 text-white border-2 border-red-400 shadow-lg' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
             <Ticket size={20} /> คูปอง
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          <button onClick={() => setActiveTab('manage-gacha')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-gacha' ? 'bg-gradient-to-r from-pink-600 to-pink-800 text-white border-2 border-pink-400' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
+          <button onClick={() => setActiveTab('manage-gacha')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-gacha' ? 'bg-gradient-to-r from-red-600 to-red-800 text-white border-2 border-red-400 shadow-lg' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
             <Gift size={20} /> จัดการ Gacha
           </button>
-          <button onClick={() => setActiveTab('add-gacha')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-gacha' ? 'bg-gradient-to-r from-rose-600 to-rose-800 text-white border-2 border-rose-400' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
+          <button onClick={() => setActiveTab('add-gacha')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-gacha' ? 'bg-gradient-to-r from-red-600 to-red-800 text-white border-2 border-red-400 shadow-lg' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
             <Plus size={20} /> เพิ่ม Gacha Box
           </button>
         </div>
