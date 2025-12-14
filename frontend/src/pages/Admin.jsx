@@ -1001,7 +1001,7 @@ function Admin() {
                 </label>
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">เปลี่ยนรูป (ถ้าต้องการ)</label>
+                <label className="block text-sm text-gray-700 mb-1 font-medium">เปลี่ยนรูป (ถ้าต้องการ)</label>
                 <input type="file" accept="image/*" className="w-full bg-white border border-red-200 p-2 rounded-lg text-sm text-gray-300" 
                   onChange={e => setEditingStock({...editingStock, newImageFile: e.target.files[0]})} />
               </div>
