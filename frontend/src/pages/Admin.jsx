@@ -683,7 +683,7 @@ function Admin() {
                   </label>
               </div>
               <div>
-                  <label className="block text-sm text-gray-400 mb-1">เลือกหมวดหมู่เกม</label>
+                  <label className="block text-sm text-gray-700 mb-1 font-medium">เลือกหมวดหมู่เกม</label>
                   <select required className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-red-500 outline-none cursor-pointer"
                     value={stockForm.game_id} onChange={e => setStockForm({...stockForm, game_id: e.target.value})}
                   >
@@ -696,7 +696,7 @@ function Admin() {
               {stockForm.is_public && (
                   <div className="space-y-4 p-4 bg-white/50 rounded-xl border border-red-500/30">
                       <div>
-                        <label className="block text-sm text-gray-400 mb-1">ชื่อสินค้า</label>
+                        <label className="block text-sm text-gray-700 mb-1 font-medium">ชื่อสินค้า</label>
                         <input required placeholder="ชื่อสินค้า..." className="w-full bg-white border-2 border-red-200 p-3 rounded-lg text-gray-900 outline-none focus:border-red-500"
                             value={stockForm.title} onChange={e => setStockForm({...stockForm, title: e.target.value})} />
                       </div>
@@ -717,12 +717,12 @@ function Admin() {
               )}
               <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm text-gray-400 mb-1">รหัสลับ / ID-Pass</label>
-                    <input required placeholder="User: pass" className="w-full bg-white border border-red-200 p-3 rounded-lg font-mono text-green-400 outline-none focus:border-red-500"
+                    <label className="block text-sm text-gray-700 mb-1 font-medium">รหัสลับ / ID-Pass</label>
+                    <input required placeholder="User: pass" className="w-full bg-white border-2 border-red-200 p-3 rounded-lg font-mono text-gray-900 outline-none focus:border-red-500"
                         value={stockForm.code} onChange={e => setStockForm({...stockForm, code: e.target.value})} />
                   </div>
                   <div>
-                    <label className="block text-sm text-gray-400 mb-1">ราคาขาย (บาท)</label>
+                    <label className="block text-sm text-gray-700 mb-1 font-medium">ราคาขาย (บาท)</label>
                     <input required type="number" placeholder="0.00" className="w-full bg-white border border-red-200 p-3 rounded-lg outline-none focus:border-red-500"
                         value={stockForm.price} onChange={e => setStockForm({...stockForm, price: e.target.value})} />
                   </div>
@@ -962,18 +962,18 @@ function Admin() {
             
             <form onSubmit={handleUpdateStock} className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-400 mb-1">รหัส</label>
-                <input required className="w-full bg-white border border-red-200 p-3 rounded-lg font-mono text-green-400 focus:border-green-500 outline-none" 
+                <label className="block text-sm text-gray-700 mb-1 font-medium">รหัส</label>
+                <input required className="w-full bg-white border-2 border-red-200 p-3 rounded-lg font-mono text-gray-900 focus:border-red-500 outline-none" 
                   value={editingStock.code} onChange={e => setEditingStock({...editingStock, code: e.target.value})} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">ราคา</label>
+                  <label className="block text-sm text-gray-700 mb-1 font-medium">ราคา</label>
                   <input required type="number" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-green-500 outline-none" 
                     value={editingStock.price} onChange={e => setEditingStock({...editingStock, price: e.target.value})} />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">สถานะ</label>
+                  <label className="block text-sm text-gray-700 mb-1 font-medium">สถานะ</label>
                   <select required className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-green-500 outline-none"
                     value={editingStock.status} onChange={e => setEditingStock({...editingStock, status: e.target.value})}>
                     <option value="available">Available</option>
@@ -982,12 +982,12 @@ function Admin() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">ชื่อสินค้า (ถ้ามี)</label>
+                <label className="block text-sm text-gray-700 mb-1 font-medium">ชื่อสินค้า (ถ้ามี)</label>
                 <input className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-green-500 outline-none" 
                   value={editingStock.title || ''} onChange={e => setEditingStock({...editingStock, title: e.target.value})} />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">รายละเอียด (ถ้ามี)</label>
+                <label className="block text-sm text-gray-700 mb-1 font-medium">รายละเอียด (ถ้ามี)</label>
                 <textarea className="w-full bg-white border border-red-200 p-3 rounded-lg h-20 focus:border-green-500 outline-none" 
                   value={editingStock.description || ''} onChange={e => setEditingStock({...editingStock, description: e.target.value})} />
               </div>
@@ -1007,7 +1007,7 @@ function Admin() {
               </div>
               <div className="flex gap-4">
                 <button type="button" onClick={() => setEditingStock(null)} className="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold">ยกเลิก</button>
-                <button type="submit" className="flex-1 bg-green-600 hover:bg-green-700 py-3 rounded-xl font-bold">บันทึก</button>
+                <button type="submit" className="flex-1 bg-red-600 hover:bg-red-700 py-3 rounded-xl font-bold text-white">บันทึก</button>
               </div>
             </form>
           </div>
@@ -1017,34 +1017,34 @@ function Admin() {
       {/* Modal แก้ไขคูปอง */}
       {editingCoupon && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setEditingCoupon(null)}>
-          <div className="bg-gray-800 rounded-2xl max-w-2xl w-full p-8 border-2 border-yellow-500/30" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-2xl max-w-2xl w-full p-8 border-2 border-red-500 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-yellow-400">แก้ไขคูปอง</h3>
-              <button onClick={() => setEditingCoupon(null)} className="text-gray-400 hover:text-white">
+              <h3 className="text-2xl font-bold text-red-600">แก้ไขคูปอง</h3>
+              <button onClick={() => setEditingCoupon(null)} className="text-gray-600 hover:text-red-600">
                 <X size={24} />
               </button>
             </div>
             
             <form onSubmit={handleUpdateCoupon} className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-400 mb-1">โค้ดคูปอง</label>
-                <input required className="w-full bg-white border border-red-200 p-3 rounded-lg font-mono text-yellow-400 focus:border-yellow-500 outline-none" 
+                <label className="block text-sm text-gray-700 mb-1 font-medium">โค้ดคูปอง</label>
+                <input required className="w-full bg-white border-2 border-red-200 p-3 rounded-lg font-mono text-gray-900 focus:border-red-500 outline-none" 
                   value={editingCoupon.code} onChange={e => setEditingCoupon({...editingCoupon, code: e.target.value.toUpperCase()})} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">ส่วนลด (บาท)</label>
-                  <input required type="number" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-yellow-500 outline-none" 
+                  <label className="block text-sm text-gray-700 mb-1 font-medium">ส่วนลด (บาท)</label>
+                  <input required type="number" className="w-full bg-white border-2 border-red-200 p-3 rounded-lg focus:border-red-500 outline-none text-gray-900" 
                     value={editingCoupon.discount_amount} onChange={e => setEditingCoupon({...editingCoupon, discount_amount: e.target.value})} />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">จำนวนครั้งที่ใช้ได้</label>
-                  <input required type="number" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-yellow-500 outline-none" 
+                  <label className="block text-sm text-gray-700 mb-1 font-medium">จำนวนครั้งที่ใช้ได้</label>
+                  <input required type="number" className="w-full bg-white border-2 border-red-200 p-3 rounded-lg focus:border-red-500 outline-none text-gray-900" 
                     value={editingCoupon.usage_limit} onChange={e => setEditingCoupon({...editingCoupon, usage_limit: e.target.value})} />
                 </div>
               </div>
-              <div className="bg-yellow-900/20 p-3 rounded-lg border border-yellow-500/30">
-                <p className="text-sm text-yellow-300">
+              <div className="bg-red-50 p-3 rounded-lg border-2 border-red-200">
+                <p className="text-sm text-gray-700">
                   <strong>ใช้แล้ว:</strong> {editingCoupon.used_count} / {editingCoupon.usage_limit} ครั้ง
                 </p>
               </div>
