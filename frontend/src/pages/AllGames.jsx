@@ -363,7 +363,7 @@ function AllGames() {
                             toggleWishlist(game.game_id);
                           }}
                           className={`absolute top-3 right-3 p-2 rounded-full transition ${
-                            wishlist.includes(game.game_id)
+                            wishlist.includes(parseInt(game.game_id))
                               ? 'bg-red-600 text-white'
                               : 'bg-white/80 text-gray-600 hover:bg-white'
                           }`}
