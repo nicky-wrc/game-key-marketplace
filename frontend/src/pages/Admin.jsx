@@ -1002,11 +1002,11 @@ function Admin() {
               </div>
               <div>
                 <label className="block text-sm text-gray-700 mb-1 font-medium">เปลี่ยนรูป (ถ้าต้องการ)</label>
-                <input type="file" accept="image/*" className="w-full bg-white border border-red-200 p-2 rounded-lg text-sm text-gray-300" 
+                <input type="file" accept="image/*" className="w-full bg-white border-2 border-red-200 p-2 rounded-lg text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer" 
                   onChange={e => setEditingStock({...editingStock, newImageFile: e.target.files[0]})} />
               </div>
               <div className="flex gap-4">
-                <button type="button" onClick={() => setEditingStock(null)} className="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold">ยกเลิก</button>
+                <button type="button" onClick={() => setEditingStock(null)} className="flex-1 bg-gray-300 hover:bg-gray-400 py-3 rounded-xl font-bold text-gray-900">ยกเลิก</button>
                 <button type="submit" className="flex-1 bg-red-600 hover:bg-red-700 py-3 rounded-xl font-bold text-white">บันทึก</button>
               </div>
             </form>
