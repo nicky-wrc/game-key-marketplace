@@ -8,9 +8,6 @@ import { GameCardSkeleton } from '../components/LoadingSkeleton';
 function Home() {
   const [games, setGames] = useState([]);
   const [filteredGames, setFilteredGames] = useState([]);
-  const [featuredGames, setFeaturedGames] = useState([]);
-  const [popularGames, setPopularGames] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [balance, setBalance] = useState(0);
@@ -20,67 +17,31 @@ function Home() {
 
   useEffect(() => {
     fetchGames();
-    fetchFeaturedGames();
-    fetchPopularGames();
-    fetchCategories();
     if (user) {
-      fetchUserBalance();
-      fetchWishlist();
+      fetchUserBalance(); 
     }
+    loadWishlist();
   }, []);
 
-  const fetchWishlist = async () => {
-    if (!user) return;
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-      const res = await axios.get('http://localhost:5000/api/wishlist', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      // แปลง array ของ game objects เป็น array ของ game_id
-      const wishlistIds = res.data.map(game => game.game_id);
-      setWishlist(wishlistIds);
-    } catch (err) {
-      console.error('Error fetching wishlist:', err);
+  const loadWishlist = () => {
+    const saved = localStorage.getItem('wishlist');
+    if (saved) {
+      setWishlist(JSON.parse(saved));
     }
   };
 
-  const toggleWishlist = async (gameId, e) => {
+  const toggleWishlist = (gameId, e) => {
     if (e) e.stopPropagation();
-    
-    if (!user) {
-      showToast('กรุณาเข้าสู่ระบบก่อน', 'warning');
-      navigate('/login');
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        showToast('กรุณาเข้าสู่ระบบก่อน', 'warning');
-        navigate('/login');
-        return;
-      }
-
-      const isInWishlist = wishlist.includes(gameId);
-      
-      // เรียก API เพื่อ toggle wishlist
-      const res = await axios.post(`http://localhost:5000/api/wishlist/toggle/${gameId}`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      // อัปเดต state ตาม response
-      if (res.data.inWishlist) {
-        setWishlist([...wishlist, gameId]);
-      } else {
-        setWishlist(wishlist.filter(id => id !== gameId));
-      }
-
-      showToast(res.data.message || (isInWishlist ? 'ลบออกจากรายการโปรดแล้ว' : 'เพิ่มในรายการโปรดแล้ว'), 
-        isInWishlist ? 'info' : 'success');
-    } catch (err) {
-      showToast(err.response?.data?.error || 'เกิดข้อผิดพลาด', 'error');
-    }
+    const isInWishlist = wishlist.includes(gameId);
+    const newWishlist = isInWishlist
+      ? wishlist.filter(id => id !== gameId)
+      : [...wishlist, gameId];
+    setWishlist(newWishlist);
+    localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+    showToast(
+      isInWishlist ? 'ลบออกจากรายการโปรดแล้ว' : 'เพิ่มในรายการโปรดแล้ว',
+      isInWishlist ? 'info' : 'success'
+    );
   };
 
   // ฟิลเตอร์เกมตาม search query
@@ -113,67 +74,13 @@ function Home() {
 
   const fetchGames = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/games?limit=20');
-      let gamesData = [];
-      // ตรวจสอบว่า response เป็น object ที่มี games property หรือเป็น array
-      if (res.data && Array.isArray(res.data)) {
-        gamesData = res.data;
-      } else if (res.data && res.data.games && Array.isArray(res.data.games)) {
-        gamesData = res.data.games;
-      }
-      // ลบเกมซ้ำโดยใช้ game_id เป็น key
-      const uniqueGames = gamesData.filter((game, index, self) => 
-        index === self.findIndex(g => g.game_id === game.game_id)
-      );
-      setGames(uniqueGames);
-      setFilteredGames(uniqueGames);
+      const res = await axios.get('http://localhost:5000/api/games');
+      setGames(res.data);
+      setFilteredGames(res.data);
     } catch (err) {
-      console.error('Error fetching games:', err);
-      setGames([]);
-      setFilteredGames([]);
+      console.error(err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchFeaturedGames = async () => {
-    try {
-      const res = await axios.get('http://localhost:5000/api/games/featured?limit=8');
-      const gamesData = Array.isArray(res.data) ? res.data : [];
-      // ลบเกมซ้ำ
-      const uniqueGames = gamesData.filter((game, index, self) => 
-        index === self.findIndex(g => g.game_id === game.game_id)
-      );
-      setFeaturedGames(uniqueGames);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const fetchPopularGames = async () => {
-    try {
-      const res = await axios.get('http://localhost:5000/api/games/popular?limit=8');
-      const gamesData = Array.isArray(res.data) ? res.data : [];
-      // ลบเกมซ้ำ
-      const uniqueGames = gamesData.filter((game, index, self) => 
-        index === self.findIndex(g => g.game_id === game.game_id)
-      );
-      setPopularGames(uniqueGames);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const res = await axios.get('http://localhost:5000/api/categories');
-      // ลบหมวดหมู่ซ้ำโดยใช้ category_id เป็น key
-      const uniqueCategories = res.data.filter((cat, index, self) => 
-        index === self.findIndex(c => c.category_id === cat.category_id)
-      );
-      setCategories(uniqueCategories.slice(0, 8));
-    } catch (err) {
-      console.error(err);
     }
   };
 
@@ -416,167 +323,7 @@ function Home() {
         </div>
       )}
 
-      {/* 5. Categories Section */}
-      {!searchQuery && categories.length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-              <h3 className="text-2xl font-bold text-gray-800 uppercase italic">
-                หมวดหมู่ <span className="text-red-600">เกม</span>
-              </h3>
-            </div>
-            <button
-              onClick={() => navigate('/categories')}
-              className="text-red-600 hover:text-red-700 font-bold text-sm"
-            >
-              ดูทั้งหมด →
-            </button>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
-            {categories.map((category) => (
-              <div
-                key={category.category_id}
-                onClick={() => navigate(`/categories/${category.category_id}`)}
-                className="bg-white rounded-xl p-4 shadow-md hover:shadow-xl transition cursor-pointer group border-2 border-transparent hover:border-red-500 text-center"
-              >
-                <div
-                  className="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center"
-                  style={{ backgroundColor: category.color || '#6366F1' }}
-                >
-                  <Gamepad2 className="w-6 h-6 text-white" />
-                </div>
-                <h4 className="font-bold text-sm text-gray-800 group-hover:text-red-600 transition">
-                  {category.name_th}
-                </h4>
-                <p className="text-xs text-gray-500 mt-1">{category.game_count || 0} เกม</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 6. Featured Games Section */}
-      {!searchQuery && featuredGames.length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-              <h3 className="text-2xl font-bold text-gray-800 uppercase italic">
-                เกม <span className="text-red-600">แนะนำ</span>
-              </h3>
-            </div>
-            <button
-              onClick={() => navigate('/games')}
-              className="text-red-600 hover:text-red-700 font-bold text-sm"
-            >
-              ดูทั้งหมด →
-            </button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {featuredGames.map((game) => (
-              <div
-                key={game.game_id}
-                onClick={() => navigate(`/games/${game.game_id}`)}
-                className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition duration-300 group border border-gray-100 cursor-pointer"
-              >
-                <div className="h-48 overflow-hidden relative">
-                  <img
-                    src={game.image_url}
-                    alt={game.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
-                  />
-                  <div className="absolute top-3 left-3 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm uppercase">
-                    FEATURED
-                  </div>
-                  <div className="absolute top-3 right-3 bg-black/80 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm uppercase">
-                    {game.platform}
-                  </div>
-                </div>
-                <div className="p-5">
-                  <h4 className="font-extrabold text-lg text-gray-800 truncate mb-1">{game.name}</h4>
-                  <p className="text-xs text-gray-500 mb-4 h-8 line-clamp-2">{game.description}</p>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      {game.original_price && (
-                        <p className="text-[10px] text-gray-400 line-through">
-                          ฿{Number(game.original_price).toFixed(0)}
-                        </p>
-                      )}
-                      <p className="text-xl font-black text-red-600">฿{Number(game.price).toLocaleString()}</p>
-                    </div>
-                    <button className="bg-red-600 text-white px-4 py-2 rounded-xl hover:bg-red-700 transition active:scale-95 shadow-lg text-sm font-bold">
-                      ดูเพิ่ม
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 7. Popular Games Section */}
-      {!searchQuery && popularGames.length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-              <h3 className="text-2xl font-bold text-gray-800 uppercase italic">
-                เกม <span className="text-red-600">ยอดนิยม</span>
-              </h3>
-            </div>
-            <button
-              onClick={() => navigate('/games')}
-              className="text-red-600 hover:text-red-700 font-bold text-sm"
-            >
-              ดูทั้งหมด →
-            </button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {popularGames.map((game) => (
-              <div
-                key={game.game_id}
-                onClick={() => navigate(`/games/${game.game_id}`)}
-                className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition duration-300 group border border-gray-100 cursor-pointer"
-              >
-                <div className="h-48 overflow-hidden relative">
-                  <img
-                    src={game.image_url}
-                    alt={game.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
-                  />
-                  <div className="absolute top-3 left-3 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm uppercase">
-                    HOT
-                  </div>
-                  <div className="absolute top-3 right-3 bg-black/80 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm uppercase">
-                    {game.platform}
-                  </div>
-                </div>
-                <div className="p-5">
-                  <h4 className="font-extrabold text-lg text-gray-800 truncate mb-1">{game.name}</h4>
-                  <p className="text-xs text-gray-500 mb-4 h-8 line-clamp-2">{game.description}</p>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      {game.original_price && (
-                        <p className="text-[10px] text-gray-400 line-through">
-                          ฿{Number(game.original_price).toFixed(0)}
-                        </p>
-                      )}
-                      <p className="text-xl font-black text-red-600">฿{Number(game.price).toLocaleString()}</p>
-                    </div>
-                    <button className="bg-red-600 text-white px-4 py-2 rounded-xl hover:bg-red-700 transition active:scale-95 shadow-lg text-sm font-bold">
-                      ดูเพิ่ม
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 8. Game List - แก้ไขให้กดไปหน้ารายละเอียดได้ */}
+      {/* 5. Game List - แก้ไขให้กดไปหน้ารายละเอียดได้ */}
       <main className="max-w-7xl mx-auto px-4 pb-20">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -585,7 +332,7 @@ function Home() {
               {searchQuery ? (
                 <>ผลการค้นหา <span className="text-red-600">"{searchQuery}"</span></>
               ) : (
-                <>สินค้า <span className="text-red-600">ทั้งหมด</span></>
+                <>สินค้า <span className="text-red-600">แนะนำ</span></>
               )}
             </h3>
           </div>

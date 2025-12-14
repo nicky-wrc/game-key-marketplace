@@ -9,9 +9,6 @@ const gachaRoutes = require('./routes/gachaRoutes');
 const transactionRoutes = require('./routes/transactionRoutes'); 
 const couponRoutes = require('./routes/couponRoutes');
 const adminRoutes = require('./routes/adminRoutes');
-const categoryRoutes = require('./routes/categoryRoutes');
-const reviewRoutes = require('./routes/reviewRoutes');
-const wishlistRoutes = require('./routes/wishlistRoutes');
 
 dotenv.config();
 
@@ -30,9 +27,6 @@ app.use('/api/gacha', gachaRoutes);
 app.use('/api/transactions', transactionRoutes); 
 app.use('/api/coupons', couponRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/reviews', reviewRoutes);
-app.use('/api/wishlist', wishlistRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get('/', (req, res) => {

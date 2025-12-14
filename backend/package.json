@@ -5,14 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
-    "start": "node server.js",
-    "migrate": "node migrate.js",
-    "alter": "node alter_tables.js",
-    "seed": "node seed.js",
-    "cleanup": "node cleanup_database.js",
-    "add-codes": "node add_more_codes.js",
-    "fix-images": "node fix_game_images.js",
-    "setup": "npm run migrate && npm run alter && npm run seed && npm run cleanup && npm run add-codes && npm run fix-images"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",

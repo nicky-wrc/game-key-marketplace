@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Plus, Database, ShieldAlert, Package, ArrowLeft, Edit2, Trash2, Eye, X, Ticket, BarChart3, Gift, Gamepad2, CreditCard, User, LogOut } from 'lucide-react';
+import { Plus, Database, ShieldAlert, Package, ArrowLeft, Edit2, Trash2, Eye, X, Ticket, BarChart3, Gift } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { showToast } from '../components/ToastContainer';
 
@@ -368,244 +368,101 @@ function Admin() {
     }
   };
 
-  const [balance, setBalance] = useState(0);
-  const user = JSON.parse(localStorage.getItem('user'));
-
-  useEffect(() => {
-    if (user) {
-      fetchUserBalance();
-    }
-  }, []);
-
-  const fetchUserBalance = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-      const res = await axios.get('http://localhost:5000/api/wallet/me', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setBalance(res.data.wallet_balance);
-    } catch (err) {
-      console.error("Failed to fetch balance", err);
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/login');
-  };
-
   return (
-    <div className="min-h-screen bg-gray-100 font-sans">
-      
-      {/* Top Bar */}
-      <div className="bg-red-800 text-white text-xs py-2 px-4 flex justify-between items-center">
-        <span>Admin Control Panel | ระบบจัดการร้านค้า</span>
-        <div className="flex gap-4">
-          <span>ยินดีต้อนรับ, {user?.username}</span>
-          <button onClick={handleLogout} className="hover:text-gray-300">ออกจากระบบ</button>
-        </div>
-      </div>
-
-      {/* Navbar */}
-      <nav className="bg-white shadow-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-          {/* Logo */}
-          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/')}>
-            <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-black rounded-xl flex items-center justify-center shadow-lg shadow-red-500/40 transform group-hover:rotate-12 transition duration-300">
-              <Gamepad2 className="w-7 h-7 text-white" />
-            </div>
-            <div className="flex flex-col">
-              <h1 className="text-2xl font-black tracking-tighter text-gray-900 italic leading-none">
-                NICKY<span className="text-red-600">KEY</span>
-              </h1>
-              <p className="text-[10px] font-bold text-gray-400 tracking-[0.25em] group-hover:text-red-600 transition duration-300">
-                ADMIN PANEL
-              </p>
-            </div>
-          </div>
-
-          {/* Right Icons */}
-          <div className="flex items-center gap-4">
-            {user && (
-              <div className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full border border-gray-200">
-                <CreditCard className="w-4 h-4 text-red-600" />
-                <span className="text-sm font-bold text-red-600">฿{Number(balance).toLocaleString()}</span>
-              </div>
-            )}
-            <button onClick={() => navigate('/')} className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-700 shadow flex items-center gap-2">
-              <ArrowLeft size={16} />
-              กลับหน้าร้าน
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-900 text-white p-6 font-sans">
+      <div className="max-w-7xl mx-auto">
         
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-            <h1 className="text-4xl font-black text-gray-800 uppercase italic flex items-center gap-3">
-              <ShieldAlert className="w-10 h-10 text-red-600" /> 
-              Admin <span className="text-red-600">Control Panel</span>
+        <div className="flex justify-between items-center mb-8 border-b border-gray-700 pb-4">
+            <h1 className="text-3xl font-bold flex items-center gap-3 text-red-500">
+              <ShieldAlert className="w-8 h-8" /> 
+              Admin Control Panel
             </h1>
-          </div>
-          <p className="text-gray-600 ml-6">จัดการระบบร้านค้า เกม สต็อก คูปอง และ Gacha Boxes</p>
+            <button onClick={() => navigate('/')} className="flex items-center gap-2 text-gray-400 hover:text-white transition bg-gray-800 px-4 py-2 rounded-lg hover:bg-gray-700">
+                <ArrowLeft size={20} /> กลับหน้าร้าน
+            </button>
         </div>
 
         {/* Tabs */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
-          <button 
-            onClick={() => setActiveTab('dashboard')} 
-            className={`py-4 rounded-xl font-bold flex flex-col justify-center items-center gap-2 transition text-sm shadow-lg border-2 ${
-              activeTab === 'dashboard' 
-                ? 'bg-gradient-to-br from-red-600 to-red-800 text-white border-red-400 shadow-red-500/30' 
-                : 'bg-white text-gray-700 border-gray-200 hover:border-red-300 hover:bg-red-50'
-            }`}
-          >
-            <BarChart3 size={24} /> 
-            <span>Dashboard</span>
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
+          <button onClick={() => setActiveTab('dashboard')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'dashboard' ? 'bg-gradient-to-r from-indigo-600 to-indigo-800 text-white border-2 border-indigo-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+            <BarChart3 size={20} /> Dashboard
           </button>
-          <button 
-            onClick={() => setActiveTab('manage-games')} 
-            className={`py-4 rounded-xl font-bold flex flex-col justify-center items-center gap-2 transition text-sm shadow-lg border-2 ${
-              activeTab === 'manage-games' 
-                ? 'bg-gradient-to-br from-red-600 to-red-800 text-white border-red-400 shadow-red-500/30' 
-                : 'bg-white text-gray-700 border-gray-200 hover:border-red-300 hover:bg-red-50'
-            }`}
-          >
-            <Eye size={24} /> 
-            <span>จัดการเกม</span>
+          <button onClick={() => setActiveTab('manage-games')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-games' ? 'bg-gradient-to-r from-purple-600 to-purple-800 text-white border-2 border-purple-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+            <Eye size={20} /> จัดการเกม
           </button>
-          <button 
-            onClick={() => setActiveTab('add-game')} 
-            className={`py-4 rounded-xl font-bold flex flex-col justify-center items-center gap-2 transition text-sm shadow-lg border-2 ${
-              activeTab === 'add-game' 
-                ? 'bg-gradient-to-br from-red-600 to-red-800 text-white border-red-400 shadow-red-500/30' 
-                : 'bg-white text-gray-700 border-gray-200 hover:border-red-300 hover:bg-red-50'
-            }`}
-          >
-            <Plus size={24} /> 
-            <span>เพิ่มเกม</span>
+          <button onClick={() => setActiveTab('add-game')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-game' ? 'bg-gradient-to-r from-red-600 to-red-800 text-white border-2 border-red-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+            <Plus size={20} /> เพิ่มเกม
           </button>
-          <button 
-            onClick={() => setActiveTab('manage-stocks')} 
-            className={`py-4 rounded-xl font-bold flex flex-col justify-center items-center gap-2 transition text-sm shadow-lg border-2 ${
-              activeTab === 'manage-stocks' 
-                ? 'bg-gradient-to-br from-red-600 to-red-800 text-white border-red-400 shadow-red-500/30' 
-                : 'bg-white text-gray-700 border-gray-200 hover:border-red-300 hover:bg-red-50'
-            }`}
-          >
-            <Database size={24} /> 
-            <span>จัดการสต็อก</span>
+          <button onClick={() => setActiveTab('manage-stocks')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-stocks' ? 'bg-gradient-to-r from-green-600 to-green-800 text-white border-2 border-green-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+            <Database size={20} /> จัดการสต็อก
           </button>
-          <button 
-            onClick={() => setActiveTab('add-stock')} 
-            className={`py-4 rounded-xl font-bold flex flex-col justify-center items-center gap-2 transition text-sm shadow-lg border-2 ${
-              activeTab === 'add-stock' 
-                ? 'bg-gradient-to-br from-red-600 to-red-800 text-white border-red-400 shadow-red-500/30' 
-                : 'bg-white text-gray-700 border-gray-200 hover:border-red-300 hover:bg-red-50'
-            }`}
-          >
-            <Package size={24} /> 
-            <span>เติมสต็อก</span>
+          <button onClick={() => setActiveTab('add-stock')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-stock' ? 'bg-gradient-to-r from-blue-600 to-blue-800 text-white border-2 border-blue-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+            <Package size={20} /> เติมสต็อก
           </button>
-          <button 
-            onClick={() => setActiveTab('manage-coupons')} 
-            className={`py-4 rounded-xl font-bold flex flex-col justify-center items-center gap-2 transition text-sm shadow-lg border-2 ${
-              activeTab === 'manage-coupons' 
-                ? 'bg-gradient-to-br from-red-600 to-red-800 text-white border-red-400 shadow-red-500/30' 
-                : 'bg-white text-gray-700 border-gray-200 hover:border-red-300 hover:bg-red-50'
-            }`}
-          >
-            <Ticket size={24} /> 
-            <span>คูปอง</span>
+          <button onClick={() => setActiveTab('manage-coupons')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-coupons' ? 'bg-gradient-to-r from-yellow-600 to-yellow-800 text-white border-2 border-yellow-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+            <Ticket size={20} /> คูปอง
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          <button 
-            onClick={() => setActiveTab('manage-gacha')} 
-            className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg border-2 ${
-              activeTab === 'manage-gacha' 
-                ? 'bg-gradient-to-br from-red-600 to-red-800 text-white border-red-400 shadow-red-500/30' 
-                : 'bg-white text-gray-700 border-gray-200 hover:border-red-300 hover:bg-red-50'
-            }`}
-          >
-            <Gift size={24} /> 
-            <span>จัดการ Gacha</span>
+          <button onClick={() => setActiveTab('manage-gacha')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-gacha' ? 'bg-gradient-to-r from-pink-600 to-pink-800 text-white border-2 border-pink-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+            <Gift size={20} /> จัดการ Gacha
           </button>
-          <button 
-            onClick={() => setActiveTab('add-gacha')} 
-            className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg border-2 ${
-              activeTab === 'add-gacha' 
-                ? 'bg-gradient-to-br from-red-600 to-red-800 text-white border-red-400 shadow-red-500/30' 
-                : 'bg-white text-gray-700 border-gray-200 hover:border-red-300 hover:bg-red-50'
-            }`}
-          >
-            <Plus size={24} /> 
-            <span>เพิ่ม Gacha Box</span>
+          <button onClick={() => setActiveTab('add-gacha')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-gacha' ? 'bg-gradient-to-r from-rose-600 to-rose-800 text-white border-2 border-rose-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+            <Plus size={20} /> เพิ่ม Gacha Box
           </button>
         </div>
 
         {/* Content */}
-        <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
+        <div className="bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-700">
           {/* TAB: Dashboard */}
           {activeTab === 'dashboard' && (
             <div>
-              <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-3">
-                <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-                Dashboard & สถิติ
-              </h2>
+              <h2 className="text-2xl font-bold mb-6 text-indigo-400 border-l-4 border-indigo-500 pl-4">Dashboard & สถิติ</h2>
               
               {!dashboardStats ? (
-                <div className="text-center py-20">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-                  <p className="text-gray-500">กำลังโหลดข้อมูล...</p>
-                </div>
+                <p className="text-gray-400 text-center py-10">กำลังโหลดข้อมูล...</p>
               ) : (
                 <>
                   {/* Overview Cards */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-gradient-to-br from-red-600 to-red-800 p-6 rounded-xl shadow-lg text-white border-2 border-red-400">
-                      <div className="text-red-100 text-sm mb-2 font-bold">ยอดขายรวม</div>
-                      <div className="text-3xl font-black">฿{Number(dashboardStats.overview.totalSales).toLocaleString()}</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div className="bg-gradient-to-br from-green-600 to-green-800 p-6 rounded-xl shadow-lg">
+                      <div className="text-gray-200 text-sm mb-2">ยอดขายรวม</div>
+                      <div className="text-3xl font-bold text-white">฿{Number(dashboardStats.overview.totalSales).toLocaleString()}</div>
                     </div>
-                    <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-6 rounded-xl shadow-lg text-white border-2 border-blue-400">
-                      <div className="text-blue-100 text-sm mb-2 font-bold">จำนวนผู้ใช้</div>
-                      <div className="text-3xl font-black">{dashboardStats.overview.totalUsers.toLocaleString()}</div>
+                    <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-6 rounded-xl shadow-lg">
+                      <div className="text-gray-200 text-sm mb-2">จำนวนผู้ใช้</div>
+                      <div className="text-3xl font-bold text-white">{dashboardStats.overview.totalUsers.toLocaleString()}</div>
                     </div>
-                    <div className="bg-gradient-to-br from-purple-600 to-purple-800 p-6 rounded-xl shadow-lg text-white border-2 border-purple-400">
-                      <div className="text-purple-100 text-sm mb-2 font-bold">จำนวนเกม</div>
-                      <div className="text-3xl font-black">{dashboardStats.overview.totalGames.toLocaleString()}</div>
+                    <div className="bg-gradient-to-br from-purple-600 to-purple-800 p-6 rounded-xl shadow-lg">
+                      <div className="text-gray-200 text-sm mb-2">จำนวนเกม</div>
+                      <div className="text-3xl font-bold text-white">{dashboardStats.overview.totalGames.toLocaleString()}</div>
                     </div>
-                    <div className="bg-gradient-to-br from-yellow-600 to-yellow-800 p-6 rounded-xl shadow-lg text-white border-2 border-yellow-400">
-                      <div className="text-yellow-100 text-sm mb-2 font-bold">การซื้อทั้งหมด</div>
-                      <div className="text-3xl font-black">{dashboardStats.overview.totalTransactions.toLocaleString()}</div>
+                    <div className="bg-gradient-to-br from-yellow-600 to-yellow-800 p-6 rounded-xl shadow-lg">
+                      <div className="text-gray-200 text-sm mb-2">การซื้อทั้งหมด</div>
+                      <div className="text-3xl font-bold text-white">{dashboardStats.overview.totalTransactions.toLocaleString()}</div>
                     </div>
                   </div>
 
                   {/* Stats Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    <div className="bg-gray-50 p-6 rounded-xl border-2 border-gray-200 hover:border-red-300 transition">
-                      <div className="text-gray-600 text-sm mb-2 font-bold">สต็อกทั้งหมด</div>
-                      <div className="text-2xl font-black text-gray-800">{dashboardStats.overview.totalStocks.toLocaleString()}</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                    <div className="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                      <div className="text-gray-400 text-sm mb-2">สต็อกทั้งหมด</div>
+                      <div className="text-2xl font-bold text-white">{dashboardStats.overview.totalStocks.toLocaleString()}</div>
                       <div className="text-xs text-gray-500 mt-2">
-                        ขายได้: <span className="text-green-600 font-bold">{dashboardStats.overview.soldStocks}</span> | คงเหลือ: <span className="text-blue-600 font-bold">{dashboardStats.overview.availableStocks}</span>
+                        ขายได้: {dashboardStats.overview.soldStocks} | คงเหลือ: {dashboardStats.overview.availableStocks}
                       </div>
                     </div>
-                    <div className="bg-gray-50 p-6 rounded-xl border-2 border-gray-200 hover:border-red-300 transition">
-                      <div className="text-gray-600 text-sm mb-2 font-bold">คูปองทั้งหมด</div>
-                      <div className="text-2xl font-black text-gray-800">{dashboardStats.overview.totalCoupons.toLocaleString()}</div>
+                    <div className="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                      <div className="text-gray-400 text-sm mb-2">คูปองทั้งหมด</div>
+                      <div className="text-2xl font-bold text-white">{dashboardStats.overview.totalCoupons.toLocaleString()}</div>
                       <div className="text-xs text-gray-500 mt-2">
-                        ใช้แล้ว: <span className="text-red-600 font-bold">{dashboardStats.overview.usedCoupons}</span> | ใช้งานได้: <span className="text-green-600 font-bold">{dashboardStats.overview.totalCoupons - dashboardStats.overview.usedCoupons}</span>
+                        ใช้แล้ว: {dashboardStats.overview.usedCoupons} | ใช้งานได้: {dashboardStats.overview.totalCoupons - dashboardStats.overview.usedCoupons}
                       </div>
                     </div>
-                    <div className="bg-gray-50 p-6 rounded-xl border-2 border-gray-200 hover:border-red-300 transition">
-                      <div className="text-gray-600 text-sm mb-2 font-bold">อัตราการขาย</div>
-                      <div className="text-2xl font-black text-red-600">
+                    <div className="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                      <div className="text-gray-400 text-sm mb-2">อัตราการขาย</div>
+                      <div className="text-2xl font-bold text-white">
                         {dashboardStats.overview.totalStocks > 0 
                           ? ((dashboardStats.overview.soldStocks / dashboardStats.overview.totalStocks) * 100).toFixed(1)
                           : 0}%
@@ -617,34 +474,28 @@ function Admin() {
                   </div>
 
                   {/* Top Games */}
-                  <div className="bg-gray-50 p-6 rounded-xl border-2 border-gray-200 mb-8">
-                    <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center gap-2">
-                      <div className="w-1 h-6 bg-red-600 rounded-full"></div>
-                      🏆 เกมที่ขายดีที่สุด (Top 5)
-                    </h3>
+                  <div className="bg-gray-900 p-6 rounded-xl border border-gray-700 mb-8">
+                    <h3 className="text-xl font-bold mb-4 text-purple-400">🏆 เกมที่ขายดีที่สุด (Top 5)</h3>
                     {dashboardStats.topGames.length === 0 ? (
-                      <p className="text-gray-500 text-center py-8">ยังไม่มีข้อมูลการขาย</p>
+                      <p className="text-gray-400">ยังไม่มีข้อมูลการขาย</p>
                     ) : (
                       <div className="space-y-3">
                         {dashboardStats.topGames.map((game, index) => (
-                          <div key={game.game_id} className="flex items-center justify-between bg-white p-4 rounded-lg border border-gray-200 hover:border-red-300 transition shadow-sm">
+                          <div key={game.game_id} className="flex items-center justify-between bg-gray-800 p-4 rounded-lg">
                             <div className="flex items-center gap-4">
-                              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-white shadow-lg ${
-                                index === 0 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' : 
-                                index === 1 ? 'bg-gradient-to-br from-gray-400 to-gray-600' : 
-                                index === 2 ? 'bg-gradient-to-br from-orange-400 to-orange-600' : 
-                                'bg-gradient-to-br from-gray-500 to-gray-700'
+                              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white ${
+                                index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : index === 2 ? 'bg-orange-600' : 'bg-gray-700'
                               }`}>
                                 {index + 1}
                               </div>
                               <div>
-                                <div className="font-bold text-gray-800">{game.name}</div>
-                                <div className="text-sm text-gray-500">{game.platform}</div>
+                                <div className="font-bold text-white">{game.name}</div>
+                                <div className="text-sm text-gray-400">{game.platform}</div>
                               </div>
                             </div>
                             <div className="text-right">
-                              <div className="text-green-600 font-black text-lg">฿{Number(game.revenue).toLocaleString()}</div>
-                              <div className="text-xs text-gray-500">{game.sales_count} ครั้ง</div>
+                              <div className="text-green-400 font-bold">฿{Number(game.revenue).toLocaleString()}</div>
+                              <div className="text-xs text-gray-400">{game.sales_count} ครั้ง</div>
                             </div>
                           </div>
                         ))}
@@ -653,22 +504,19 @@ function Admin() {
                   </div>
 
                   {/* Daily Revenue */}
-                  <div className="bg-gray-50 p-6 rounded-xl border-2 border-gray-200">
-                    <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center gap-2">
-                      <div className="w-1 h-6 bg-red-600 rounded-full"></div>
-                      📊 รายได้รายวัน (7 วันล่าสุด)
-                    </h3>
+                  <div className="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                    <h3 className="text-xl font-bold mb-4 text-blue-400">📊 รายได้รายวัน (7 วันล่าสุด)</h3>
                     {dashboardStats.dailyRevenue.length === 0 ? (
-                      <p className="text-gray-500 text-center py-8">ยังไม่มีข้อมูล</p>
+                      <p className="text-gray-400">ยังไม่มีข้อมูล</p>
                     ) : (
                       <div className="space-y-3">
                         {dashboardStats.dailyRevenue.map((day, index) => (
-                          <div key={index} className="flex items-center justify-between bg-white p-4 rounded-lg border border-gray-200 hover:border-red-300 transition shadow-sm">
+                          <div key={index} className="flex items-center justify-between bg-gray-800 p-4 rounded-lg">
                             <div>
-                              <div className="font-bold text-gray-800">{new Date(day.date).toLocaleDateString('th-TH')}</div>
-                              <div className="text-sm text-gray-500">{day.transaction_count} รายการ</div>
+                              <div className="font-bold text-white">{new Date(day.date).toLocaleDateString('th-TH')}</div>
+                              <div className="text-sm text-gray-400">{day.transaction_count} รายการ</div>
                             </div>
-                            <div className="text-green-600 font-black text-lg">฿{Number(day.revenue).toLocaleString()}</div>
+                            <div className="text-green-400 font-bold text-lg">฿{Number(day.revenue).toLocaleString()}</div>
                           </div>
                         ))}
                       </div>
@@ -682,44 +530,38 @@ function Admin() {
           {/* TAB: จัดการเกม */}
           {activeTab === 'manage-games' && (
             <div>
-              <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-3">
-                <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-                จัดการเกมทั้งหมด
-              </h2>
+              <h2 className="text-2xl font-bold mb-6 text-purple-400 border-l-4 border-purple-500 pl-4">จัดการเกมทั้งหมด</h2>
               
               {games.length === 0 ? (
-                <div className="text-center py-20 bg-gray-50 rounded-xl border-2 border-gray-200">
-                  <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 text-lg">ยังไม่มีเกมในระบบ</p>
-                </div>
+                <p className="text-gray-400 text-center py-10">ยังไม่มีเกมในระบบ</p>
               ) : (
-                <div className="overflow-x-auto bg-white rounded-xl border border-gray-200 shadow-sm">
+                <div className="overflow-x-auto">
                   <table className="w-full text-left">
-                    <thead className="bg-red-600 text-white text-sm">
+                    <thead className="bg-purple-900/30 text-purple-300 text-sm">
                       <tr>
-                        <th className="p-4">รูป</th>
-                        <th className="p-4">ชื่อเกม</th>
-                        <th className="p-4">แพลตฟอร์ม</th>
-                        <th className="p-4">ราคา</th>
-                        <th className="p-4 text-center">จัดการ</th>
+                        <th className="p-3">รูป</th>
+                        <th className="p-3">ชื่อเกม</th>
+                        <th className="p-3">แพลตฟอร์ม</th>
+                        <th className="p-3">ราคา</th>
+                        <th className="p-3 text-center">จัดการ</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody className="divide-y divide-gray-700">
                       {games.map((game) => (
-                        <tr key={game.game_id} className="hover:bg-red-50 transition">
-                          <td className="p-4">
-                            <img src={game.image_url} alt={game.name} className="w-16 h-16 object-cover rounded-lg border border-gray-200" />
+                        <tr key={game.game_id} className="hover:bg-gray-700/30">
+                          <td className="p-3">
+                            <img src={game.image_url} alt={game.name} className="w-16 h-16 object-cover rounded-lg" />
                           </td>
-                          <td className="p-4 font-bold text-gray-800">{game.name}</td>
-                          <td className="p-4 text-gray-600 text-sm">{game.platform}</td>
-                          <td className="p-4 text-red-600 font-black">฿{Number(game.price).toLocaleString()}</td>
-                          <td className="p-4 text-center">
+                          <td className="p-3 font-bold text-white">{game.name}</td>
+                          <td className="p-3 text-gray-400 text-sm">{game.platform}</td>
+                          <td className="p-3 text-green-400 font-bold">฿{Number(game.price).toLocaleString()}</td>
+                          <td className="p-3 text-center">
                             <div className="flex gap-2 justify-center">
-                              <button onClick={() => setEditingGame(game)} className="bg-blue-600 hover:bg-blue-700 p-2 rounded-lg transition shadow-sm" title="แก้ไข">
-                                <Edit2 size={16} className="text-white" />
+                              <button onClick={() => setEditingGame(game)} className="bg-blue-600 hover:bg-blue-700 p-2 rounded-lg transition" title="แก้ไข">
+                                <Edit2 size={16} />
                               </button>
-                              <button onClick={() => handleDeleteGame(game.game_id, game.name)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition shadow-sm" title="ลบ">
-                                <Trash2 size={16} className="text-white" />
+                              <button onClick={() => handleDeleteGame(game.game_id, game.name)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="ลบ">
+                                <Trash2 size={16} />
                               </button>
                             </div>
                           </td>
@@ -735,102 +577,85 @@ function Admin() {
           {/* TAB: เพิ่มเกม */}
           {activeTab === 'add-game' && (
             <form onSubmit={handleAddGame} className="space-y-6">
-              <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-3">
-                <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-                เพิ่มเกมใหม่
-              </h2>
+              <h2 className="text-2xl font-bold mb-6 text-red-400 border-l-4 border-red-500 pl-4">เพิ่มเกมใหม่</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label className="block text-sm text-gray-700 mb-2 font-bold">ชื่อเกม</label>
-                    <input required placeholder="Ex. Valorant" className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none transition text-gray-800" 
+                    <label className="block text-sm text-gray-400 mb-1">ชื่อเกม</label>
+                    <input required placeholder="Ex. Valorant" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-red-500 outline-none transition" 
                         value={gameForm.name} onChange={e => setGameForm({...gameForm, name: e.target.value})} />
                 </div>
                 <div>
-                    <label className="block text-sm text-gray-700 mb-2 font-bold">แพลตฟอร์ม</label>
-                    <input required placeholder="Ex. Steam" className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none transition text-gray-800" 
+                    <label className="block text-sm text-gray-400 mb-1">แพลตฟอร์ม</label>
+                    <input required placeholder="Ex. Steam" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-red-500 outline-none transition" 
                         value={gameForm.platform} onChange={e => setGameForm({...gameForm, platform: e.target.value})} />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label className="block text-sm text-gray-700 mb-2 font-bold">ราคาขาย (บาท)</label>
-                    <input required type="number" placeholder="0.00" className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none transition text-gray-800" 
+                    <label className="block text-sm text-gray-400 mb-1">ราคาขาย (บาท)</label>
+                    <input required type="number" placeholder="0.00" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-red-500 outline-none transition" 
                         value={gameForm.price} onChange={e => setGameForm({...gameForm, price: e.target.value})} />
                 </div>
                 <div>
-                    <label className="block text-sm text-gray-700 mb-2 font-bold">อัปโหลดรูปปกเกม</label>
-                    <input type="file" accept="image/*" className="w-full bg-gray-50 border-2 border-gray-300 p-2 rounded-lg focus:border-red-500 text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer transition" 
+                    <label className="block text-sm text-gray-400 mb-1">อัปโหลดรูปปกเกม</label>
+                    <input type="file" accept="image/*" className="w-full bg-gray-900 border border-gray-600 p-2 rounded-lg focus:border-red-500 text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer" 
                         onChange={e => setGameForm({...gameForm, imageFile: e.target.files[0]})} />
                 </div>
               </div>
               <div>
-                  <label className="block text-sm text-gray-700 mb-2 font-bold">รายละเอียดเกม</label>
-                  <textarea required placeholder="คำอธิบายเกม..." className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg h-32 focus:border-red-500 outline-none transition text-gray-800" 
+                  <label className="block text-sm text-gray-400 mb-1">รายละเอียดเกม</label>
+                  <textarea required placeholder="คำอธิบายเกม..." className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg h-32 focus:border-red-500 outline-none transition" 
                     value={gameForm.description} onChange={e => setGameForm({...gameForm, description: e.target.value})} />
               </div>
-              <button type="submit" className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white py-4 rounded-xl font-black text-lg shadow-lg hover:shadow-red-500/30 transition transform hover:-translate-y-1 border-2 border-red-500">+ บันทึกเกมลงหน้าร้าน</button>
+              <button type="submit" className="w-full bg-red-600 hover:bg-red-700 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-red-500/30 transition transform hover:-translate-y-1">+ บันทึกเกมลงหน้าร้าน</button>
             </form>
           )}
 
           {/* TAB: จัดการสต็อก */}
           {activeTab === 'manage-stocks' && (
             <div>
-              <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-3">
-                <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-                จัดการสต็อกทั้งหมด
-              </h2>
+              <h2 className="text-2xl font-bold mb-6 text-green-400 border-l-4 border-green-500 pl-4">จัดการสต็อกทั้งหมด</h2>
               
               {stocks.length === 0 ? (
-                <div className="text-center py-20 bg-gray-50 rounded-xl border-2 border-gray-200">
-                  <Database className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 text-lg">ยังไม่มีสต็อกในระบบ</p>
-                </div>
+                <p className="text-gray-400 text-center py-10">ยังไม่มีสต็อกในระบบ</p>
               ) : (
-                <div className="overflow-x-auto bg-white rounded-xl border border-gray-200 shadow-sm">
+                <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-red-600 text-white">
+                    <thead className="bg-green-900/30 text-green-300">
                       <tr>
-                        <th className="p-4">ID</th>
-                        <th className="p-4">เกม</th>
-                        <th className="p-4">รหัส</th>
-                        <th className="p-4">ราคา</th>
-                        <th className="p-4">สถานะ</th>
-                        <th className="p-4">ประเภท</th>
-                        <th className="p-4 text-center">จัดการ</th>
+                        <th className="p-3">ID</th>
+                        <th className="p-3">เกม</th>
+                        <th className="p-3">รหัส</th>
+                        <th className="p-3">ราคา</th>
+                        <th className="p-3">สถานะ</th>
+                        <th className="p-3">ประเภท</th>
+                        <th className="p-3 text-center">จัดการ</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody className="divide-y divide-gray-700">
                       {stocks.map((stock) => (
-                        <tr key={stock.code_id} className="hover:bg-red-50 transition">
-                          <td className="p-4 text-gray-500 font-mono">#{stock.code_id}</td>
-                          <td className="p-4 font-bold text-gray-800">{stock.game_name}</td>
-                          <td className="p-4 font-mono text-xs text-green-600 bg-green-50 px-2 py-1 rounded">{stock.code.substring(0, 15)}...</td>
-                          <td className="p-4 text-red-600 font-black">฿{Number(stock.price).toLocaleString()}</td>
-                          <td className="p-4">
-                            <span className={`text-xs px-3 py-1 rounded-full font-bold ${
-                              stock.status === 'available' 
-                                ? 'bg-green-100 text-green-700 border border-green-300' 
-                                : 'bg-red-100 text-red-700 border border-red-300'
-                            }`}>
-                              {stock.status === 'available' ? 'พร้อมขาย' : 'ขายแล้ว'}
+                        <tr key={stock.code_id} className="hover:bg-gray-700/30">
+                          <td className="p-3 text-gray-400">#{stock.code_id}</td>
+                          <td className="p-3 font-medium">{stock.game_name}</td>
+                          <td className="p-3 font-mono text-xs text-green-400">{stock.code.substring(0, 15)}...</td>
+                          <td className="p-3 text-yellow-400 font-bold">฿{Number(stock.price).toLocaleString()}</td>
+                          <td className="p-3">
+                            <span className={`text-xs px-2 py-1 rounded-full ${stock.status === 'available' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                              {stock.status}
                             </span>
                           </td>
-                          <td className="p-4">
-                            <span className={`text-xs px-3 py-1 rounded-full font-bold ${
-                              stock.is_public 
-                                ? 'bg-blue-100 text-blue-700 border border-blue-300' 
-                                : 'bg-gray-100 text-gray-700 border border-gray-300'
-                            }`}>
+                          <td className="p-3">
+                            <span className={`text-xs px-2 py-1 rounded-full ${stock.is_public ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-500/20 text-gray-400'}`}>
                               {stock.is_public ? 'ขายแยก' : 'สุ่ม'}
                             </span>
                           </td>
-                          <td className="p-4 text-center">
+                          <td className="p-3 text-center">
                             <div className="flex gap-2 justify-center">
-                              <button onClick={() => setEditingStock(stock)} className="bg-blue-600 hover:bg-blue-700 p-2 rounded-lg transition shadow-sm" title="แก้ไข">
-                                <Edit2 size={14} className="text-white" />
+                              <button onClick={() => setEditingStock(stock)} className="bg-blue-600 hover:bg-blue-700 p-2 rounded-lg transition" title="แก้ไข">
+                                <Edit2 size={14} />
                               </button>
-                              <button onClick={() => handleDeleteStock(stock.code_id)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition shadow-sm" title="ลบ">
-                                <Trash2 size={14} className="text-white" />
+                              <button onClick={() => handleDeleteStock(stock.code_id)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="ลบ">
+                                <Trash2 size={14} />
                               </button>
                             </div>
                           </td>
@@ -846,23 +671,20 @@ function Admin() {
           {/* TAB: เติมสต็อก */}
           {activeTab === 'add-stock' && (
             <form onSubmit={handleAddStock} className="space-y-6">
-              <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-3">
-                <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-                เติมสต็อกสินค้า
-              </h2>
+              <h2 className="text-2xl font-bold mb-6 text-blue-400 border-l-4 border-blue-500 pl-4">เติมสต็อกสินค้า</h2>
               
-              <div className="flex items-center gap-3 mb-4 bg-red-50 p-4 rounded-xl border-2 border-red-200">
-                  <input type="checkbox" id="is_public" className="w-5 h-5 accent-red-600 cursor-pointer"
+              <div className="flex items-center gap-2 mb-4 bg-gray-900 p-3 rounded-lg border border-gray-600">
+                  <input type="checkbox" id="is_public" className="w-5 h-5 accent-blue-500 cursor-pointer"
                     checked={stockForm.is_public}
                     onChange={e => setStockForm({...stockForm, is_public: e.target.checked})}
                   />
-                  <label htmlFor="is_public" className="text-gray-800 font-bold cursor-pointer">
+                  <label htmlFor="is_public" className="text-white font-bold cursor-pointer">
                       นี่คือการขายไอดีแยกชิ้น?
                   </label>
               </div>
               <div>
-                  <label className="block text-sm text-gray-700 mb-2 font-bold">เลือกเกม</label>
-                  <select required className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none cursor-pointer text-gray-800"
+                  <label className="block text-sm text-gray-400 mb-1">เลือกหมวดหมู่เกม</label>
+                  <select required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-blue-500 outline-none cursor-pointer"
                     value={stockForm.game_id} onChange={e => setStockForm({...stockForm, game_id: e.target.value})}
                   >
                     <option value="">-- กรุณาเลือกเกม --</option>
@@ -872,41 +694,41 @@ function Admin() {
                   </select>
               </div>
               {stockForm.is_public && (
-                  <div className="space-y-4 p-6 bg-red-50 rounded-xl border-2 border-red-200">
+                  <div className="space-y-4 p-4 bg-gray-900/50 rounded-xl border border-blue-500/30">
                       <div>
-                        <label className="block text-sm text-gray-700 mb-2 font-bold">ชื่อสินค้า</label>
-                        <input required placeholder="ชื่อสินค้า..." className="w-full bg-white border-2 border-gray-300 p-3 rounded-lg text-gray-800 outline-none focus:border-red-500"
+                        <label className="block text-sm text-gray-400 mb-1">ชื่อสินค้า</label>
+                        <input required placeholder="ชื่อสินค้า..." className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg text-white outline-none focus:border-blue-500"
                             value={stockForm.title} onChange={e => setStockForm({...stockForm, title: e.target.value})} />
                       </div>
                       
                       <div>
-                        <label className="block text-sm text-gray-700 mb-2 font-bold">อัปโหลดรูปไอดี</label>
+                        <label className="block text-sm text-gray-400 mb-1">อัปโหลดรูปไอดี</label>
                         <input type="file" accept="image/*"
-                            className="w-full bg-white border-2 border-gray-300 p-2 rounded-lg text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer transition" 
+                            className="w-full bg-gray-800 border border-gray-600 p-2 rounded-lg text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer" 
                             onChange={e => setStockForm({...stockForm, imageFile: e.target.files[0]})} 
                         />
                       </div>
                       <div>
-                        <label className="block text-sm text-gray-700 mb-2 font-bold">รายละเอียดไอดี</label>
-                        <textarea placeholder="รายละเอียด..." className="w-full bg-white border-2 border-gray-300 p-3 rounded-lg h-24 text-gray-800 outline-none focus:border-red-500"
+                        <label className="block text-sm text-gray-400 mb-1">รายละเอียดไอดี</label>
+                        <textarea placeholder="รายละเอียด..." className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg h-24 text-white outline-none focus:border-blue-500"
                             value={stockForm.description} onChange={e => setStockForm({...stockForm, description: e.target.value})} />
                       </div>
                   </div>
               )}
               <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm text-gray-700 mb-2 font-bold">รหัสลับ / ID-Pass</label>
-                    <input required placeholder="User: pass" className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg font-mono text-green-700 outline-none focus:border-red-500"
+                    <label className="block text-sm text-gray-400 mb-1">รหัสลับ / ID-Pass</label>
+                    <input required placeholder="User: pass" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg font-mono text-green-400 outline-none focus:border-blue-500"
                         value={stockForm.code} onChange={e => setStockForm({...stockForm, code: e.target.value})} />
                   </div>
                   <div>
-                    <label className="block text-sm text-gray-700 mb-2 font-bold">ราคาขาย (บาท)</label>
-                    <input required type="number" placeholder="0.00" className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg outline-none focus:border-red-500 text-gray-800"
+                    <label className="block text-sm text-gray-400 mb-1">ราคาขาย (บาท)</label>
+                    <input required type="number" placeholder="0.00" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg outline-none focus:border-blue-500"
                         value={stockForm.price} onChange={e => setStockForm({...stockForm, price: e.target.value})} />
                   </div>
               </div>
               
-              <button type="submit" className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white py-4 rounded-xl font-black text-lg shadow-lg hover:shadow-red-500/30 transition transform hover:-translate-y-1 border-2 border-red-500">
+              <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl font-bold text-lg shadow-lg transition">
                 {stockForm.is_public ? 'ลงขายไอดีนี้' : 'เติม Key เข้าสต็อกกลาง'}
               </button>
             </form>
@@ -915,56 +737,46 @@ function Admin() {
           {/* TAB: จัดการคูปอง */}
           {activeTab === 'manage-coupons' && (
             <div>
-              <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-3">
-                <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-                จัดการคูปองทั้งหมด
-              </h2>
+              <h2 className="text-2xl font-bold mb-6 text-yellow-400 border-l-4 border-yellow-500 pl-4">จัดการคูปองทั้งหมด</h2>
               
               {coupons.length === 0 ? (
-                <div className="text-center py-20 bg-gray-50 rounded-xl border-2 border-gray-200">
-                  <Ticket className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 text-lg">ยังไม่มีคูปองในระบบ</p>
-                </div>
+                <p className="text-gray-400 text-center py-10">ยังไม่มีคูปองในระบบ</p>
               ) : (
-                <div className="overflow-x-auto mb-6 bg-white rounded-xl border border-gray-200 shadow-sm">
+                <div className="overflow-x-auto mb-6">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-red-600 text-white">
+                    <thead className="bg-yellow-900/30 text-yellow-300">
                       <tr>
-                        <th className="p-4">ID</th>
-                        <th className="p-4">โค้ดคูปอง</th>
-                        <th className="p-4">ส่วนลด (บาท)</th>
-                        <th className="p-4">ใช้แล้ว/จำกัด</th>
-                        <th className="p-4">สถานะ</th>
-                        <th className="p-4 text-center">จัดการ</th>
+                        <th className="p-3">ID</th>
+                        <th className="p-3">โค้ดคูปอง</th>
+                        <th className="p-3">ส่วนลด (บาท)</th>
+                        <th className="p-3">ใช้แล้ว/จำกัด</th>
+                        <th className="p-3">สถานะ</th>
+                        <th className="p-3 text-center">จัดการ</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody className="divide-y divide-gray-700">
                       {coupons.map((coupon) => (
-                        <tr key={coupon.coupon_id} className="hover:bg-red-50 transition">
-                          <td className="p-4 text-gray-500 font-mono">#{coupon.coupon_id}</td>
-                          <td className="p-4 font-mono text-red-600 font-black text-lg">{coupon.code}</td>
-                          <td className="p-4 text-green-600 font-black">฿{Number(coupon.discount_amount).toLocaleString()}</td>
-                          <td className="p-4">
-                            <span className="text-gray-700 font-bold">
+                        <tr key={coupon.coupon_id} className="hover:bg-gray-700/30">
+                          <td className="p-3 text-gray-400">#{coupon.coupon_id}</td>
+                          <td className="p-3 font-mono text-yellow-400 font-bold">{coupon.code}</td>
+                          <td className="p-3 text-green-400 font-bold">฿{Number(coupon.discount_amount).toLocaleString()}</td>
+                          <td className="p-3">
+                            <span className="text-white">
                               {coupon.used_count} / {coupon.usage_limit}
                             </span>
                           </td>
-                          <td className="p-4">
-                            <span className={`text-xs px-3 py-1 rounded-full font-bold ${
-                              coupon.used_count >= coupon.usage_limit 
-                                ? 'bg-red-100 text-red-700 border border-red-300' 
-                                : 'bg-green-100 text-green-700 border border-green-300'
-                            }`}>
+                          <td className="p-3">
+                            <span className={`text-xs px-2 py-1 rounded-full ${coupon.used_count >= coupon.usage_limit ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>
                               {coupon.used_count >= coupon.usage_limit ? 'เต็มแล้ว' : 'ใช้งานได้'}
                             </span>
                           </td>
-                          <td className="p-4 text-center">
+                          <td className="p-3 text-center">
                             <div className="flex gap-2 justify-center">
-                              <button onClick={() => setEditingCoupon(coupon)} className="bg-blue-600 hover:bg-blue-700 p-2 rounded-lg transition shadow-sm" title="แก้ไข">
-                                <Edit2 size={14} className="text-white" />
+                              <button onClick={() => setEditingCoupon(coupon)} className="bg-blue-600 hover:bg-blue-700 p-2 rounded-lg transition" title="แก้ไข">
+                                <Edit2 size={14} />
                               </button>
-                              <button onClick={() => handleDeleteCoupon(coupon.coupon_id)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition shadow-sm" title="ลบ">
-                                <Trash2 size={14} className="text-white" />
+                              <button onClick={() => handleDeleteCoupon(coupon.coupon_id)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="ลบ">
+                                <Trash2 size={14} />
                               </button>
                             </div>
                           </td>
@@ -976,30 +788,27 @@ function Admin() {
               )}
 
               {/* Form เพิ่มคูปอง */}
-              <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl border-2 border-red-200">
-                <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center gap-2">
-                  <div className="w-1 h-6 bg-red-600 rounded-full"></div>
-                  เพิ่มคูปองใหม่
-                </h3>
+              <div className="bg-gray-900/50 p-6 rounded-xl border border-yellow-500/30">
+                <h3 className="text-xl font-bold mb-4 text-yellow-400">เพิ่มคูปองใหม่</h3>
                 <form onSubmit={handleAddCoupon} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm text-gray-700 mb-2 font-bold">โค้ดคูปอง</label>
-                      <input required placeholder="Ex. SAVE50" className="w-full bg-white border-2 border-gray-300 p-3 rounded-lg font-mono text-red-600 focus:border-red-500 outline-none font-bold" 
+                      <label className="block text-sm text-gray-400 mb-1">โค้ดคูปอง</label>
+                      <input required placeholder="Ex. SAVE50" className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg font-mono text-yellow-400 focus:border-yellow-500 outline-none" 
                         value={couponForm.code} onChange={e => setCouponForm({...couponForm, code: e.target.value.toUpperCase()})} />
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-700 mb-2 font-bold">ส่วนลด (บาท)</label>
-                      <input required type="number" placeholder="0.00" className="w-full bg-white border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none text-gray-800" 
+                      <label className="block text-sm text-gray-400 mb-1">ส่วนลด (บาท)</label>
+                      <input required type="number" placeholder="0.00" className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg focus:border-yellow-500 outline-none" 
                         value={couponForm.discount_amount} onChange={e => setCouponForm({...couponForm, discount_amount: e.target.value})} />
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-700 mb-2 font-bold">จำนวนครั้งที่ใช้ได้</label>
-                      <input required type="number" placeholder="100" className="w-full bg-white border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none text-gray-800" 
+                      <label className="block text-sm text-gray-400 mb-1">จำนวนครั้งที่ใช้ได้</label>
+                      <input required type="number" placeholder="100" className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg focus:border-yellow-500 outline-none" 
                         value={couponForm.usage_limit} onChange={e => setCouponForm({...couponForm, usage_limit: e.target.value})} />
                     </div>
                   </div>
-                  <button type="submit" className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white py-3 rounded-xl font-black text-lg shadow-lg hover:shadow-red-500/30 transition transform hover:-translate-y-1 border-2 border-red-500">
+                  <button type="submit" className="w-full bg-yellow-600 hover:bg-yellow-700 py-3 rounded-xl font-bold text-lg shadow-lg transition">
                     + เพิ่มคูปอง
                   </button>
                 </form>
@@ -1010,50 +819,44 @@ function Admin() {
           {/* TAB: จัดการ Gacha Boxes */}
           {activeTab === 'manage-gacha' && (
             <div>
-              <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-3">
-                <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-                จัดการ Gacha Boxes
-              </h2>
+              <h2 className="text-2xl font-bold mb-6 text-pink-400 border-l-4 border-pink-500 pl-4">จัดการ Gacha Boxes</h2>
               
               {gachaBoxes.length === 0 ? (
-                <div className="text-center py-20 bg-gray-50 rounded-xl border-2 border-gray-200">
-                  <Gift className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 text-lg">ยังไม่มีกล่องในระบบ</p>
-                </div>
+                <p className="text-gray-400 text-center py-10">ยังไม่มีกล่องในระบบ</p>
               ) : (
-                <div className="overflow-x-auto mb-6 bg-white rounded-xl border border-gray-200 shadow-sm">
+                <div className="overflow-x-auto mb-6">
                   <table className="w-full text-left">
-                    <thead className="bg-red-600 text-white text-sm">
+                    <thead className="bg-pink-900/30 text-pink-300 text-sm">
                       <tr>
-                        <th className="p-4">รูป</th>
-                        <th className="p-4">ชื่อกล่อง</th>
-                        <th className="p-4">รายละเอียด</th>
-                        <th className="p-4">ราคา</th>
-                        <th className="p-4 text-center">จัดการ</th>
+                        <th className="p-3">รูป</th>
+                        <th className="p-3">ชื่อกล่อง</th>
+                        <th className="p-3">รายละเอียด</th>
+                        <th className="p-3">ราคา</th>
+                        <th className="p-3 text-center">จัดการ</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody className="divide-y divide-gray-700">
                       {gachaBoxes.map((box) => (
-                        <tr key={box.box_id} className="hover:bg-red-50 transition">
-                          <td className="p-4">
+                        <tr key={box.box_id} className="hover:bg-gray-700/30">
+                          <td className="p-3">
                             {box.image_url ? (
-                              <img src={box.image_url} alt={box.name} className="w-16 h-16 object-cover rounded-lg border border-gray-200" />
+                              <img src={box.image_url} alt={box.name} className="w-16 h-16 object-cover rounded-lg" />
                             ) : (
-                              <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
-                                <Gift className="w-8 h-8 text-gray-400" />
+                              <div className="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center">
+                                <Gift className="w-8 h-8 text-gray-500" />
                               </div>
                             )}
                           </td>
-                          <td className="p-4 font-bold text-gray-800">{box.name}</td>
-                          <td className="p-4 text-gray-600 text-sm max-w-xs truncate">{box.description || '-'}</td>
-                          <td className="p-4 text-red-600 font-black">฿{Number(box.price).toLocaleString()}</td>
-                          <td className="p-4 text-center">
+                          <td className="p-3 font-bold text-white">{box.name}</td>
+                          <td className="p-3 text-gray-400 text-sm max-w-xs truncate">{box.description || '-'}</td>
+                          <td className="p-3 text-yellow-400 font-bold">฿{Number(box.price).toLocaleString()}</td>
+                          <td className="p-3 text-center">
                             <div className="flex gap-2 justify-center">
-                              <button onClick={() => setEditingGachaBox(box)} className="bg-blue-600 hover:bg-blue-700 p-2 rounded-lg transition shadow-sm" title="แก้ไข">
-                                <Edit2 size={16} className="text-white" />
+                              <button onClick={() => setEditingGachaBox(box)} className="bg-blue-600 hover:bg-blue-700 p-2 rounded-lg transition" title="แก้ไข">
+                                <Edit2 size={16} />
                               </button>
-                              <button onClick={() => handleDeleteGachaBox(box.box_id)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition shadow-sm" title="ลบ">
-                                <Trash2 size={16} className="text-white" />
+                              <button onClick={() => handleDeleteGachaBox(box.box_id)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="ลบ">
+                                <Trash2 size={16} />
                               </button>
                             </div>
                           </td>
@@ -1069,33 +872,30 @@ function Admin() {
           {/* TAB: เพิ่ม Gacha Box */}
           {activeTab === 'add-gacha' && (
             <form onSubmit={handleAddGachaBox} className="space-y-6">
-              <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-3">
-                <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-                เพิ่ม Gacha Box ใหม่
-              </h2>
+              <h2 className="text-2xl font-bold mb-6 text-rose-400 border-l-4 border-rose-500 pl-4">เพิ่ม Gacha Box ใหม่</h2>
               <div>
-                <label className="block text-sm text-gray-700 mb-2 font-bold">ชื่อกล่อง</label>
-                <input required placeholder="Ex. Premium Box" className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none transition text-gray-800" 
+                <label className="block text-sm text-gray-400 mb-1">ชื่อกล่อง</label>
+                <input required placeholder="Ex. Premium Box" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-rose-500 outline-none transition" 
                   value={gachaBoxForm.name} onChange={e => setGachaBoxForm({...gachaBoxForm, name: e.target.value})} />
               </div>
               <div>
-                <label className="block text-sm text-gray-700 mb-2 font-bold">รายละเอียด</label>
-                <textarea required placeholder="คำอธิบายกล่อง..." className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg h-32 focus:border-red-500 outline-none transition text-gray-800" 
+                <label className="block text-sm text-gray-400 mb-1">รายละเอียด</label>
+                <textarea required placeholder="คำอธิบายกล่อง..." className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg h-32 focus:border-rose-500 outline-none transition" 
                   value={gachaBoxForm.description} onChange={e => setGachaBoxForm({...gachaBoxForm, description: e.target.value})} />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm text-gray-700 mb-2 font-bold">ราคา (บาท)</label>
-                  <input required type="number" placeholder="0.00" className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none transition text-gray-800" 
+                  <label className="block text-sm text-gray-400 mb-1">ราคา (บาท)</label>
+                  <input required type="number" placeholder="0.00" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-rose-500 outline-none transition" 
                     value={gachaBoxForm.price} onChange={e => setGachaBoxForm({...gachaBoxForm, price: e.target.value})} />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-700 mb-2 font-bold">อัปโหลดรูปปกกล่อง</label>
-                  <input type="file" accept="image/*" className="w-full bg-gray-50 border-2 border-gray-300 p-2 rounded-lg focus:border-red-500 text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer transition" 
+                  <label className="block text-sm text-gray-400 mb-1">อัปโหลดรูปปกกล่อง</label>
+                  <input type="file" accept="image/*" className="w-full bg-gray-900 border border-gray-600 p-2 rounded-lg focus:border-rose-500 text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-600 file:text-white hover:file:bg-rose-700 cursor-pointer" 
                     onChange={e => setGachaBoxForm({...gachaBoxForm, imageFile: e.target.files[0]})} />
                 </div>
               </div>
-              <button type="submit" className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white py-4 rounded-xl font-black text-lg shadow-lg hover:shadow-red-500/30 transition transform hover:-translate-y-1 border-2 border-red-500">+ บันทึกกล่อง</button>
+              <button type="submit" className="w-full bg-rose-600 hover:bg-rose-700 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-rose-500/30 transition transform hover:-translate-y-1">+ บันทึกกล่อง</button>
             </form>
           )}
         </div>
@@ -1104,48 +904,45 @@ function Admin() {
       {/* Modal แก้ไขเกม */}
       {editingGame && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setEditingGame(null)}>
-          <div className="bg-white rounded-2xl max-w-2xl w-full p-8 border-2 border-red-500 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-gray-800 rounded-2xl max-w-2xl w-full p-8 border-2 border-purple-500/30" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-                <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-                แก้ไขเกม
-              </h3>
-              <button onClick={() => setEditingGame(null)} className="text-gray-400 hover:text-red-600 transition">
+              <h3 className="text-2xl font-bold text-purple-400">แก้ไขเกม</h3>
+              <button onClick={() => setEditingGame(null)} className="text-gray-400 hover:text-white">
                 <X size={24} />
               </button>
             </div>
             
             <form onSubmit={handleUpdateGame} className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-700 mb-2 font-bold">ชื่อเกม</label>
-                <input required className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none text-gray-800" 
+                <label className="block text-sm text-gray-400 mb-1">ชื่อเกม</label>
+                <input required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-purple-500 outline-none" 
                   value={editingGame.name} onChange={e => setEditingGame({...editingGame, name: e.target.value})} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-gray-700 mb-2 font-bold">แพลตฟอร์ม</label>
-                  <input required className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none text-gray-800" 
+                  <label className="block text-sm text-gray-400 mb-1">แพลตฟอร์ม</label>
+                  <input required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-purple-500 outline-none" 
                     value={editingGame.platform} onChange={e => setEditingGame({...editingGame, platform: e.target.value})} />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-700 mb-2 font-bold">ราคา</label>
-                  <input required type="number" className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none text-gray-800" 
+                  <label className="block text-sm text-gray-400 mb-1">ราคา</label>
+                  <input required type="number" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-purple-500 outline-none" 
                     value={editingGame.price} onChange={e => setEditingGame({...editingGame, price: e.target.value})} />
                 </div>
               </div>
               <div>
-                <label className="block text-sm text-gray-700 mb-2 font-bold">รายละเอียด</label>
-                <textarea required className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg h-24 focus:border-red-500 outline-none text-gray-800" 
+                <label className="block text-sm text-gray-400 mb-1">รายละเอียด</label>
+                <textarea required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg h-24 focus:border-purple-500 outline-none" 
                   value={editingGame.description} onChange={e => setEditingGame({...editingGame, description: e.target.value})} />
               </div>
               <div>
-                <label className="block text-sm text-gray-700 mb-2 font-bold">เปลี่ยนรูป (ถ้าต้องการ)</label>
-                <input type="file" accept="image/*" className="w-full bg-gray-50 border-2 border-gray-300 p-2 rounded-lg text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer transition" 
+                <label className="block text-sm text-gray-400 mb-1">เปลี่ยนรูป (ถ้าต้องการ)</label>
+                <input type="file" accept="image/*" className="w-full bg-gray-900 border border-gray-600 p-2 rounded-lg text-sm text-gray-300" 
                   onChange={e => setEditingGame({...editingGame, newImageFile: e.target.files[0]})} />
               </div>
               <div className="flex gap-4">
-                <button type="button" onClick={() => setEditingGame(null)} className="flex-1 bg-gray-200 hover:bg-gray-300 py-3 rounded-xl font-bold text-gray-800 transition">ยกเลิก</button>
-                <button type="submit" className="flex-1 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 py-3 rounded-xl font-black text-white shadow-lg transition">บันทึก</button>
+                <button type="button" onClick={() => setEditingGame(null)} className="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold">ยกเลิก</button>
+                <button type="submit" className="flex-1 bg-purple-600 hover:bg-purple-700 py-3 rounded-xl font-bold">บันทึก</button>
               </div>
             </form>
           </div>
@@ -1155,32 +952,29 @@ function Admin() {
       {/* Modal แก้ไขสต็อก */}
       {editingStock && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setEditingStock(null)}>
-          <div className="bg-white rounded-2xl max-w-2xl w-full p-8 border-2 border-red-500 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-gray-800 rounded-2xl max-w-2xl w-full p-8 border-2 border-green-500/30" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-                <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-                แก้ไขสต็อก
-              </h3>
-              <button onClick={() => setEditingStock(null)} className="text-gray-400 hover:text-red-600 transition">
+              <h3 className="text-2xl font-bold text-green-400">แก้ไขสต็อก</h3>
+              <button onClick={() => setEditingStock(null)} className="text-gray-400 hover:text-white">
                 <X size={24} />
               </button>
             </div>
             
             <form onSubmit={handleUpdateStock} className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-700 mb-2 font-bold">รหัส</label>
-                <input required className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg font-mono text-red-600 focus:border-red-500 outline-none font-bold" 
+                <label className="block text-sm text-gray-400 mb-1">รหัส</label>
+                <input required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg font-mono text-green-400 focus:border-green-500 outline-none" 
                   value={editingStock.code} onChange={e => setEditingStock({...editingStock, code: e.target.value})} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-gray-700 mb-2 font-bold">ราคา</label>
-                  <input required type="number" className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none text-gray-800" 
+                  <label className="block text-sm text-gray-400 mb-1">ราคา</label>
+                  <input required type="number" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-green-500 outline-none" 
                     value={editingStock.price} onChange={e => setEditingStock({...editingStock, price: e.target.value})} />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-700 mb-2 font-bold">สถานะ</label>
-                  <select required className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none text-gray-800"
+                  <label className="block text-sm text-gray-400 mb-1">สถานะ</label>
+                  <select required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-green-500 outline-none"
                     value={editingStock.status} onChange={e => setEditingStock({...editingStock, status: e.target.value})}>
                     <option value="available">Available</option>
                     <option value="sold">Sold</option>
@@ -1188,32 +982,32 @@ function Admin() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm text-gray-700 mb-2 font-bold">ชื่อสินค้า (ถ้ามี)</label>
-                <input className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none text-gray-800" 
+                <label className="block text-sm text-gray-400 mb-1">ชื่อสินค้า (ถ้ามี)</label>
+                <input className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-green-500 outline-none" 
                   value={editingStock.title || ''} onChange={e => setEditingStock({...editingStock, title: e.target.value})} />
               </div>
               <div>
-                <label className="block text-sm text-gray-700 mb-2 font-bold">รายละเอียด (ถ้ามี)</label>
-                <textarea className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg h-20 focus:border-red-500 outline-none text-gray-800" 
+                <label className="block text-sm text-gray-400 mb-1">รายละเอียด (ถ้ามี)</label>
+                <textarea className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg h-20 focus:border-green-500 outline-none" 
                   value={editingStock.description || ''} onChange={e => setEditingStock({...editingStock, description: e.target.value})} />
               </div>
-              <div className="flex items-center gap-3 bg-red-50 p-4 rounded-xl border-2 border-red-200">
-                <input type="checkbox" id="edit_is_public" className="w-5 h-5 accent-red-600 cursor-pointer"
+              <div className="flex items-center gap-2">
+                <input type="checkbox" id="edit_is_public" className="w-5 h-5 accent-green-500"
                   checked={editingStock.is_public}
                   onChange={e => setEditingStock({...editingStock, is_public: e.target.checked})}
                 />
-                <label htmlFor="edit_is_public" className="text-gray-800 font-bold cursor-pointer">
+                <label htmlFor="edit_is_public" className="text-white font-bold cursor-pointer">
                   ขายแยกชิ้น?
                 </label>
               </div>
               <div>
-                <label className="block text-sm text-gray-700 mb-2 font-bold">เปลี่ยนรูป (ถ้าต้องการ)</label>
-                <input type="file" accept="image/*" className="w-full bg-gray-50 border-2 border-gray-300 p-2 rounded-lg text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer transition" 
+                <label className="block text-sm text-gray-400 mb-1">เปลี่ยนรูป (ถ้าต้องการ)</label>
+                <input type="file" accept="image/*" className="w-full bg-gray-900 border border-gray-600 p-2 rounded-lg text-sm text-gray-300" 
                   onChange={e => setEditingStock({...editingStock, newImageFile: e.target.files[0]})} />
               </div>
               <div className="flex gap-4">
-                <button type="button" onClick={() => setEditingStock(null)} className="flex-1 bg-gray-200 hover:bg-gray-300 py-3 rounded-xl font-bold text-gray-800 transition">ยกเลิก</button>
-                <button type="submit" className="flex-1 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 py-3 rounded-xl font-black text-white shadow-lg transition">บันทึก</button>
+                <button type="button" onClick={() => setEditingStock(null)} className="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold">ยกเลิก</button>
+                <button type="submit" className="flex-1 bg-green-600 hover:bg-green-700 py-3 rounded-xl font-bold">บันทึก</button>
               </div>
             </form>
           </div>
@@ -1223,43 +1017,40 @@ function Admin() {
       {/* Modal แก้ไขคูปอง */}
       {editingCoupon && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setEditingCoupon(null)}>
-          <div className="bg-white rounded-2xl max-w-2xl w-full p-8 border-2 border-red-500 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-gray-800 rounded-2xl max-w-2xl w-full p-8 border-2 border-yellow-500/30" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-                <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-                แก้ไขคูปอง
-              </h3>
-              <button onClick={() => setEditingCoupon(null)} className="text-gray-400 hover:text-red-600 transition">
+              <h3 className="text-2xl font-bold text-yellow-400">แก้ไขคูปอง</h3>
+              <button onClick={() => setEditingCoupon(null)} className="text-gray-400 hover:text-white">
                 <X size={24} />
               </button>
             </div>
             
             <form onSubmit={handleUpdateCoupon} className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-700 mb-2 font-bold">โค้ดคูปอง</label>
-                <input required className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg font-mono text-red-600 focus:border-red-500 outline-none font-bold" 
+                <label className="block text-sm text-gray-400 mb-1">โค้ดคูปอง</label>
+                <input required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg font-mono text-yellow-400 focus:border-yellow-500 outline-none" 
                   value={editingCoupon.code} onChange={e => setEditingCoupon({...editingCoupon, code: e.target.value.toUpperCase()})} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-gray-700 mb-2 font-bold">ส่วนลด (บาท)</label>
-                  <input required type="number" className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none text-gray-800" 
+                  <label className="block text-sm text-gray-400 mb-1">ส่วนลด (บาท)</label>
+                  <input required type="number" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-yellow-500 outline-none" 
                     value={editingCoupon.discount_amount} onChange={e => setEditingCoupon({...editingCoupon, discount_amount: e.target.value})} />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-700 mb-2 font-bold">จำนวนครั้งที่ใช้ได้</label>
-                  <input required type="number" className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none text-gray-800" 
+                  <label className="block text-sm text-gray-400 mb-1">จำนวนครั้งที่ใช้ได้</label>
+                  <input required type="number" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-yellow-500 outline-none" 
                     value={editingCoupon.usage_limit} onChange={e => setEditingCoupon({...editingCoupon, usage_limit: e.target.value})} />
                 </div>
               </div>
-              <div className="bg-red-50 p-4 rounded-xl border-2 border-red-200">
-                <p className="text-sm text-gray-800 font-bold">
-                  <strong>ใช้แล้ว:</strong> <span className="text-red-600">{editingCoupon.used_count}</span> / <span className="text-gray-600">{editingCoupon.usage_limit}</span> ครั้ง
+              <div className="bg-yellow-900/20 p-3 rounded-lg border border-yellow-500/30">
+                <p className="text-sm text-yellow-300">
+                  <strong>ใช้แล้ว:</strong> {editingCoupon.used_count} / {editingCoupon.usage_limit} ครั้ง
                 </p>
               </div>
               <div className="flex gap-4">
-                <button type="button" onClick={() => setEditingCoupon(null)} className="flex-1 bg-gray-200 hover:bg-gray-300 py-3 rounded-xl font-bold text-gray-800 transition">ยกเลิก</button>
-                <button type="submit" className="flex-1 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 py-3 rounded-xl font-black text-white shadow-lg transition">บันทึก</button>
+                <button type="button" onClick={() => setEditingCoupon(null)} className="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold">ยกเลิก</button>
+                <button type="submit" className="flex-1 bg-yellow-600 hover:bg-yellow-700 py-3 rounded-xl font-bold">บันทึก</button>
               </div>
             </form>
           </div>
@@ -1269,41 +1060,38 @@ function Admin() {
       {/* Modal แก้ไข Gacha Box */}
       {editingGachaBox && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setEditingGachaBox(null)}>
-          <div className="bg-white rounded-2xl max-w-2xl w-full p-8 border-2 border-red-500 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-gray-800 rounded-2xl max-w-2xl w-full p-8 border-2 border-pink-500/30" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-                <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-                แก้ไข Gacha Box
-              </h3>
-              <button onClick={() => setEditingGachaBox(null)} className="text-gray-400 hover:text-red-600 transition">
+              <h3 className="text-2xl font-bold text-pink-400">แก้ไข Gacha Box</h3>
+              <button onClick={() => setEditingGachaBox(null)} className="text-gray-400 hover:text-white">
                 <X size={24} />
               </button>
             </div>
             
             <form onSubmit={handleUpdateGachaBox} className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-700 mb-2 font-bold">ชื่อกล่อง</label>
-                <input required className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none text-gray-800" 
+                <label className="block text-sm text-gray-400 mb-1">ชื่อกล่อง</label>
+                <input required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-pink-500 outline-none" 
                   value={editingGachaBox.name} onChange={e => setEditingGachaBox({...editingGachaBox, name: e.target.value})} />
               </div>
               <div>
-                <label className="block text-sm text-gray-700 mb-2 font-bold">รายละเอียด</label>
-                <textarea required className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg h-24 focus:border-red-500 outline-none text-gray-800" 
+                <label className="block text-sm text-gray-400 mb-1">รายละเอียด</label>
+                <textarea required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg h-24 focus:border-pink-500 outline-none" 
                   value={editingGachaBox.description} onChange={e => setEditingGachaBox({...editingGachaBox, description: e.target.value})} />
               </div>
               <div>
-                <label className="block text-sm text-gray-700 mb-2 font-bold">ราคา</label>
-                <input required type="number" className="w-full bg-gray-50 border-2 border-gray-300 p-3 rounded-lg focus:border-red-500 outline-none text-gray-800" 
+                <label className="block text-sm text-gray-400 mb-1">ราคา</label>
+                <input required type="number" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-pink-500 outline-none" 
                   value={editingGachaBox.price} onChange={e => setEditingGachaBox({...editingGachaBox, price: e.target.value})} />
               </div>
               <div>
-                <label className="block text-sm text-gray-700 mb-2 font-bold">เปลี่ยนรูป (ถ้าต้องการ)</label>
-                <input type="file" accept="image/*" className="w-full bg-gray-50 border-2 border-gray-300 p-2 rounded-lg text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer transition" 
+                <label className="block text-sm text-gray-400 mb-1">เปลี่ยนรูป (ถ้าต้องการ)</label>
+                <input type="file" accept="image/*" className="w-full bg-gray-900 border border-gray-600 p-2 rounded-lg text-sm text-gray-300" 
                   onChange={e => setEditingGachaBox({...editingGachaBox, newImageFile: e.target.files[0]})} />
               </div>
               <div className="flex gap-4">
-                <button type="button" onClick={() => setEditingGachaBox(null)} className="flex-1 bg-gray-200 hover:bg-gray-300 py-3 rounded-xl font-bold text-gray-800 transition">ยกเลิก</button>
-                <button type="submit" className="flex-1 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 py-3 rounded-xl font-black text-white shadow-lg transition">บันทึก</button>
+                <button type="button" onClick={() => setEditingGachaBox(null)} className="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold">ยกเลิก</button>
+                <button type="submit" className="flex-1 bg-pink-600 hover:bg-pink-700 py-3 rounded-xl font-bold">บันทึก</button>
               </div>
             </form>
           </div>

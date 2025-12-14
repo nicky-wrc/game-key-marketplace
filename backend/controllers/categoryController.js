@@ -4,12 +4,12 @@ const db = require('../db');
 const getAllCategories = async (req, res) => {
     try {
         const result = await db.query(`
-            SELECT DISTINCT ON (c.category_id) c.*,
-                   COUNT(DISTINCT g.game_id) as game_count
+            SELECT c.*,
+                   COUNT(g.game_id) as game_count
             FROM categories c
             LEFT JOIN games g ON c.category_id = g.category_id
-            GROUP BY c.category_id, c.name, c.name_th, c.icon, c.color
-            ORDER BY c.category_id, c.name
+            GROUP BY c.category_id
+            ORDER BY c.name
         `);
         res.json(result.rows);
     } catch (error) {
