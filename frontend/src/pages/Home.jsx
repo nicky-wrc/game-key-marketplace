@@ -4,10 +4,11 @@ import { ShoppingCart, Search, Gift, CreditCard, Box, User, LogOut, ShieldAlert,
 import { useNavigate } from 'react-router-dom';
 import { showToast } from '../components/ToastContainer';
 import { GameCardSkeleton } from '../components/LoadingSkeleton';
+import Navbar from '../components/Navbar';
+import QuickFilters from '../components/QuickFilters';
 
 function Home() {
   const [games, setGames] = useState([]);
-  const [filteredGames, setFilteredGames] = useState([]);
   const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
@@ -15,6 +16,8 @@ function Home() {
   const [wishlist, setWishlist] = useState([]);
   const [recentlyViewed, setRecentlyViewed] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
+  const [filteredGames, setFilteredGames] = useState([]);
+  const [appliedFilters, setAppliedFilters] = useState(null);
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user')); 
 
@@ -65,19 +68,59 @@ function Home() {
     }
   };
 
-  // ฟิลเตอร์เกมตาม search query
+  // ฟิลเตอร์เกมตาม search query และ filters
   useEffect(() => {
-    if (searchQuery.trim() === '') {
-      setFilteredGames(games);
-    } else {
-      const filtered = games.filter(game => 
+    let filtered = [...games];
+
+    // Search filter
+    if (searchQuery.trim() !== '') {
+      filtered = filtered.filter(game => 
         game.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         game.platform.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (game.description && game.description.toLowerCase().includes(searchQuery.toLowerCase()))
       );
-      setFilteredGames(filtered);
     }
-  }, [searchQuery, games]);
+
+    // Applied filters
+    if (appliedFilters) {
+      // Platform filter
+      if (appliedFilters.platform && appliedFilters.platform.length > 0) {
+        filtered = filtered.filter(game => appliedFilters.platform.includes(game.platform));
+      }
+
+      // Price range filter
+      if (appliedFilters.priceRange) {
+        filtered = filtered.filter(game => {
+          const price = parseFloat(game.price || 0);
+          return price >= appliedFilters.priceRange.min && price <= appliedFilters.priceRange.max;
+        });
+      }
+
+      // Sort
+      if (appliedFilters.sortBy !== 'default') {
+        switch (appliedFilters.sortBy) {
+          case 'price-low':
+            filtered.sort((a, b) => parseFloat(a.price || 0) - parseFloat(b.price || 0));
+            break;
+          case 'price-high':
+            filtered.sort((a, b) => parseFloat(b.price || 0) - parseFloat(a.price || 0));
+            break;
+          case 'name':
+            filtered.sort((a, b) => a.name.localeCompare(b.name));
+            break;
+          case 'newest':
+            filtered.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+            break;
+        }
+      }
+    }
+
+    setFilteredGames(filtered);
+  }, [searchQuery, games, appliedFilters]);
+
+  const handleFilterChange = (filters) => {
+    setAppliedFilters(filters);
+  };
 
   const fetchUserBalance = async () => {
     try {
@@ -273,7 +316,7 @@ function Home() {
         </div>
       </nav>
 
-      {/* 3. Hero Banner */}
+      {/* Hero Banner */}
       <div className="relative bg-gradient-to-r from-red-900 to-black h-[400px] flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 opacity-30 bg-[url('https://wallpapers.com/images/hd/gaming-background-h193859385.jpg')] bg-cover bg-center"></div>
           
