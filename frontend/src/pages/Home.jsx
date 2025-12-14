@@ -44,18 +44,20 @@ function Home() {
     }
 
     try {
-      await axiosInstance.post(`/api/wishlist/toggle/${gameId}`);
-      const isInWishlist = wishlist.includes(gameId);
+      const res = await axiosInstance.post(`/api/wishlist/toggle/${gameId}`);
+      const isInWishlist = res.data.inWishlist;
+      
       if (isInWishlist) {
-        setWishlist(wishlist.filter(id => id !== gameId));
-        showToast('ลบออกจากรายการโปรดแล้ว', 'info');
-      } else {
-        setWishlist([...wishlist, gameId]);
+        setWishlist([...wishlist, parseInt(gameId)]);
         showToast('เพิ่มในรายการโปรดแล้ว', 'success');
+      } else {
+        setWishlist(wishlist.filter(id => id !== parseInt(gameId)));
+        showToast('ลบออกจากรายการโปรดแล้ว', 'info');
       }
     } catch (err) {
       console.error('Failed to toggle wishlist', err);
-      showToast('เกิดข้อผิดพลาด', 'error');
+      const errorMsg = err.response?.data?.error || err.response?.data?.message || 'เกิดข้อผิดพลาด';
+      showToast(errorMsg, 'error');
     }
   };
 

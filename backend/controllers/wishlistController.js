@@ -110,7 +110,21 @@ const checkWishlist = async (req, res) => {
 const toggleWishlist = async (req, res) => {
     try {
         const userId = req.user.user_id;
-        const { gameId } = req.params;
+        const gameId = parseInt(req.params.gameId);
+
+        if (isNaN(gameId)) {
+            return res.status(400).json({ error: 'Invalid game ID' });
+        }
+
+        // เช็คว่าเกมมีอยู่จริงหรือไม่
+        const gameCheck = await db.query(
+            'SELECT game_id FROM games WHERE game_id = $1',
+            [gameId]
+        );
+
+        if (gameCheck.rows.length === 0) {
+            return res.status(404).json({ error: 'Game not found' });
+        }
 
         // เช็คว่าอยู่ใน wishlist หรือยัง
         const existing = await db.query(
@@ -135,7 +149,7 @@ const toggleWishlist = async (req, res) => {
         }
     } catch (error) {
         console.error('Error toggling wishlist:', error);
-        res.status(500).json({ error: 'Failed to update wishlist' });
+        res.status(500).json({ error: 'Failed to update wishlist', details: error.message });
     }
 };
 
