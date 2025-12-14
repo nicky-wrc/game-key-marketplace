@@ -37,8 +37,19 @@ exports.getAllGames = async (req, res) => {
 // ===== แก้ไขเกม =====
 exports.updateGame = async (req, res) => {
     const { id } = req.params;
-    const { name, platform, description, price } = req.body;
-    const image_url = req.file ? `http://localhost:5000/uploads/${req.file.filename}` : req.body.existing_image;
+    const { name, platform, description, price, existing_image } = req.body;
+    
+    // ถ้ามีไฟล์ใหม่ให้ใช้ไฟล์ใหม่ ถ้าไม่มีให้ใช้ existing_image
+    let image_url;
+    if (req.file) {
+        image_url = `http://localhost:5000/uploads/${req.file.filename}`;
+    } else if (existing_image) {
+        image_url = existing_image;
+    } else {
+        // ถ้าไม่มีทั้งสองอย่าง ให้ดึงจาก database
+        const currentGame = await db.query('SELECT image_url FROM games WHERE game_id = $1', [id]);
+        image_url = currentGame.rows[0]?.image_url || '';
+    }
 
     try {
         const result = await db.query(
@@ -55,8 +66,8 @@ exports.updateGame = async (req, res) => {
 
         res.json({ message: 'แก้ไขเกมสำเร็จ!', game: result.rows[0] });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error updating game:', err);
+        res.status(500).json({ message: 'Server error', error: err.message });
     }
 };
 

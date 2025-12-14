@@ -186,7 +186,7 @@ function GameDetail() {
         <div className="max-w-7xl mx-auto px-4 py-6">
           <button 
             onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition mb-4"
+            className="flex items-center gap-2 text-white hover:text-red-200 transition mb-4"
           >
             <ArrowLeft size={20} />
             <span>กลับหน้าหลัก</span>
@@ -207,7 +207,7 @@ function GameDetail() {
               <div className="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-3 uppercase">
                 {game.platform}
               </div>
-              <h1 className="text-4xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800">
+              <h1 className="text-4xl font-black mb-4 text-white drop-shadow-lg">
                 {game.name}
               </h1>
               <p className="text-gray-700 mb-6 leading-relaxed max-w-2xl">
