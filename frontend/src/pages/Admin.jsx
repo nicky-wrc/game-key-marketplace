@@ -645,7 +645,7 @@ function Admin() {
                             </span>
                           </td>
                           <td className="p-3">
-                            <span className={`text-xs px-2 py-1 rounded-full ${stock.is_public ? 'bg-blue-500/20 text-red-400' : 'bg-gray-500/20 text-gray-400'}`}>
+                            <span className={`text-xs px-2 py-1 rounded-full ${stock.is_public ? 'bg-red-500/20 text-red-600' : 'bg-gray-500/20 text-gray-600'}`}>
                               {stock.is_public ? 'ขายแยก' : 'สุ่ม'}
                             </span>
                           </td>
@@ -1071,27 +1071,27 @@ function Admin() {
             <form onSubmit={handleUpdateGachaBox} className="space-y-4">
               <div>
                 <label className="block text-sm text-gray-700 mb-1 font-medium">ชื่อกล่อง</label>
-                <input required className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-pink-500 outline-none" 
+                <input required className="w-full bg-white border-2 border-red-200 p-3 rounded-lg focus:border-red-500 outline-none text-gray-900" 
                   value={editingGachaBox.name} onChange={e => setEditingGachaBox({...editingGachaBox, name: e.target.value})} />
               </div>
               <div>
                 <label className="block text-sm text-gray-700 mb-1 font-medium">รายละเอียด</label>
-                <textarea required className="w-full bg-white border border-red-200 p-3 rounded-lg h-24 focus:border-pink-500 outline-none" 
+                <textarea required className="w-full bg-white border-2 border-red-200 p-3 rounded-lg h-24 focus:border-red-500 outline-none text-gray-900" 
                   value={editingGachaBox.description} onChange={e => setEditingGachaBox({...editingGachaBox, description: e.target.value})} />
               </div>
               <div>
                 <label className="block text-sm text-gray-700 mb-1 font-medium">ราคา</label>
-                <input required type="number" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-pink-500 outline-none" 
+                <input required type="number" className="w-full bg-white border-2 border-red-200 p-3 rounded-lg focus:border-red-500 outline-none text-gray-900" 
                   value={editingGachaBox.price} onChange={e => setEditingGachaBox({...editingGachaBox, price: e.target.value})} />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">เปลี่ยนรูป (ถ้าต้องการ)</label>
-                <input type="file" accept="image/*" className="w-full bg-white border border-red-200 p-2 rounded-lg text-sm text-gray-300" 
+                <label className="block text-sm text-gray-700 mb-1 font-medium">เปลี่ยนรูป (ถ้าต้องการ)</label>
+                <input type="file" accept="image/*" className="w-full bg-white border-2 border-red-200 p-2 rounded-lg text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer" 
                   onChange={e => setEditingGachaBox({...editingGachaBox, newImageFile: e.target.files[0]})} />
               </div>
               <div className="flex gap-4">
-                <button type="button" onClick={() => setEditingGachaBox(null)} className="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold">ยกเลิก</button>
-                <button type="submit" className="flex-1 bg-pink-600 hover:bg-pink-700 py-3 rounded-xl font-bold">บันทึก</button>
+                <button type="button" onClick={() => setEditingGachaBox(null)} className="flex-1 bg-gray-300 hover:bg-gray-400 py-3 rounded-xl font-bold text-gray-900">ยกเลิก</button>
+                <button type="submit" className="flex-1 bg-red-600 hover:bg-red-700 py-3 rounded-xl font-bold text-white">บันทึก</button>
               </div>
             </form>
           </div>
