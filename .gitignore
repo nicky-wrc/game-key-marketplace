@@ -141,6 +141,8 @@ vite.config.ts.timestamp-*
 # --- Game Store Specifics ---
 backend/uploads/
 *.sql
+!backend/seed.sql
+!backend/database.sql
 
 # Environment files
 .env
