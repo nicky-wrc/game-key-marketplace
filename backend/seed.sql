@@ -6,15 +6,8 @@
 -- =============================================
 -- 1. Categories (8 หมวดหมู่)
 -- =============================================
-INSERT INTO categories (name, name_th, icon, color) VALUES
-('Action', 'แอ็คชั่น', 'Sword', '#EF4444'),
-('RPG', 'อาร์พีจี', 'Shield', '#8B5CF6'),
-('Sports', 'กีฬา', 'Trophy', '#22C55E'),
-('Racing', 'แข่งรถ', 'Car', '#F59E0B'),
-('Shooter', 'ยิงปืน', 'Target', '#EC4899'),
-('Adventure', 'ผจญภัย', 'Compass', '#06B6D4'),
-('Strategy', 'วางแผน', 'Brain', '#6366F1'),
-('Simulation', 'จำลอง', 'Gamepad2', '#14B8A6');
+-- Note: Categories already exist in database (category_id 41-48)
+-- Mapping: 41=Action, 42=RPG, 43=Sports, 44=Racing, 45=Shooter, 46=Adventure, 47=Strategy, 48=Simulation
 
 -- =============================================
 -- 2. Users (Admin + Test Users)
@@ -23,86 +16,88 @@ INSERT INTO categories (name, name_th, icon, color) VALUES
 INSERT INTO users (username, email, password_hash, role, wallet_balance) VALUES
 ('admin', 'admin@nickykey.com', '$2a$10$rQnM1k8yVPZXKODvUKQXXeJXYM3zl1UQ0jFzPqF8W5iJX7vKxVbPa', 'admin', 99999.00),
 ('seller01', 'seller@nickykey.com', '$2a$10$rQnM1k8yVPZXKODvUKQXXeJXYM3zl1UQ0jFzPqF8W5iJX7vKxVbPa', 'seller', 5000.00),
-('testuser', 'test@nickykey.com', '$2a$10$rQnM1k8yVPZXKODvUKQXXeJXYM3zl1UQ0jFzPqF8W5iJX7vKxVbPa', 'user', 1000.00);
+('testuser', 'test@nickykey.com', '$2a$10$rQnM1k8yVPZXKODvUKQXXeJXYM3zl1UQ0jFzPqF8W5iJX7vKxVbPa', 'user', 1000.00)
+ON CONFLICT (email) DO NOTHING;
 
 -- =============================================
 -- 3. Games (60 เกมยอดนิยม)
 -- =============================================
 
 -- Steam Games (20 เกม)
-INSERT INTO games (category_id, name, platform, description, price, original_price, is_featured, developer, publisher, image_url) VALUES
-(1, 'Grand Theft Auto V', 'Steam', 'เกมโลกเปิดสุดมันส์ ผจญภัยในเมือง Los Santos ทำภารกิจปล้นสุดโหด เล่นออนไลน์กับเพื่อนได้', 599.00, 1490.00, TRUE, 'Rockstar North', 'Rockstar Games', 'https://cdn.cloudflare.steamstatic.com/steam/apps/271590/header.jpg'),
-(2, 'Elden Ring', 'Steam', 'เกม Action RPG จาก FromSoftware ร่วมสร้างโดย George R.R. Martin โลกกว้างใหญ่ บอสสุดโหด', 1690.00, 1990.00, TRUE, 'FromSoftware', 'Bandai Namco', 'https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/header.jpg'),
-(1, 'Cyberpunk 2077', 'Steam', 'เกม RPG ในโลกอนาคต Night City เต็มไปด้วยอาชญากรรมและเทคโนโลยีล้ำสมัย', 890.00, 1790.00, TRUE, 'CD Projekt Red', 'CD Projekt', 'https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/header.jpg'),
-(1, 'Red Dead Redemption 2', 'Steam', 'เกมคาวบอยโลกเปิด เนื้อเรื่องสุดอลังการ กราฟิกสวยงาม ผจญภัยในตะวันตก', 990.00, 1790.00, TRUE, 'Rockstar Games', 'Rockstar Games', 'https://cdn.cloudflare.steamstatic.com/steam/apps/1174180/header.jpg'),
-(5, 'Counter-Strike 2', 'Steam', 'เกมยิงปืนระดับตำนาน อัพเกรดจาก CS:GO ด้วย Source 2 Engine กราฟิกใหม่หมด', 0.00, 0.00, TRUE, 'Valve', 'Valve', 'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg'),
-(2, 'Baldur''s Gate 3', 'Steam', 'เกม RPG สุดอลังการ ตัวเลือกมากมาย เนื้อเรื่องลึกซึ้ง ระบบการต่อสู้แบบ Turn-based', 1790.00, 1990.00, TRUE, 'Larian Studios', 'Larian Studios', 'https://cdn.cloudflare.steamstatic.com/steam/apps/1086940/header.jpg'),
-(6, 'Hogwarts Legacy', 'Steam', 'เกมผจญภัยในโลกเวทมนตร์แฮร์รี่ พอตเตอร์ เรียนที่ฮอกวอตส์ สำรวจโลกกว้าง', 1290.00, 1790.00, FALSE, 'Avalanche Software', 'Warner Bros.', 'https://cdn.cloudflare.steamstatic.com/steam/apps/990080/header.jpg'),
-(1, 'Monster Hunter: World', 'Steam', 'ล่าสัตว์ประหลาดยักษ์ ทำอาวุธและชุดเกราะ เล่นกับเพื่อนได้ 4 คน', 590.00, 990.00, FALSE, 'Capcom', 'Capcom', 'https://cdn.cloudflare.steamstatic.com/steam/apps/582010/header.jpg'),
-(5, 'PUBG: BATTLEGROUNDS', 'Steam', 'เกม Battle Royale ต้นตำรับ 100 คนเหลือ 1 แผนที่หลากหลาย', 0.00, 0.00, FALSE, 'PUBG Corporation', 'Krafton', 'https://cdn.cloudflare.steamstatic.com/steam/apps/578080/header.jpg'),
-(7, 'Civilization VI', 'Steam', 'เกมวางแผนสร้างอารยธรรม ตั้งแต่ยุคโบราณถึงอนาคต ผู้นำมากมายให้เลือก', 450.00, 1790.00, FALSE, 'Firaxis Games', 'Take-Two', 'https://cdn.cloudflare.steamstatic.com/steam/apps/289070/header.jpg'),
-(1, 'Devil May Cry 5', 'Steam', 'เกมแอ็คชั่นคอมโบสุดมันส์ เล่นเป็น Dante, Nero, V ปราบปีศาจสุดโหด', 590.00, 990.00, FALSE, 'Capcom', 'Capcom', 'https://cdn.cloudflare.steamstatic.com/steam/apps/601150/header.jpg'),
-(2, 'The Witcher 3: Wild Hunt', 'Steam', 'เกม RPG ระดับตำนาน เนื้อเรื่องสุดยอด โลกกว้างใหญ่ Geralt นักล่าอสูร', 299.00, 1190.00, TRUE, 'CD Projekt Red', 'CD Projekt', 'https://cdn.cloudflare.steamstatic.com/steam/apps/292030/header.jpg'),
-(8, 'Stardew Valley', 'Steam', 'เกมทำฟาร์มสุดผ่อนคลาย ปลูกผัก เลี้ยงสัตว์ สร้างความสัมพันธ์กับชาวบ้าน', 259.00, 459.00, FALSE, 'ConcernedApe', 'ConcernedApe', 'https://cdn.cloudflare.steamstatic.com/steam/apps/413150/header.jpg'),
-(6, 'Sekiro: Shadows Die Twice', 'Steam', 'เกมแอ็คชั่นนินจาสุดโหด ต้องใช้ทักษะสูง parry ให้ถูกจังหวะ', 890.00, 1790.00, FALSE, 'FromSoftware', 'Activision', 'https://cdn.cloudflare.steamstatic.com/steam/apps/814380/header.jpg'),
-(1, 'Resident Evil 4 Remake', 'Steam', 'รีเมคเกมระดับตำนาน กราฟิกใหม่ ระบบการเล่นทันสมัย Leon S. Kennedy', 1290.00, 1790.00, TRUE, 'Capcom', 'Capcom', 'https://cdn.cloudflare.steamstatic.com/steam/apps/2050650/header.jpg'),
-(5, 'Tom Clancy''s Rainbow Six Siege', 'Steam', 'เกมยิงปืนแนว Tactical ทีมละ 5 คน ทำลายผนัง วางแผนการรุก', 290.00, 690.00, FALSE, 'Ubisoft Montreal', 'Ubisoft', 'https://cdn.cloudflare.steamstatic.com/steam/apps/359550/header.jpg'),
-(6, 'Dark Souls III', 'Steam', 'เกมแอ็คชั่น RPG สุดโหดจาก FromSoftware โลกมืดมน บอสท้าทาย', 490.00, 1490.00, FALSE, 'FromSoftware', 'Bandai Namco', 'https://cdn.cloudflare.steamstatic.com/steam/apps/374320/header.jpg'),
-(4, 'Need for Speed Heat', 'Steam', 'เกมแข่งรถถนน ตกแต่งรถ หนีตำรวจ แข่งทั้งกลางวันและกลางคืน', 390.00, 1490.00, FALSE, 'Ghost Games', 'Electronic Arts', 'https://cdn.cloudflare.steamstatic.com/steam/apps/1222680/header.jpg'),
-(8, 'Cities: Skylines', 'Steam', 'เกมสร้างเมืองสุดละเอียด วางผังเมือง จัดการจราจร น้ำ ไฟฟ้า', 290.00, 890.00, FALSE, 'Colossal Order', 'Paradox', 'https://cdn.cloudflare.steamstatic.com/steam/apps/255710/header.jpg'),
-(1, 'Hades', 'Steam', 'เกม Roguelike หลบหนีจากนรก เนื้อเรื่องดี คอมโบมัน กราฟิกสวย', 349.00, 749.00, FALSE, 'Supergiant Games', 'Supergiant Games', 'https://cdn.cloudflare.steamstatic.com/steam/apps/1145360/header.jpg');
+-- Mapping: 41=Action, 42=RPG, 43=Sports, 44=Racing, 45=Shooter, 46=Adventure, 47=Strategy, 48=Simulation
+INSERT INTO games (category_id, name, platform, description, price, original_price, is_featured, developer, publisher) VALUES
+(41, 'Grand Theft Auto V', 'Steam', 'เกมโลกเปิดสุดมันส์ ผจญภัยในเมือง Los Santos ทำภารกิจปล้นสุดโหด เล่นออนไลน์กับเพื่อนได้', 599.00, 1490.00, TRUE, 'Rockstar North', 'Rockstar Games'),
+(42, 'Elden Ring', 'Steam', 'เกม Action RPG จาก FromSoftware ร่วมสร้างโดย George R.R. Martin โลกกว้างใหญ่ บอสสุดโหด', 1690.00, 1990.00, TRUE, 'FromSoftware', 'Bandai Namco'),
+(41, 'Cyberpunk 2077', 'Steam', 'เกม RPG ในโลกอนาคต Night City เต็มไปด้วยอาชญากรรมและเทคโนโลยีล้ำสมัย', 890.00, 1790.00, TRUE, 'CD Projekt Red', 'CD Projekt'),
+(41, 'Red Dead Redemption 2', 'Steam', 'เกมคาวบอยโลกเปิด เนื้อเรื่องสุดอลังการ กราฟิกสวยงาม ผจญภัยในตะวันตก', 990.00, 1790.00, TRUE, 'Rockstar Games', 'Rockstar Games'),
+(45, 'Counter-Strike 2', 'Steam', 'เกมยิงปืนระดับตำนาน อัพเกรดจาก CS:GO ด้วย Source 2 Engine กราฟิกใหม่หมด', 0.00, 0.00, TRUE, 'Valve', 'Valve'),
+(42, 'Baldur''s Gate 3', 'Steam', 'เกม RPG สุดอลังการ ตัวเลือกมากมาย เนื้อเรื่องลึกซึ้ง ระบบการต่อสู้แบบ Turn-based', 1790.00, 1990.00, TRUE, 'Larian Studios', 'Larian Studios'),
+(46, 'Hogwarts Legacy', 'Steam', 'เกมผจญภัยในโลกเวทมนตร์แฮร์รี่ พอตเตอร์ เรียนที่ฮอกวอตส์ สำรวจโลกกว้าง', 1290.00, 1790.00, FALSE, 'Avalanche Software', 'Warner Bros.'),
+(41, 'Monster Hunter: World', 'Steam', 'ล่าสัตว์ประหลาดยักษ์ ทำอาวุธและชุดเกราะ เล่นกับเพื่อนได้ 4 คน', 590.00, 990.00, FALSE, 'Capcom', 'Capcom'),
+(45, 'PUBG: BATTLEGROUNDS', 'Steam', 'เกม Battle Royale ต้นตำรับ 100 คนเหลือ 1 แผนที่หลากหลาย', 0.00, 0.00, FALSE, 'PUBG Corporation', 'Krafton'),
+(47, 'Civilization VI', 'Steam', 'เกมวางแผนสร้างอารยธรรม ตั้งแต่ยุคโบราณถึงอนาคต ผู้นำมากมายให้เลือก', 450.00, 1790.00, FALSE, 'Firaxis Games', 'Take-Two'),
+(41, 'Devil May Cry 5', 'Steam', 'เกมแอ็คชั่นคอมโบสุดมันส์ เล่นเป็น Dante, Nero, V ปราบปีศาจสุดโหด', 590.00, 990.00, FALSE, 'Capcom', 'Capcom'),
+(42, 'The Witcher 3: Wild Hunt', 'Steam', 'เกม RPG ระดับตำนาน เนื้อเรื่องสุดยอด โลกกว้างใหญ่ Geralt นักล่าอสูร', 299.00, 1190.00, TRUE, 'CD Projekt Red', 'CD Projekt'),
+(48, 'Stardew Valley', 'Steam', 'เกมทำฟาร์มสุดผ่อนคลาย ปลูกผัก เลี้ยงสัตว์ สร้างความสัมพันธ์กับชาวบ้าน', 259.00, 459.00, FALSE, 'ConcernedApe', 'ConcernedApe'),
+(46, 'Sekiro: Shadows Die Twice', 'Steam', 'เกมแอ็คชั่นนินจาสุดโหด ต้องใช้ทักษะสูง parry ให้ถูกจังหวะ', 890.00, 1790.00, FALSE, 'FromSoftware', 'Activision'),
+(41, 'Resident Evil 4 Remake', 'Steam', 'รีเมคเกมระดับตำนาน กราฟิกใหม่ ระบบการเล่นทันสมัย Leon S. Kennedy', 1290.00, 1790.00, TRUE, 'Capcom', 'Capcom'),
+(45, 'Tom Clancy''s Rainbow Six Siege', 'Steam', 'เกมยิงปืนแนว Tactical ทีมละ 5 คน ทำลายผนัง วางแผนการรุก', 290.00, 690.00, FALSE, 'Ubisoft Montreal', 'Ubisoft'),
+(46, 'Dark Souls III', 'Steam', 'เกมแอ็คชั่น RPG สุดโหดจาก FromSoftware โลกมืดมน บอสท้าทาย', 490.00, 1490.00, FALSE, 'FromSoftware', 'Bandai Namco'),
+(44, 'Need for Speed Heat', 'Steam', 'เกมแข่งรถถนน ตกแต่งรถ หนีตำรวจ แข่งทั้งกลางวันและกลางคืน', 390.00, 1490.00, FALSE, 'Ghost Games', 'Electronic Arts'),
+(48, 'Cities: Skylines', 'Steam', 'เกมสร้างเมืองสุดละเอียด วางผังเมือง จัดการจราจร น้ำ ไฟฟ้า', 290.00, 890.00, FALSE, 'Colossal Order', 'Paradox'),
+(41, 'Hades', 'Steam', 'เกม Roguelike หลบหนีจากนรก เนื้อเรื่องดี คอมโบมัน กราฟิกสวย', 349.00, 749.00, FALSE, 'Supergiant Games', 'Supergiant Games');
 
 -- PlayStation Games (15 เกม)
-INSERT INTO games (category_id, name, platform, description, price, original_price, is_featured, developer, publisher, image_url) VALUES
-(1, 'God of War Ragnarök', 'PlayStation', 'ภาคต่อการผจญภัยของ Kratos และ Atreus ต่อสู้กับเหล่าเทพนอร์ส', 1790.00, 2290.00, TRUE, 'Santa Monica Studio', 'Sony', NULL),
-(1, 'Marvel''s Spider-Man 2', 'PlayStation', 'เล่นเป็น Peter Parker และ Miles Morales พร้อมกัน ต่อสู้กับ Venom', 1990.00, 2290.00, TRUE, 'Insomniac Games', 'Sony', NULL),
-(6, 'The Last of Us Part II', 'PlayStation', 'ภาคต่อเกมเนื้อเรื่องระดับตำนาน การผจญภัยของ Ellie ที่มืดมน', 990.00, 1990.00, TRUE, 'Naughty Dog', 'Sony', NULL),
-(1, 'Ghost of Tsushima', 'PlayStation', 'เกมซามูไร โลกเปิดสุดสวยงาม ต่อต้านการรุกรานของมองโกล', 890.00, 1790.00, FALSE, 'Sucker Punch', 'Sony', NULL),
-(6, 'Horizon Forbidden West', 'PlayStation', 'ผจญภัยในโลกอนาคตกับ Aloy ล่าเครื่องจักรยักษ์ สำรวจดินแดนใหม่', 990.00, 1990.00, FALSE, 'Guerrilla Games', 'Sony', NULL),
-(2, 'Final Fantasy XVI', 'PlayStation', 'เกม RPG จาก Square Enix เนื้อเรื่องมืดมน แอ็คชั่นดุเดือด', 1490.00, 1990.00, TRUE, 'Square Enix', 'Square Enix', NULL),
-(1, 'Demon''s Souls', 'PlayStation', 'รีเมคเกมระดับตำนาน กราฟิก PS5 สุดอลัง บอสสุดโหด', 1290.00, 1990.00, FALSE, 'Bluepoint Games', 'Sony', NULL),
-(4, 'Gran Turismo 7', 'PlayStation', 'เกมแข่งรถสมจริงที่สุด รถยนต์หลายร้อยคัน สนามแข่งทั่วโลก', 1290.00, 1990.00, FALSE, 'Polyphony Digital', 'Sony', NULL),
-(6, 'Uncharted 4: A Thief''s End', 'PlayStation', 'บทสรุปการผจญภัยของ Nathan Drake ล่าสมบัติโจรสลัด', 490.00, 1490.00, FALSE, 'Naughty Dog', 'Sony', NULL),
-(1, 'Ratchet & Clank: Rift Apart', 'PlayStation', 'เกมแอ็คชั่นผจญภัย กระโดดข้ามมิติ กราฟิก PS5 สุดตา', 990.00, 1790.00, FALSE, 'Insomniac Games', 'Sony', NULL),
-(6, 'Returnal', 'PlayStation', 'เกม Roguelike Sci-Fi ยิงปืน Third-Person ดาวเคราะห์ลึกลับ', 890.00, 1790.00, FALSE, 'Housemarque', 'Sony', NULL),
-(3, 'MLB The Show 24', 'PlayStation', 'เกมเบสบอลสมจริงที่สุด ทีมจริง นักเล่นจริง ระบบ Road to the Show', 1290.00, 1790.00, FALSE, 'San Diego Studio', 'Sony', NULL),
-(2, 'Persona 5 Royal', 'PlayStation', 'เกม RPG สไตล์ญี่ปุ่น เนื้อเรื่องยาว 100+ ชม. ระบบ Social Link', 890.00, 1790.00, FALSE, 'Atlus', 'Atlus', NULL),
-(1, 'Bloodborne', 'PlayStation', 'เกมแอ็คชั่นสุดโหดจาก FromSoftware โลกแบบ Gothic ยากสุดๆ', 590.00, 990.00, FALSE, 'FromSoftware', 'Sony', NULL),
-(3, 'EA Sports FC 24', 'PlayStation', 'เกมฟุตบอลจาก EA ทีมและนักเตะจริงทั่วโลก โหมด Ultimate Team', 1290.00, 1990.00, FALSE, 'EA Vancouver', 'Electronic Arts', NULL);
+INSERT INTO games (category_id, name, platform, description, price, original_price, is_featured, developer, publisher) VALUES
+(41, 'God of War Ragnarök', 'PlayStation', 'ภาคต่อการผจญภัยของ Kratos และ Atreus ต่อสู้กับเหล่าเทพนอร์ส', 1790.00, 2290.00, TRUE, 'Santa Monica Studio', 'Sony'),
+(41, 'Marvel''s Spider-Man 2', 'PlayStation', 'เล่นเป็น Peter Parker และ Miles Morales พร้อมกัน ต่อสู้กับ Venom', 1990.00, 2290.00, TRUE, 'Insomniac Games', 'Sony'),
+(46, 'The Last of Us Part II', 'PlayStation', 'ภาคต่อเกมเนื้อเรื่องระดับตำนาน การผจญภัยของ Ellie ที่มืดมน', 990.00, 1990.00, TRUE, 'Naughty Dog', 'Sony'),
+(41, 'Ghost of Tsushima', 'PlayStation', 'เกมซามูไร โลกเปิดสุดสวยงาม ต่อต้านการรุกรานของมองโกล', 890.00, 1790.00, FALSE, 'Sucker Punch', 'Sony'),
+(46, 'Horizon Forbidden West', 'PlayStation', 'ผจญภัยในโลกอนาคตกับ Aloy ล่าเครื่องจักรยักษ์ สำรวจดินแดนใหม่', 990.00, 1990.00, FALSE, 'Guerrilla Games', 'Sony'),
+(42, 'Final Fantasy XVI', 'PlayStation', 'เกม RPG จาก Square Enix เนื้อเรื่องมืดมน แอ็คชั่นดุเดือด', 1490.00, 1990.00, TRUE, 'Square Enix', 'Square Enix'),
+(41, 'Demon''s Souls', 'PlayStation', 'รีเมคเกมระดับตำนาน กราฟิก PS5 สุดอลัง บอสสุดโหด', 1290.00, 1990.00, FALSE, 'Bluepoint Games', 'Sony'),
+(44, 'Gran Turismo 7', 'PlayStation', 'เกมแข่งรถสมจริงที่สุด รถยนต์หลายร้อยคัน สนามแข่งทั่วโลก', 1290.00, 1990.00, FALSE, 'Polyphony Digital', 'Sony'),
+(46, 'Uncharted 4: A Thief''s End', 'PlayStation', 'บทสรุปการผจญภัยของ Nathan Drake ล่าสมบัติโจรสลัด', 490.00, 1490.00, FALSE, 'Naughty Dog', 'Sony'),
+(41, 'Ratchet & Clank: Rift Apart', 'PlayStation', 'เกมแอ็คชั่นผจญภัย กระโดดข้ามมิติ กราฟิก PS5 สุดตา', 990.00, 1790.00, FALSE, 'Insomniac Games', 'Sony'),
+(46, 'Returnal', 'PlayStation', 'เกม Roguelike Sci-Fi ยิงปืน Third-Person ดาวเคราะห์ลึกลับ', 890.00, 1790.00, FALSE, 'Housemarque', 'Sony'),
+(43, 'MLB The Show 24', 'PlayStation', 'เกมเบสบอลสมจริงที่สุด ทีมจริง นักเล่นจริง ระบบ Road to the Show', 1290.00, 1790.00, FALSE, 'San Diego Studio', 'Sony'),
+(42, 'Persona 5 Royal', 'PlayStation', 'เกม RPG สไตล์ญี่ปุ่น เนื้อเรื่องยาว 100+ ชม. ระบบ Social Link', 890.00, 1790.00, FALSE, 'Atlus', 'Atlus'),
+(41, 'Bloodborne', 'PlayStation', 'เกมแอ็คชั่นสุดโหดจาก FromSoftware โลกแบบ Gothic ยากสุดๆ', 590.00, 990.00, FALSE, 'FromSoftware', 'Sony'),
+(43, 'EA Sports FC 24', 'PlayStation', 'เกมฟุตบอลจาก EA ทีมและนักเตะจริงทั่วโลก โหมด Ultimate Team', 1290.00, 1990.00, FALSE, 'EA Vancouver', 'Electronic Arts');
 
 -- Xbox Games (10 เกม)
-INSERT INTO games (category_id, name, platform, description, price, original_price, is_featured, developer, publisher, image_url) VALUES
-(5, 'Halo Infinite', 'Xbox', 'ภาคใหม่ของ Master Chief กลับมาต่อสู้กับ Banished แผนที่กว้าง', 990.00, 1790.00, TRUE, '343 Industries', 'Xbox Game Studios', NULL),
-(4, 'Forza Horizon 5', 'Xbox', 'เกมแข่งรถโลกเปิดในเม็กซิโก รถมากกว่า 500 คัน กราฟิกสวยมาก', 1290.00, 1790.00, TRUE, 'Playground Games', 'Xbox Game Studios', NULL),
-(2, 'Starfield', 'Xbox', 'เกม RPG อวกาศจาก Bethesda สำรวจ 1000 ดาวเคราะห์ สร้างยาน', 1490.00, 1990.00, TRUE, 'Bethesda', 'Xbox Game Studios', NULL),
-(5, 'Gears 5', 'Xbox', 'เกมยิงปืน Third-Person ต่อสู้กับ Locust ภาพสวย เล่น Co-op', 490.00, 1790.00, FALSE, 'The Coalition', 'Xbox Game Studios', NULL),
-(1, 'Sea of Thieves', 'Xbox', 'เกมโจรสลัดออนไลน์ แล่นเรือกับเพื่อน ขุดสมบัติ ต่อสู้กับโจรสลัดอื่น', 590.00, 1290.00, FALSE, 'Rare', 'Xbox Game Studios', NULL),
-(8, 'Microsoft Flight Simulator', 'Xbox', 'เกมจำลองบินสมจริงที่สุดในโลก โลกทั้งใบจากข้อมูลจริง', 1490.00, 1990.00, FALSE, 'Asobo Studio', 'Xbox Game Studios', NULL),
-(4, 'Forza Motorsport', 'Xbox', 'เกมแข่งรถสนามจริง กราฟิกสุดอลัง ระบบฟิสิกส์สมจริง', 1290.00, 1790.00, FALSE, 'Turn 10 Studios', 'Xbox Game Studios', NULL),
-(1, 'Ori and the Will of the Wisps', 'Xbox', 'เกม Platformer กราฟิกสวยงาม เนื้อเรื่องซึ้ง เพลงประกอบดี', 290.00, 890.00, FALSE, 'Moon Studios', 'Xbox Game Studios', NULL),
-(2, 'Fable', 'Xbox', 'เกม RPG ในโลกแฟนตาซี สไตล์อังกฤษ ตัวเลือกดี-ชั่ว ผลกระทบต่อโลก', 1290.00, 1790.00, FALSE, 'Playground Games', 'Xbox Game Studios', NULL),
-(7, 'Age of Empires IV', 'Xbox', 'เกมวางแผนสร้างอาณาจักร แนว Real-Time Strategy ยุคกลาง', 890.00, 1790.00, FALSE, 'Relic Entertainment', 'Xbox Game Studios', NULL);
+INSERT INTO games (category_id, name, platform, description, price, original_price, is_featured, developer, publisher) VALUES
+(45, 'Halo Infinite', 'Xbox', 'ภาคใหม่ของ Master Chief กลับมาต่อสู้กับ Banished แผนที่กว้าง', 990.00, 1790.00, TRUE, '343 Industries', 'Xbox Game Studios'),
+(44, 'Forza Horizon 5', 'Xbox', 'เกมแข่งรถโลกเปิดในเม็กซิโก รถมากกว่า 500 คัน กราฟิกสวยมาก', 1290.00, 1790.00, TRUE, 'Playground Games', 'Xbox Game Studios'),
+(42, 'Starfield', 'Xbox', 'เกม RPG อวกาศจาก Bethesda สำรวจ 1000 ดาวเคราะห์ สร้างยาน', 1490.00, 1990.00, TRUE, 'Bethesda', 'Xbox Game Studios'),
+(45, 'Gears 5', 'Xbox', 'เกมยิงปืน Third-Person ต่อสู้กับ Locust ภาพสวย เล่น Co-op', 490.00, 1790.00, FALSE, 'The Coalition', 'Xbox Game Studios'),
+(41, 'Sea of Thieves', 'Xbox', 'เกมโจรสลัดออนไลน์ แล่นเรือกับเพื่อน ขุดสมบัติ ต่อสู้กับโจรสลัดอื่น', 590.00, 1290.00, FALSE, 'Rare', 'Xbox Game Studios'),
+(48, 'Microsoft Flight Simulator', 'Xbox', 'เกมจำลองบินสมจริงที่สุดในโลก โลกทั้งใบจากข้อมูลจริง', 1490.00, 1990.00, FALSE, 'Asobo Studio', 'Xbox Game Studios'),
+(44, 'Forza Motorsport', 'Xbox', 'เกมแข่งรถสนามจริง กราฟิกสุดอลัง ระบบฟิสิกส์สมจริง', 1290.00, 1790.00, FALSE, 'Turn 10 Studios', 'Xbox Game Studios'),
+(41, 'Ori and the Will of the Wisps', 'Xbox', 'เกม Platformer กราฟิกสวยงาม เนื้อเรื่องซึ้ง เพลงประกอบดี', 290.00, 890.00, FALSE, 'Moon Studios', 'Xbox Game Studios'),
+(42, 'Fable', 'Xbox', 'เกม RPG ในโลกแฟนตาซี สไตล์อังกฤษ ตัวเลือกดี-ชั่ว ผลกระทบต่อโลก', 1290.00, 1790.00, FALSE, 'Playground Games', 'Xbox Game Studios'),
+(47, 'Age of Empires IV', 'Xbox', 'เกมวางแผนสร้างอาณาจักร แนว Real-Time Strategy ยุคกลาง', 890.00, 1790.00, FALSE, 'Relic Entertainment', 'Xbox Game Studios');
 
 -- Nintendo Games (10 เกม)
-INSERT INTO games (category_id, name, platform, description, price, original_price, is_featured, developer, publisher, image_url) VALUES
-(6, 'The Legend of Zelda: Tears of the Kingdom', 'Nintendo', 'ภาคต่อของ Breath of the Wild สำรวจทั้งบนดินและบนฟ้า สร้างยานพาหนะ', 1890.00, 2090.00, TRUE, 'Nintendo EPD', 'Nintendo', NULL),
-(1, 'Super Mario Bros. Wonder', 'Nintendo', 'เกมมาริโอ้ภาคใหม่ 2D ดอกไม้มหัศจรรย์เปลี่ยนโลก Co-op 4 คน', 1590.00, 1790.00, TRUE, 'Nintendo EPD', 'Nintendo', NULL),
-(2, 'Pokemon Scarlet/Violet', 'Nintendo', 'เกมโปเกม่อนโลกเปิดครั้งแรก จับโปเกม่อน สำรวจภูมิภาค Paldea', 1590.00, 1790.00, TRUE, 'Game Freak', 'Nintendo', NULL),
-(3, 'Nintendo Switch Sports', 'Nintendo', 'เกมกีฬา 6 ประเภท เล่นกับเพื่อนหรือออนไลน์ ใช้ Joy-Con ขยับตัว', 990.00, 1490.00, FALSE, 'Nintendo EPD', 'Nintendo', NULL),
-(1, 'Super Smash Bros. Ultimate', 'Nintendo', 'เกมต่อสู้รวมตัวละครนินเทนโด้กว่า 80 ตัว สนามแข่ง 100+ แบบ', 1390.00, 1790.00, FALSE, 'Bandai Namco', 'Nintendo', NULL),
-(6, 'Animal Crossing: New Horizons', 'Nintendo', 'เกมจำลองชีวิตบนเกาะ ตกแต่งบ้าน สร้างเกาะในฝัน', 1190.00, 1790.00, FALSE, 'Nintendo EPD', 'Nintendo', NULL),
-(4, 'Mario Kart 8 Deluxe', 'Nintendo', 'เกมแข่งรถมาริโอ้ 48 สนาม ตัวละครมากมาย Battle Mode', 1390.00, 1790.00, FALSE, 'Nintendo EPD', 'Nintendo', NULL),
-(1, 'Metroid Dread', 'Nintendo', 'เกม Metroidvania ภาคใหม่ในรอบ 19 ปี Samus vs E.M.M.I.', 990.00, 1590.00, FALSE, 'MercurySteam', 'Nintendo', NULL),
-(8, 'Pikmin 4', 'Nintendo', 'เกมวางแผนควบคุม Pikmin สำรวจโลก เก็บสมบัติ ไขปริศนา', 1390.00, 1590.00, FALSE, 'Nintendo EPD', 'Nintendo', NULL),
-(6, 'Fire Emblem Engage', 'Nintendo', 'เกมวางแผนแนว SRPG เรียก Emblem จากภาคก่อนมาช่วยรบ', 1390.00, 1590.00, FALSE, 'Intelligent Systems', 'Nintendo', NULL);
+INSERT INTO games (category_id, name, platform, description, price, original_price, is_featured, developer, publisher) VALUES
+(46, 'The Legend of Zelda: Tears of the Kingdom', 'Nintendo', 'ภาคต่อของ Breath of the Wild สำรวจทั้งบนดินและบนฟ้า สร้างยานพาหนะ', 1890.00, 2090.00, TRUE, 'Nintendo EPD', 'Nintendo'),
+(41, 'Super Mario Bros. Wonder', 'Nintendo', 'เกมมาริโอ้ภาคใหม่ 2D ดอกไม้มหัศจรรย์เปลี่ยนโลก Co-op 4 คน', 1590.00, 1790.00, TRUE, 'Nintendo EPD', 'Nintendo'),
+(42, 'Pokemon Scarlet/Violet', 'Nintendo', 'เกมโปเกม่อนโลกเปิดครั้งแรก จับโปเกม่อน สำรวจภูมิภาค Paldea', 1590.00, 1790.00, TRUE, 'Game Freak', 'Nintendo'),
+(43, 'Nintendo Switch Sports', 'Nintendo', 'เกมกีฬา 6 ประเภท เล่นกับเพื่อนหรือออนไลน์ ใช้ Joy-Con ขยับตัว', 990.00, 1490.00, FALSE, 'Nintendo EPD', 'Nintendo'),
+(41, 'Super Smash Bros. Ultimate', 'Nintendo', 'เกมต่อสู้รวมตัวละครนินเทนโด้กว่า 80 ตัว สนามแข่ง 100+ แบบ', 1390.00, 1790.00, FALSE, 'Bandai Namco', 'Nintendo'),
+(46, 'Animal Crossing: New Horizons', 'Nintendo', 'เกมจำลองชีวิตบนเกาะ ตกแต่งบ้าน สร้างเกาะในฝัน', 1190.00, 1790.00, FALSE, 'Nintendo EPD', 'Nintendo'),
+(44, 'Mario Kart 8 Deluxe', 'Nintendo', 'เกมแข่งรถมาริโอ้ 48 สนาม ตัวละครมากมาย Battle Mode', 1390.00, 1790.00, FALSE, 'Nintendo EPD', 'Nintendo'),
+(41, 'Metroid Dread', 'Nintendo', 'เกม Metroidvania ภาคใหม่ในรอบ 19 ปี Samus vs E.M.M.I.', 990.00, 1590.00, FALSE, 'MercurySteam', 'Nintendo'),
+(48, 'Pikmin 4', 'Nintendo', 'เกมวางแผนควบคุม Pikmin สำรวจโลก เก็บสมบัติ ไขปริศนา', 1390.00, 1590.00, FALSE, 'Nintendo EPD', 'Nintendo'),
+(46, 'Fire Emblem Engage', 'Nintendo', 'เกมวางแผนแนว SRPG เรียก Emblem จากภาคก่อนมาช่วยรบ', 1390.00, 1590.00, FALSE, 'Intelligent Systems', 'Nintendo');
 
 -- Epic Games (5 เกม)
-INSERT INTO games (category_id, name, platform, description, price, original_price, is_featured, developer, publisher, image_url) VALUES
-(5, 'Fortnite V-Bucks 1000', 'Epic Games', 'เงินในเกม Fortnite สำหรับซื้อ Battle Pass และไอเทมในร้าน', 350.00, 350.00, TRUE, 'Epic Games', 'Epic Games', NULL),
-(5, 'Fortnite V-Bucks 2800', 'Epic Games', 'เงินในเกม Fortnite แพ็คใหญ่ คุ้มค่ากว่า ซื้อสกินหลายตัว', 890.00, 890.00, FALSE, 'Epic Games', 'Epic Games', NULL),
-(5, 'Fortnite V-Bucks 5000', 'Epic Games', 'เงินในเกม Fortnite แพ็คยักษ์ คุ้มที่สุด สำหรับสายช้อป', 1490.00, 1490.00, FALSE, 'Epic Games', 'Epic Games', NULL),
-(1, 'Alan Wake 2', 'Epic Games', 'เกมสยองขวัญจาก Remedy นักเขียนติดอยู่ในเรื่องราวของตัวเอง', 1490.00, 1790.00, TRUE, 'Remedy Entertainment', 'Epic Games', NULL),
-(5, 'Rocket League Credits 1100', 'Epic Games', 'เงินในเกม Rocket League สำหรับซื้อไอเทมและ Rocket Pass', 350.00, 350.00, FALSE, 'Psyonix', 'Epic Games', NULL);
+INSERT INTO games (category_id, name, platform, description, price, original_price, is_featured, developer, publisher) VALUES
+(45, 'Fortnite V-Bucks 1000', 'Epic Games', 'เงินในเกม Fortnite สำหรับซื้อ Battle Pass และไอเทมในร้าน', 350.00, 350.00, TRUE, 'Epic Games', 'Epic Games'),
+(45, 'Fortnite V-Bucks 2800', 'Epic Games', 'เงินในเกม Fortnite แพ็คใหญ่ คุ้มค่ากว่า ซื้อสกินหลายตัว', 890.00, 890.00, FALSE, 'Epic Games', 'Epic Games'),
+(45, 'Fortnite V-Bucks 5000', 'Epic Games', 'เงินในเกม Fortnite แพ็คยักษ์ คุ้มที่สุด สำหรับสายช้อป', 1490.00, 1490.00, FALSE, 'Epic Games', 'Epic Games'),
+(41, 'Alan Wake 2', 'Epic Games', 'เกมสยองขวัญจาก Remedy นักเขียนติดอยู่ในเรื่องราวของตัวเอง', 1490.00, 1790.00, TRUE, 'Remedy Entertainment', 'Epic Games'),
+(45, 'Rocket League Credits 1100', 'Epic Games', 'เงินในเกม Rocket League สำหรับซื้อไอเทมและ Rocket Pass', 350.00, 350.00, FALSE, 'Psyonix', 'Epic Games');
 
 -- =============================================
 -- 4. Game Codes (500+ รหัส)
