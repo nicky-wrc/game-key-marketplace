@@ -297,15 +297,15 @@ function AllGames() {
                           toggleWishlist(game.game_id);
                         }}
                         className={`absolute top-3 right-3 p-2 rounded-full transition ${
-                          wishlist.includes(game.game_id)
+                          wishlist.includes(parseInt(game.game_id))
                             ? 'bg-red-600 text-white'
                             : 'bg-white/80 text-gray-600 hover:bg-white'
                         }`}
-                        title={wishlist.includes(game.game_id) ? 'ลบออกจากรายการโปรด' : 'เพิ่มในรายการโปรด'}
+                        title={wishlist.includes(parseInt(game.game_id)) ? 'ลบออกจากรายการโปรด' : 'เพิ่มในรายการโปรด'}
                       >
                         <Heart 
                           size={18} 
-                          className={wishlist.includes(game.game_id) ? 'fill-current' : ''}
+                          className={wishlist.includes(parseInt(game.game_id)) ? 'fill-current' : ''}
                         />
                       </button>
                     </div>
