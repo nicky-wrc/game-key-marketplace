@@ -25,10 +25,14 @@ function Navbar() {
   const userMenuRef = useRef(null);
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-      fetchUserData();
+    try {
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        setUser(JSON.parse(userData));
+        fetchUserData();
+      }
+    } catch (err) {
+      console.error('Error parsing user data:', err);
     }
     checkDarkMode();
   }, []);

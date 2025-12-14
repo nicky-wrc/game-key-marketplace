@@ -19,7 +19,15 @@ function Home() {
   const [filteredGames, setFilteredGames] = useState([]);
   const [appliedFilters, setAppliedFilters] = useState(null);
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('user')); 
+  let user = null;
+  try {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      user = JSON.parse(userData);
+    }
+  } catch (err) {
+    console.error('Error parsing user:', err);
+  } 
 
   useEffect(() => {
     fetchGames();
