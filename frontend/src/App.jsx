@@ -9,6 +9,7 @@ import Admin from './pages/Admin';
 import Profile from './pages/Profile';
 import GameDetail from './pages/GameDetail';
 import AllGames from './pages/AllGames';
+import Categories from './pages/Categories';
 import ToastContainer from './components/ToastContainer';
 
 function App() {
@@ -25,6 +26,8 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/games" element={<AllGames />} />
         <Route path="/games/:id" element={<GameDetail />} />
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/categories/:id" element={<Categories />} />
       </Routes>
       <ToastContainer />
     </>

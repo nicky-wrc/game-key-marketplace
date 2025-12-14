@@ -1,91 +1,136 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, Search, Grid3x3, List, Package, Gamepad2, Filter, ArrowUpDown, Heart } from 'lucide-react';
+import { ArrowLeft, Search, Grid3x3, List, Package, Gamepad2, Filter, ArrowUpDown, Heart, X } from 'lucide-react';
 import { showToast } from '../components/ToastContainer';
 import { GameCardSkeleton } from '../components/LoadingSkeleton';
+import Pagination from '../components/Pagination';
 
 function AllGames() {
   const [games, setGames] = useState([]);
-  const [filteredGames, setFilteredGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState('grid'); // grid or list
-  const [selectedPlatform, setSelectedPlatform] = useState('all');
-  const [sortBy, setSortBy] = useState('default'); // default, price-low, price-high, name
+  const [selectedPlatform, setSelectedPlatform] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [sortBy, setSortBy] = useState('newest');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
-    fetchGames();
-    loadWishlist();
+    fetchCategories();
+    if (user) {
+      fetchWishlist();
+    }
   }, []);
 
   useEffect(() => {
-    let filtered = [...games];
+    setCurrentPage(1);
+  }, [searchQuery, selectedPlatform, selectedCategory, sortBy, minPrice, maxPrice]);
 
-    // กรองตามคำค้นหา
-    if (searchQuery.trim() !== '') {
-      filtered = filtered.filter(game => 
-        game.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        game.platform.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (game.description && game.description.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-    }
+  useEffect(() => {
+    fetchGames();
+  }, [currentPage, searchQuery, selectedPlatform, selectedCategory, sortBy, minPrice, maxPrice]);
 
-    // กรองตามแพลตฟอร์ม
-    if (selectedPlatform !== 'all') {
-      filtered = filtered.filter(game => game.platform.toLowerCase() === selectedPlatform.toLowerCase());
-    }
-
-    // เรียงลำดับ
-    switch(sortBy) {
-      case 'price-low':
-        filtered.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-        break;
-      case 'price-high':
-        filtered.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-        break;
-      case 'name':
-        filtered.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      default:
-        break;
-    }
-
-    setFilteredGames(filtered);
-  }, [searchQuery, games, selectedPlatform, sortBy]);
-
-  const loadWishlist = () => {
-    const saved = localStorage.getItem('wishlist');
-    if (saved) {
-      setWishlist(JSON.parse(saved));
+  const fetchWishlist = async () => {
+    if (!user) return;
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const res = await axios.get('http://localhost:5000/api/wishlist', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // แปลง array ของ game objects เป็น array ของ game_id
+      const wishlistIds = res.data.map(game => game.game_id);
+      setWishlist(wishlistIds);
+    } catch (err) {
+      console.error('Error fetching wishlist:', err);
     }
   };
 
-  const toggleWishlist = (gameId) => {
-    const isInWishlist = wishlist.includes(gameId);
-    const newWishlist = isInWishlist
-      ? wishlist.filter(id => id !== gameId)
-      : [...wishlist, gameId];
-    setWishlist(newWishlist);
-    localStorage.setItem('wishlist', JSON.stringify(newWishlist));
-    showToast(
-      isInWishlist ? 'ลบออกจากรายการโปรดแล้ว' : 'เพิ่มในรายการโปรดแล้ว',
-      isInWishlist ? 'info' : 'success'
-    );
+  const toggleWishlist = async (gameId, e) => {
+    if (e) e.stopPropagation();
+    
+    if (!user) {
+      showToast('กรุณาเข้าสู่ระบบก่อน', 'warning');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        showToast('กรุณาเข้าสู่ระบบก่อน', 'warning');
+        navigate('/login');
+        return;
+      }
+
+      const isInWishlist = wishlist.includes(gameId);
+      
+      // เรียก API เพื่อ toggle wishlist
+      const res = await axios.post(`http://localhost:5000/api/wishlist/toggle/${gameId}`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      // อัปเดต state ตาม response
+      if (res.data.inWishlist) {
+        setWishlist([...wishlist, gameId]);
+      } else {
+        setWishlist(wishlist.filter(id => id !== gameId));
+      }
+
+      showToast(res.data.message || (isInWishlist ? 'ลบออกจากรายการโปรดแล้ว' : 'เพิ่มในรายการโปรดแล้ว'), 
+        isInWishlist ? 'info' : 'success');
+    } catch (err) {
+      showToast(err.response?.data?.error || 'เกิดข้อผิดพลาด', 'error');
+    }
   };
 
   const getPlatforms = () => {
-    const platforms = [...new Set(games.map(g => g.platform))];
-    return platforms;
+    return ['Steam', 'PlayStation', 'Xbox', 'Nintendo', 'Epic Games'];
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/categories');
+      // ลบหมวดหมู่ซ้ำ
+      const uniqueCategories = res.data.filter((cat, index, self) => 
+        index === self.findIndex(c => c.category_id === cat.category_id)
+      );
+      setCategories(uniqueCategories);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const fetchGames = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/games');
-      setGames(res.data);
-      setFilteredGames(res.data);
+      setLoading(true);
+      const params = new URLSearchParams({
+        page: currentPage,
+        limit: 20,
+        ...(searchQuery && { search: searchQuery }),
+        ...(selectedPlatform && { platform: selectedPlatform }),
+        ...(selectedCategory && { category: selectedCategory }),
+        ...(minPrice && { minPrice }),
+        ...(maxPrice && { maxPrice }),
+        ...(sortBy && { sort: sortBy })
+      });
+
+      const res = await axios.get(`http://localhost:5000/api/games?${params}`);
+      const gamesData = res.data.games || [];
+      // ลบเกมซ้ำโดยใช้ game_id เป็น key
+      const uniqueGames = gamesData.filter((game, index, self) => 
+        index === self.findIndex(g => g.game_id === game.game_id)
+      );
+      setGames(uniqueGames);
+      setPagination(res.data.pagination);
     } catch (err) {
       console.error(err);
     } finally {
@@ -142,13 +187,13 @@ function AllGames() {
       {/* Search & Filter Bar */}
       <div className="bg-white shadow-md border-b sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             {/* Search */}
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
-                placeholder="ค้นหาเกม, แพลตฟอร์ม..."
+                placeholder="ค้นหาเกม..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none text-gray-700 font-medium"
@@ -163,9 +208,24 @@ function AllGames() {
                 onChange={(e) => setSelectedPlatform(e.target.value)}
                 className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none text-gray-700 font-medium appearance-none bg-white cursor-pointer"
               >
-                <option value="all">ทุกแพลตฟอร์ม</option>
+                <option value="">ทุกแพลตฟอร์ม</option>
                 {getPlatforms().map(platform => (
                   <option key={platform} value={platform}>{platform}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Category Filter */}
+            <div className="relative">
+              <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none text-gray-700 font-medium appearance-none bg-white cursor-pointer"
+              >
+                <option value="">ทุกหมวดหมู่</option>
+                {categories.map(cat => (
+                  <option key={cat.category_id} value={cat.category_id}>{cat.name_th}</option>
                 ))}
               </select>
             </div>
@@ -178,29 +238,55 @@ function AllGames() {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none text-gray-700 font-medium appearance-none bg-white cursor-pointer"
               >
-                <option value="default">เรียงตามค่าเริ่มต้น</option>
-                <option value="price-low">ราคา: ต่ำ → สูง</option>
-                <option value="price-high">ราคา: สูง → ต่ำ</option>
+                <option value="newest">ใหม่ล่าสุด</option>
+                <option value="price_low">ราคา: ต่ำ → สูง</option>
+                <option value="price_high">ราคา: สูง → ต่ำ</option>
                 <option value="name">ชื่อ: A → Z</option>
+                <option value="rating">คะแนนสูงสุด</option>
+                <option value="popular">ยอดนิยม</option>
               </select>
             </div>
           </div>
+
+          {/* Price Range */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="relative">
+              <input
+                type="number"
+                placeholder="ราคาต่ำสุด"
+                value={minPrice}
+                onChange={(e) => setMinPrice(e.target.value)}
+                className="w-full pl-4 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none text-gray-700 font-medium"
+              />
+            </div>
+            <div className="relative">
+              <input
+                type="number"
+                placeholder="ราคาสูงสุด"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(e.target.value)}
+                className="w-full pl-4 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none text-gray-700 font-medium"
+              />
+            </div>
+          </div>
           
-          {(searchQuery || selectedPlatform !== 'all') && (
-            <div className="flex items-center justify-between">
+          {(searchQuery || selectedPlatform || selectedCategory || minPrice || maxPrice) && (
+            <div className="flex items-center justify-between mb-4">
               <p className="text-sm text-gray-500">
-                พบ {filteredGames.length} รายการ
-                {searchQuery && ` จาก "${searchQuery}"`}
-                {selectedPlatform !== 'all' && ` ในแพลตฟอร์ม ${selectedPlatform}`}
+                {pagination ? `พบ ${pagination.totalGames} รายการ` : 'กำลังค้นหา...'}
               </p>
               <button
                 onClick={() => {
                   setSearchQuery('');
-                  setSelectedPlatform('all');
-                  setSortBy('default');
+                  setSelectedPlatform('');
+                  setSelectedCategory('');
+                  setMinPrice('');
+                  setMaxPrice('');
+                  setSortBy('newest');
                 }}
-                className="text-sm text-red-600 hover:text-red-700 font-bold"
+                className="text-sm text-red-600 hover:text-red-700 font-bold flex items-center gap-1"
               >
+                <X size={16} />
                 ล้างทั้งหมด
               </button>
             </div>
@@ -216,7 +302,7 @@ function AllGames() {
               <GameCardSkeleton key={i} />
             ))}
           </div>
-        ) : filteredGames.length === 0 ? (
+        ) : games.length === 0 ? (
           <div className="text-center py-20">
             <Package className="w-20 h-20 text-gray-400 mx-auto mb-4" />
             <p className="text-gray-500 text-xl">ไม่พบเกมที่ค้นหา</p>
@@ -232,7 +318,7 @@ function AllGames() {
             {/* Grid View */}
             {viewMode === 'grid' && (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {filteredGames.map((game) => (
+                {games.map((game) => (
                   <div
                     key={game.game_id}
                     className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition duration-300 group border border-gray-100 cursor-pointer"
@@ -250,7 +336,7 @@ function AllGames() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          toggleWishlist(game.game_id);
+                          toggleWishlist(game.game_id, e);
                         }}
                         className={`absolute top-3 right-3 p-2 rounded-full transition ${
                           wishlist.includes(game.game_id)
@@ -296,7 +382,7 @@ function AllGames() {
             {/* List View */}
             {viewMode === 'list' && (
               <div className="space-y-4">
-                {filteredGames.map((game) => (
+                {games.map((game) => (
                   <div
                     key={game.game_id}
                     className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 group border border-gray-100 cursor-pointer"
@@ -316,7 +402,7 @@ function AllGames() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            toggleWishlist(game.game_id);
+                            toggleWishlist(game.game_id, e);
                           }}
                           className={`absolute top-3 right-3 p-2 rounded-full transition ${
                             wishlist.includes(game.game_id)
@@ -361,6 +447,15 @@ function AllGames() {
                   </div>
                 ))}
               </div>
+            )}
+
+            {/* Pagination */}
+            {pagination && pagination.totalPages > 1 && (
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                onPageChange={setCurrentPage}
+              />
             )}
           </>
         )}
