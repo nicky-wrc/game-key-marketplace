@@ -83,18 +83,32 @@ function Home() {
   const fetchGames = async () => {
     try {
       const res = await axiosInstance.get('/api/games');
+      console.log('API Response:', res.data); // Debug log
+      
       // รองรับทั้ง res.data.games และ res.data โดยตรง
-      const gamesData = res.data.games || res.data || [];
+      let gamesData = [];
+      if (Array.isArray(res.data)) {
+        gamesData = res.data;
+      } else if (res.data && Array.isArray(res.data.games)) {
+        gamesData = res.data.games;
+      } else if (res.data && res.data.data && Array.isArray(res.data.data)) {
+        gamesData = res.data.data;
+      }
+      
+      console.log('Games Data:', gamesData.length, 'games'); // Debug log
       
       // กรองเกมซ้ำ (ใช้ game_id เป็น unique key)
       const uniqueGames = gamesData.filter((game, index, self) =>
         index === self.findIndex(g => g.game_id === game.game_id)
       );
       
+      console.log('Unique Games:', uniqueGames.length, 'games'); // Debug log
+      
       setGames(uniqueGames);
       setFilteredGames(uniqueGames);
     } catch (err) {
       console.error('Failed to fetch games', err);
+      console.error('Error details:', err.response?.data || err.message);
       showToast('ไม่สามารถโหลดเกมได้', 'error');
     } finally {
       setLoading(false);

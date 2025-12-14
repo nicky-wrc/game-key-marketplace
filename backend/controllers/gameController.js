@@ -3,10 +3,19 @@ const db = require('../db');
 // ดึงเกมทั้งหมด (หน้าแรก)
 exports.getAllGames = async (req, res) => {
     try {
-        const result = await db.query('SELECT * FROM games ORDER BY game_id DESC');
+        const result = await db.query(`
+            SELECT 
+                g.*,
+                c.name as category_name,
+                c.name_th as category_name_th
+            FROM games g
+            LEFT JOIN categories c ON g.category_id = c.category_id
+            ORDER BY g.game_id DESC
+        `);
+        console.log(`Fetched ${result.rows.length} games from database`);
         res.json(result.rows);
     } catch (err) {
-        console.error(err);
+        console.error('Error fetching games:', err);
         res.status(500).json({ message: 'Server error' });
     }
 };
