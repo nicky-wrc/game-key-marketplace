@@ -4,7 +4,7 @@ import axiosInstance from '../utils/axios';
 import { 
   Gamepad2, Search, Gift, CreditCard, Box, User, LogOut, ShieldAlert, 
   Bell, ShoppingCart, Menu, X, Heart, TrendingUp, Filter, 
-  ChevronDown, Settings, Package, History, Compare, Sun, Moon
+  ChevronDown, Settings, Package, History, GitCompare, Sun, Moon
 } from 'lucide-react';
 import { showToast } from './ToastContainer';
 
@@ -338,7 +338,7 @@ function Navbar() {
                           onClick={() => { navigate('/compare'); setShowUserMenu(false); }}
                           className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-gray-700 transition text-left"
                         >
-                          <Compare className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                          <GitCompare className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                           <span className="text-gray-700 dark:text-gray-300">เปรียบเทียบเกม</span>
                         </button>
                         {user.role === 'admin' && (
@@ -387,7 +387,7 @@ function Navbar() {
             <NavLink icon={<Gift size={18} />} label="สุ่มของรางวัล" onClick={() => navigate('/gacha')} />
             <NavLink icon={<Box size={18} />} label="คลังของฉัน" onClick={() => navigate('/inventory')} />
             {user && <NavLink icon={<History size={18} />} label="ประวัติการสั่งซื้อ" onClick={() => navigate('/orders')} />}
-            <NavLink icon={<Compare size={18} />} label="เปรียบเทียบเกม" onClick={() => navigate('/compare')} />
+            <NavLink icon={<GitCompare size={18} />} label="เปรียบเทียบเกม" onClick={() => navigate('/compare')} />
             <NavLink 
               icon={<Gift size={18} />} 
               label="รับฟรี" 
@@ -406,7 +406,7 @@ function Navbar() {
               <MobileNavLink icon={<Gift />} label="สุ่มของรางวัล" onClick={() => { navigate('/gacha'); setMobileMenuOpen(false); }} />
               <MobileNavLink icon={<Box />} label="คลังของฉัน" onClick={() => { navigate('/inventory'); setMobileMenuOpen(false); }} />
               {user && <MobileNavLink icon={<History />} label="ประวัติการสั่งซื้อ" onClick={() => { navigate('/orders'); setMobileMenuOpen(false); }} />}
-              <MobileNavLink icon={<Compare />} label="เปรียบเทียบเกม" onClick={() => { navigate('/compare'); setMobileMenuOpen(false); }} />
+              <MobileNavLink icon={<GitCompare />} label="เปรียบเทียบเกม" onClick={() => { navigate('/compare'); setMobileMenuOpen(false); }} />
               <MobileNavLink icon={<Gift />} label="รับฟรี" onClick={() => { handleDailyReward(); setMobileMenuOpen(false); }} highlight />
             </div>
             
