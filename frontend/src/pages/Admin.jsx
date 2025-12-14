@@ -414,14 +414,14 @@ function Admin() {
         </div>
 
         {/* Content */}
-        <div className="bg-gray-800 p-8 rounded-2xl shadow-2xl border border-red-200">
+        <div className="bg-white p-8 rounded-2xl shadow-2xl border-2 border-red-200">
           {/* TAB: Dashboard */}
           {activeTab === 'dashboard' && (
             <div>
               <h2 className="text-2xl font-bold mb-6 text-indigo-400 border-l-4 border-indigo-500 pl-4">Dashboard & สถิติ</h2>
               
               {!dashboardStats ? (
-                <p className="text-gray-400 text-center py-10">กำลังโหลดข้อมูล...</p>
+                <p className="text-gray-600 text-center py-10">กำลังโหลดข้อมูล...</p>
               ) : (
                 <>
                   {/* Overview Cards */}
@@ -481,21 +481,21 @@ function Admin() {
                     ) : (
                       <div className="space-y-3">
                         {dashboardStats.topGames.map((game, index) => (
-                          <div key={game.game_id} className="flex items-center justify-between bg-gray-800 p-4 rounded-lg">
+                          <div key={game.game_id} className="flex items-center justify-between bg-white border-2 border-red-200 p-4 rounded-lg shadow-sm">
                             <div className="flex items-center gap-4">
                               <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white ${
-                                index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : index === 2 ? 'bg-orange-600' : 'bg-gray-700'
+                                index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : index === 2 ? 'bg-orange-600' : 'bg-red-500'
                               }`}>
                                 {index + 1}
                               </div>
                               <div>
-                                <div className="font-bold text-white">{game.name}</div>
-                                <div className="text-sm text-gray-400">{game.platform}</div>
+                                <div className="font-bold text-gray-900">{game.name}</div>
+                                <div className="text-sm text-gray-600">{game.platform}</div>
                               </div>
                             </div>
                             <div className="text-right">
-                              <div className="text-green-400 font-bold">฿{Number(game.revenue).toLocaleString()}</div>
-                              <div className="text-xs text-gray-400">{game.sales_count} ครั้ง</div>
+                              <div className="text-red-600 font-bold">฿{Number(game.revenue).toLocaleString()}</div>
+                              <div className="text-xs text-gray-600">{game.sales_count} ครั้ง</div>
                             </div>
                           </div>
                         ))}
@@ -507,16 +507,16 @@ function Admin() {
                   <div className="bg-white p-6 rounded-xl border border-red-200">
                     <h3 className="text-xl font-bold mb-4 text-red-400">📊 รายได้รายวัน (7 วันล่าสุด)</h3>
                     {dashboardStats.dailyRevenue.length === 0 ? (
-                      <p className="text-gray-400">ยังไม่มีข้อมูล</p>
+                      <p className="text-gray-600">ยังไม่มีข้อมูล</p>
                     ) : (
                       <div className="space-y-3">
                         {dashboardStats.dailyRevenue.map((day, index) => (
-                          <div key={index} className="flex items-center justify-between bg-gray-800 p-4 rounded-lg">
+                          <div key={index} className="flex items-center justify-between bg-white border-2 border-red-200 p-4 rounded-lg shadow-sm">
                             <div>
-                              <div className="font-bold text-white">{new Date(day.date).toLocaleDateString('th-TH')}</div>
-                              <div className="text-sm text-gray-400">{day.transaction_count} รายการ</div>
+                              <div className="font-bold text-gray-900">{new Date(day.date).toLocaleDateString('th-TH')}</div>
+                              <div className="text-sm text-gray-600">{day.transaction_count} รายการ</div>
                             </div>
-                            <div className="text-green-400 font-bold text-lg">฿{Number(day.revenue).toLocaleString()}</div>
+                            <div className="text-red-600 font-bold text-lg">฿{Number(day.revenue).toLocaleString()}</div>
                           </div>
                         ))}
                       </div>
@@ -533,7 +533,7 @@ function Admin() {
               <h2 className="text-2xl font-bold mb-6 text-red-400 border-l-4 border-red-500 pl-4">จัดการเกมทั้งหมด</h2>
               
               {games.length === 0 ? (
-                <p className="text-gray-400 text-center py-10">ยังไม่มีเกมในระบบ</p>
+                <p className="text-gray-600 text-center py-10">ยังไม่มีเกมในระบบ</p>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left">
@@ -546,15 +546,15 @@ function Admin() {
                         <th className="p-3 text-center">จัดการ</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-700">
+                    <tbody className="divide-y divide-red-200 bg-white">
                       {games.map((game) => (
-                        <tr key={game.game_id} className="hover:bg-gray-700/30">
+                        <tr key={game.game_id} className="hover:bg-red-50 transition">
                           <td className="p-3">
                             <img src={game.image_url} alt={game.name} className="w-16 h-16 object-cover rounded-lg" />
                           </td>
-                          <td className="p-3 font-bold text-white">{game.name}</td>
-                          <td className="p-3 text-gray-400 text-sm">{game.platform}</td>
-                          <td className="p-3 text-green-400 font-bold">฿{Number(game.price).toLocaleString()}</td>
+                          <td className="p-3 font-bold text-gray-900">{game.name}</td>
+                          <td className="p-3 text-gray-600 text-sm">{game.platform}</td>
+                          <td className="p-3 text-red-600 font-bold">฿{Number(game.price).toLocaleString()}</td>
                           <td className="p-3 text-center">
                             <div className="flex gap-2 justify-center">
                               <button onClick={() => setEditingGame(game)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="แก้ไข">
@@ -580,31 +580,31 @@ function Admin() {
               <h2 className="text-2xl font-bold mb-6 text-red-400 border-l-4 border-red-500 pl-4">เพิ่มเกมใหม่</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label className="block text-sm text-gray-400 mb-1">ชื่อเกม</label>
-                    <input required placeholder="Ex. Valorant" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-red-500 outline-none transition" 
+                    <label className="block text-sm text-gray-700 mb-1 font-medium">ชื่อเกม</label>
+                    <input required placeholder="Ex. Valorant" className="w-full bg-white border-2 border-red-200 p-3 rounded-lg focus:border-red-500 outline-none transition text-gray-900" 
                         value={gameForm.name} onChange={e => setGameForm({...gameForm, name: e.target.value})} />
                 </div>
                 <div>
-                    <label className="block text-sm text-gray-400 mb-1">แพลตฟอร์ม</label>
-                    <input required placeholder="Ex. Steam" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-red-500 outline-none transition" 
+                    <label className="block text-sm text-gray-700 mb-1 font-medium">แพลตฟอร์ม</label>
+                    <input required placeholder="Ex. Steam" className="w-full bg-white border-2 border-red-200 p-3 rounded-lg focus:border-red-500 outline-none transition text-gray-900" 
                         value={gameForm.platform} onChange={e => setGameForm({...gameForm, platform: e.target.value})} />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label className="block text-sm text-gray-400 mb-1">ราคาขาย (บาท)</label>
-                    <input required type="number" placeholder="0.00" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-red-500 outline-none transition" 
+                    <label className="block text-sm text-gray-700 mb-1 font-medium">ราคาขาย (บาท)</label>
+                    <input required type="number" placeholder="0.00" className="w-full bg-white border-2 border-red-200 p-3 rounded-lg focus:border-red-500 outline-none transition text-gray-900" 
                         value={gameForm.price} onChange={e => setGameForm({...gameForm, price: e.target.value})} />
                 </div>
                 <div>
-                    <label className="block text-sm text-gray-400 mb-1">อัปโหลดรูปปกเกม</label>
-                    <input type="file" accept="image/*" className="w-full bg-white border border-red-200 p-2 rounded-lg focus:border-red-500 text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer" 
+                    <label className="block text-sm text-gray-700 mb-1 font-medium">อัปโหลดรูปปกเกม</label>
+                    <input type="file" accept="image/*" className="w-full bg-white border-2 border-red-200 p-2 rounded-lg focus:border-red-500 text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer" 
                         onChange={e => setGameForm({...gameForm, imageFile: e.target.files[0]})} />
                 </div>
               </div>
               <div>
-                  <label className="block text-sm text-gray-400 mb-1">รายละเอียดเกม</label>
-                  <textarea required placeholder="คำอธิบายเกม..." className="w-full bg-white border border-red-200 p-3 rounded-lg h-32 focus:border-red-500 outline-none transition" 
+                  <label className="block text-sm text-gray-700 mb-1 font-medium">รายละเอียดเกม</label>
+                  <textarea required placeholder="คำอธิบายเกม..." className="w-full bg-white border-2 border-red-200 p-3 rounded-lg h-32 focus:border-red-500 outline-none transition text-gray-900" 
                     value={gameForm.description} onChange={e => setGameForm({...gameForm, description: e.target.value})} />
               </div>
               <button type="submit" className="w-full bg-red-600 hover:bg-red-700 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-red-500/30 transition transform hover:-translate-y-1">+ บันทึกเกมลงหน้าร้าน</button>
@@ -614,14 +614,14 @@ function Admin() {
           {/* TAB: จัดการสต็อก */}
           {activeTab === 'manage-stocks' && (
             <div>
-              <h2 className="text-2xl font-bold mb-6 text-green-400 border-l-4 border-green-500 pl-4">จัดการสต็อกทั้งหมด</h2>
+              <h2 className="text-2xl font-bold mb-6 text-red-600 border-l-4 border-red-500 pl-4">จัดการสต็อกทั้งหมด</h2>
               
               {stocks.length === 0 ? (
-                <p className="text-gray-400 text-center py-10">ยังไม่มีสต็อกในระบบ</p>
+                <p className="text-gray-600 text-center py-10">ยังไม่มีสต็อกในระบบ</p>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-green-900/30 text-green-300">
+                    <thead className="bg-red-900/30 text-red-300">
                       <tr>
                         <th className="p-3">ID</th>
                         <th className="p-3">เกม</th>
@@ -632,13 +632,13 @@ function Admin() {
                         <th className="p-3 text-center">จัดการ</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-700">
+                    <tbody className="divide-y divide-red-200 bg-white">
                       {stocks.map((stock) => (
-                        <tr key={stock.code_id} className="hover:bg-gray-700/30">
-                          <td className="p-3 text-gray-400">#{stock.code_id}</td>
-                          <td className="p-3 font-medium">{stock.game_name}</td>
-                          <td className="p-3 font-mono text-xs text-green-400">{stock.code.substring(0, 15)}...</td>
-                          <td className="p-3 text-yellow-400 font-bold">฿{Number(stock.price).toLocaleString()}</td>
+                        <tr key={stock.code_id} className="hover:bg-red-50 transition">
+                          <td className="p-3 text-gray-600">#{stock.code_id}</td>
+                          <td className="p-3 font-medium text-gray-900">{stock.game_name}</td>
+                          <td className="p-3 font-mono text-xs text-red-600">{stock.code.substring(0, 15)}...</td>
+                          <td className="p-3 text-red-600 font-bold">฿{Number(stock.price).toLocaleString()}</td>
                           <td className="p-3">
                             <span className={`text-xs px-2 py-1 rounded-full ${stock.status === 'available' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
                               {stock.status}
@@ -678,7 +678,7 @@ function Admin() {
                     checked={stockForm.is_public}
                     onChange={e => setStockForm({...stockForm, is_public: e.target.checked})}
                   />
-                  <label htmlFor="is_public" className="text-white font-bold cursor-pointer">
+                  <label htmlFor="is_public" className="text-gray-900 font-bold cursor-pointer">
                       นี่คือการขายไอดีแยกชิ้น?
                   </label>
               </div>
@@ -697,20 +697,20 @@ function Admin() {
                   <div className="space-y-4 p-4 bg-white/50 rounded-xl border border-red-500/30">
                       <div>
                         <label className="block text-sm text-gray-400 mb-1">ชื่อสินค้า</label>
-                        <input required placeholder="ชื่อสินค้า..." className="w-full bg-gray-800 border border-red-200 p-3 rounded-lg text-white outline-none focus:border-red-500"
+                        <input required placeholder="ชื่อสินค้า..." className="w-full bg-white border-2 border-red-200 p-3 rounded-lg text-gray-900 outline-none focus:border-red-500"
                             value={stockForm.title} onChange={e => setStockForm({...stockForm, title: e.target.value})} />
                       </div>
                       
                       <div>
-                        <label className="block text-sm text-gray-400 mb-1">อัปโหลดรูปไอดี</label>
+                        <label className="block text-sm text-gray-700 mb-1 font-medium">อัปโหลดรูปไอดี</label>
                         <input type="file" accept="image/*"
-                            className="w-full bg-gray-800 border border-red-200 p-2 rounded-lg text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer" 
+                            className="w-full bg-white border-2 border-red-200 p-2 rounded-lg text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer" 
                             onChange={e => setStockForm({...stockForm, imageFile: e.target.files[0]})} 
                         />
                       </div>
                       <div>
-                        <label className="block text-sm text-gray-400 mb-1">รายละเอียดไอดี</label>
-                        <textarea placeholder="รายละเอียด..." className="w-full bg-gray-800 border border-red-200 p-3 rounded-lg h-24 text-white outline-none focus:border-red-500"
+                        <label className="block text-sm text-gray-700 mb-1 font-medium">รายละเอียดไอดี</label>
+                        <textarea placeholder="รายละเอียด..." className="w-full bg-white border-2 border-red-200 p-3 rounded-lg h-24 text-gray-900 outline-none focus:border-red-500"
                             value={stockForm.description} onChange={e => setStockForm({...stockForm, description: e.target.value})} />
                       </div>
                   </div>
@@ -737,14 +737,14 @@ function Admin() {
           {/* TAB: จัดการคูปอง */}
           {activeTab === 'manage-coupons' && (
             <div>
-              <h2 className="text-2xl font-bold mb-6 text-yellow-400 border-l-4 border-yellow-500 pl-4">จัดการคูปองทั้งหมด</h2>
+              <h2 className="text-2xl font-bold mb-6 text-red-600 border-l-4 border-red-500 pl-4">จัดการคูปองทั้งหมด</h2>
               
               {coupons.length === 0 ? (
-                <p className="text-gray-400 text-center py-10">ยังไม่มีคูปองในระบบ</p>
+                <p className="text-gray-600 text-center py-10">ยังไม่มีคูปองในระบบ</p>
               ) : (
                 <div className="overflow-x-auto mb-6">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-yellow-900/30 text-yellow-300">
+                    <thead className="bg-red-900/30 text-red-300">
                       <tr>
                         <th className="p-3">ID</th>
                         <th className="p-3">โค้ดคูปอง</th>
@@ -754,14 +754,14 @@ function Admin() {
                         <th className="p-3 text-center">จัดการ</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-700">
+                    <tbody className="divide-y divide-red-200 bg-white">
                       {coupons.map((coupon) => (
-                        <tr key={coupon.coupon_id} className="hover:bg-gray-700/30">
-                          <td className="p-3 text-gray-400">#{coupon.coupon_id}</td>
-                          <td className="p-3 font-mono text-yellow-400 font-bold">{coupon.code}</td>
-                          <td className="p-3 text-green-400 font-bold">฿{Number(coupon.discount_amount).toLocaleString()}</td>
+                        <tr key={coupon.coupon_id} className="hover:bg-red-50 transition">
+                          <td className="p-3 text-gray-600">#{coupon.coupon_id}</td>
+                          <td className="p-3 font-mono text-red-600 font-bold">{coupon.code}</td>
+                          <td className="p-3 text-red-600 font-bold">฿{Number(coupon.discount_amount).toLocaleString()}</td>
                           <td className="p-3">
-                            <span className="text-white">
+                            <span className="text-gray-900">
                               {coupon.used_count} / {coupon.usage_limit}
                             </span>
                           </td>
@@ -788,23 +788,23 @@ function Admin() {
               )}
 
               {/* Form เพิ่มคูปอง */}
-              <div className="bg-white/50 p-6 rounded-xl border border-yellow-500/30">
-                <h3 className="text-xl font-bold mb-4 text-yellow-400">เพิ่มคูปองใหม่</h3>
+              <div className="bg-white p-6 rounded-xl border-2 border-red-200 shadow-md">
+                <h3 className="text-xl font-bold mb-4 text-red-600">เพิ่มคูปองใหม่</h3>
                 <form onSubmit={handleAddCoupon} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm text-gray-400 mb-1">โค้ดคูปอง</label>
-                      <input required placeholder="Ex. SAVE50" className="w-full bg-gray-800 border border-red-200 p-3 rounded-lg font-mono text-yellow-400 focus:border-yellow-500 outline-none" 
+                      <label className="block text-sm text-gray-700 mb-1 font-medium">โค้ดคูปอง</label>
+                      <input required placeholder="Ex. SAVE50" className="w-full bg-white border-2 border-red-200 p-3 rounded-lg font-mono text-gray-900 focus:border-red-500 outline-none" 
                         value={couponForm.code} onChange={e => setCouponForm({...couponForm, code: e.target.value.toUpperCase()})} />
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-400 mb-1">ส่วนลด (บาท)</label>
-                      <input required type="number" placeholder="0.00" className="w-full bg-gray-800 border border-red-200 p-3 rounded-lg focus:border-yellow-500 outline-none" 
+                      <label className="block text-sm text-gray-700 mb-1 font-medium">ส่วนลด (บาท)</label>
+                      <input required type="number" placeholder="0.00" className="w-full bg-white border-2 border-red-200 p-3 rounded-lg focus:border-red-500 outline-none text-gray-900" 
                         value={couponForm.discount_amount} onChange={e => setCouponForm({...couponForm, discount_amount: e.target.value})} />
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-400 mb-1">จำนวนครั้งที่ใช้ได้</label>
-                      <input required type="number" placeholder="100" className="w-full bg-gray-800 border border-red-200 p-3 rounded-lg focus:border-yellow-500 outline-none" 
+                      <label className="block text-sm text-gray-700 mb-1 font-medium">จำนวนครั้งที่ใช้ได้</label>
+                      <input required type="number" placeholder="100" className="w-full bg-white border-2 border-red-200 p-3 rounded-lg focus:border-red-500 outline-none text-gray-900" 
                         value={couponForm.usage_limit} onChange={e => setCouponForm({...couponForm, usage_limit: e.target.value})} />
                     </div>
                   </div>
@@ -819,14 +819,14 @@ function Admin() {
           {/* TAB: จัดการ Gacha Boxes */}
           {activeTab === 'manage-gacha' && (
             <div>
-              <h2 className="text-2xl font-bold mb-6 text-pink-400 border-l-4 border-pink-500 pl-4">จัดการ Gacha Boxes</h2>
+              <h2 className="text-2xl font-bold mb-6 text-red-600 border-l-4 border-red-500 pl-4">จัดการ Gacha Boxes</h2>
               
               {gachaBoxes.length === 0 ? (
-                <p className="text-gray-400 text-center py-10">ยังไม่มีกล่องในระบบ</p>
+                <p className="text-gray-600 text-center py-10">ยังไม่มีกล่องในระบบ</p>
               ) : (
                 <div className="overflow-x-auto mb-6">
                   <table className="w-full text-left">
-                    <thead className="bg-pink-900/30 text-pink-300 text-sm">
+                    <thead className="bg-red-900/30 text-red-300 text-sm">
                       <tr>
                         <th className="p-3">รูป</th>
                         <th className="p-3">ชื่อกล่อง</th>
@@ -835,21 +835,21 @@ function Admin() {
                         <th className="p-3 text-center">จัดการ</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-700">
+                    <tbody className="divide-y divide-red-200 bg-white">
                       {gachaBoxes.map((box) => (
-                        <tr key={box.box_id} className="hover:bg-gray-700/30">
+                        <tr key={box.box_id} className="hover:bg-red-50 transition">
                           <td className="p-3">
                             {box.image_url ? (
                               <img src={box.image_url} alt={box.name} className="w-16 h-16 object-cover rounded-lg" />
                             ) : (
-                              <div className="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center">
-                                <Gift className="w-8 h-8 text-gray-500" />
+                              <div className="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center">
+                                <Gift className="w-8 h-8 text-red-500" />
                               </div>
                             )}
                           </td>
-                          <td className="p-3 font-bold text-white">{box.name}</td>
-                          <td className="p-3 text-gray-400 text-sm max-w-xs truncate">{box.description || '-'}</td>
-                          <td className="p-3 text-yellow-400 font-bold">฿{Number(box.price).toLocaleString()}</td>
+                          <td className="p-3 font-bold text-gray-900">{box.name}</td>
+                          <td className="p-3 text-gray-600 text-sm max-w-xs truncate">{box.description || '-'}</td>
+                          <td className="p-3 text-red-600 font-bold">฿{Number(box.price).toLocaleString()}</td>
                           <td className="p-3 text-center">
                             <div className="flex gap-2 justify-center">
                               <button onClick={() => setEditingGachaBox(box)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="แก้ไข">
@@ -872,30 +872,30 @@ function Admin() {
           {/* TAB: เพิ่ม Gacha Box */}
           {activeTab === 'add-gacha' && (
             <form onSubmit={handleAddGachaBox} className="space-y-6">
-              <h2 className="text-2xl font-bold mb-6 text-rose-400 border-l-4 border-rose-500 pl-4">เพิ่ม Gacha Box ใหม่</h2>
+              <h2 className="text-2xl font-bold mb-6 text-red-600 border-l-4 border-red-500 pl-4">เพิ่ม Gacha Box ใหม่</h2>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">ชื่อกล่อง</label>
-                <input required placeholder="Ex. Premium Box" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-rose-500 outline-none transition" 
+                <label className="block text-sm text-gray-700 mb-1 font-medium">ชื่อกล่อง</label>
+                <input required placeholder="Ex. Premium Box" className="w-full bg-white border-2 border-red-200 p-3 rounded-lg focus:border-red-500 outline-none transition text-gray-900" 
                   value={gachaBoxForm.name} onChange={e => setGachaBoxForm({...gachaBoxForm, name: e.target.value})} />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">รายละเอียด</label>
-                <textarea required placeholder="คำอธิบายกล่อง..." className="w-full bg-white border border-red-200 p-3 rounded-lg h-32 focus:border-rose-500 outline-none transition" 
+                <label className="block text-sm text-gray-700 mb-1 font-medium">รายละเอียด</label>
+                <textarea required placeholder="คำอธิบายกล่อง..." className="w-full bg-white border-2 border-red-200 p-3 rounded-lg h-32 focus:border-red-500 outline-none transition text-gray-900" 
                   value={gachaBoxForm.description} onChange={e => setGachaBoxForm({...gachaBoxForm, description: e.target.value})} />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">ราคา (บาท)</label>
-                  <input required type="number" placeholder="0.00" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-rose-500 outline-none transition" 
+                  <label className="block text-sm text-gray-700 mb-1 font-medium">ราคา (บาท)</label>
+                  <input required type="number" placeholder="0.00" className="w-full bg-white border-2 border-red-200 p-3 rounded-lg focus:border-red-500 outline-none transition text-gray-900" 
                     value={gachaBoxForm.price} onChange={e => setGachaBoxForm({...gachaBoxForm, price: e.target.value})} />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">อัปโหลดรูปปกกล่อง</label>
-                  <input type="file" accept="image/*" className="w-full bg-white border border-red-200 p-2 rounded-lg focus:border-rose-500 text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-600 file:text-white hover:file:bg-rose-700 cursor-pointer" 
+                  <label className="block text-sm text-gray-700 mb-1 font-medium">อัปโหลดรูปปกกล่อง</label>
+                  <input type="file" accept="image/*" className="w-full bg-white border-2 border-red-200 p-2 rounded-lg focus:border-red-500 text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer" 
                     onChange={e => setGachaBoxForm({...gachaBoxForm, imageFile: e.target.files[0]})} />
                 </div>
               </div>
-              <button type="submit" className="w-full bg-rose-600 hover:bg-rose-700 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-rose-500/30 transition transform hover:-translate-y-1">+ บันทึกกล่อง</button>
+              <button type="submit" className="w-full bg-red-600 hover:bg-red-700 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-red-500/30 transition transform hover:-translate-y-1 text-white">+ บันทึกกล่อง</button>
             </form>
           )}
         </div>
@@ -904,45 +904,45 @@ function Admin() {
       {/* Modal แก้ไขเกม */}
       {editingGame && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setEditingGame(null)}>
-          <div className="bg-gray-800 rounded-2xl max-w-2xl w-full p-8 border-2 border-red-500/30" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-2xl max-w-2xl w-full p-8 border-2 border-red-500 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-red-400">แก้ไขเกม</h3>
-              <button onClick={() => setEditingGame(null)} className="text-gray-400 hover:text-white">
+              <h3 className="text-2xl font-bold text-red-600">แก้ไขเกม</h3>
+              <button onClick={() => setEditingGame(null)} className="text-gray-600 hover:text-red-600">
                 <X size={24} />
               </button>
             </div>
             
             <form onSubmit={handleUpdateGame} className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-400 mb-1">ชื่อเกม</label>
-                <input required className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-red-500 outline-none" 
+                <label className="block text-sm text-gray-700 mb-1 font-medium">ชื่อเกม</label>
+                <input required className="w-full bg-white border-2 border-red-200 p-3 rounded-lg focus:border-red-500 outline-none text-gray-900" 
                   value={editingGame.name} onChange={e => setEditingGame({...editingGame, name: e.target.value})} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">แพลตฟอร์ม</label>
-                  <input required className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-red-500 outline-none" 
+                  <label className="block text-sm text-gray-700 mb-1 font-medium">แพลตฟอร์ม</label>
+                  <input required className="w-full bg-white border-2 border-red-200 p-3 rounded-lg focus:border-red-500 outline-none text-gray-900" 
                     value={editingGame.platform} onChange={e => setEditingGame({...editingGame, platform: e.target.value})} />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-1">ราคา</label>
-                  <input required type="number" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-red-500 outline-none" 
+                  <label className="block text-sm text-gray-700 mb-1 font-medium">ราคา</label>
+                  <input required type="number" className="w-full bg-white border-2 border-red-200 p-3 rounded-lg focus:border-red-500 outline-none text-gray-900" 
                     value={editingGame.price} onChange={e => setEditingGame({...editingGame, price: e.target.value})} />
                 </div>
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">รายละเอียด</label>
-                <textarea required className="w-full bg-white border border-red-200 p-3 rounded-lg h-24 focus:border-red-500 outline-none" 
+                <label className="block text-sm text-gray-700 mb-1 font-medium">รายละเอียด</label>
+                <textarea required className="w-full bg-white border-2 border-red-200 p-3 rounded-lg h-24 focus:border-red-500 outline-none text-gray-900" 
                   value={editingGame.description} onChange={e => setEditingGame({...editingGame, description: e.target.value})} />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">เปลี่ยนรูป (ถ้าต้องการ)</label>
-                <input type="file" accept="image/*" className="w-full bg-white border border-red-200 p-2 rounded-lg text-sm text-gray-300" 
+                <label className="block text-sm text-gray-700 mb-1 font-medium">เปลี่ยนรูป (ถ้าต้องการ)</label>
+                <input type="file" accept="image/*" className="w-full bg-white border-2 border-red-200 p-2 rounded-lg text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer" 
                   onChange={e => setEditingGame({...editingGame, newImageFile: e.target.files[0]})} />
               </div>
               <div className="flex gap-4">
-                <button type="button" onClick={() => setEditingGame(null)} className="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold">ยกเลิก</button>
-                <button type="submit" className="flex-1 bg-purple-600 hover:bg-purple-700 py-3 rounded-xl font-bold">บันทึก</button>
+                <button type="button" onClick={() => setEditingGame(null)} className="flex-1 bg-gray-300 hover:bg-gray-400 py-3 rounded-xl font-bold text-gray-900">ยกเลิก</button>
+                <button type="submit" className="flex-1 bg-red-600 hover:bg-red-700 py-3 rounded-xl font-bold text-white">บันทึก</button>
               </div>
             </form>
           </div>
@@ -952,10 +952,10 @@ function Admin() {
       {/* Modal แก้ไขสต็อก */}
       {editingStock && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setEditingStock(null)}>
-          <div className="bg-gray-800 rounded-2xl max-w-2xl w-full p-8 border-2 border-green-500/30" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-2xl max-w-2xl w-full p-8 border-2 border-red-500 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-green-400">แก้ไขสต็อก</h3>
-              <button onClick={() => setEditingStock(null)} className="text-gray-400 hover:text-white">
+              <h3 className="text-2xl font-bold text-red-600">แก้ไขสต็อก</h3>
+              <button onClick={() => setEditingStock(null)} className="text-gray-600 hover:text-red-600">
                 <X size={24} />
               </button>
             </div>
