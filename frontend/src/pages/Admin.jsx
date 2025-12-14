@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import { Plus, Database, ShieldAlert, Package, ArrowLeft, Edit2, Trash2, Eye, X, Ticket, BarChart3, Gift } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { showToast } from '../components/ToastContainer';
@@ -55,7 +55,7 @@ function Admin() {
   const fetchGames = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/admin/games', {
+      const res = await axiosInstance.get('/api/admin/games', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setGames(res.data);
@@ -65,7 +65,7 @@ function Admin() {
   const fetchStocks = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/admin/stocks', {
+      const res = await axiosInstance.get('/api/admin/stocks', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setStocks(res.data);
@@ -75,7 +75,7 @@ function Admin() {
   const fetchCoupons = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/admin/coupons', {
+      const res = await axiosInstance.get('/api/admin/coupons', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setCoupons(res.data);
@@ -85,7 +85,7 @@ function Admin() {
   const fetchGachaBoxes = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/admin/gacha-boxes', {
+      const res = await axiosInstance.get('/api/admin/gacha-boxes', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setGachaBoxes(res.data);
@@ -95,7 +95,7 @@ function Admin() {
   const fetchDashboardStats = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/admin/dashboard', {
+      const res = await axiosInstance.get('/api/admin/dashboard', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setDashboardStats(res.data);
@@ -116,7 +116,7 @@ function Admin() {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/admin/add-game', formData, {
+      await axiosInstance.post('/api/admin/add-game', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       showToast('เพิ่มเกมสำเร็จ! 🎉', 'success');
@@ -142,7 +142,7 @@ function Admin() {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:5000/api/admin/games/${editingGame.game_id}`, formData, {
+      await axiosInstance.put(`/api/admin/games/${editingGame.game_id}`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       showToast('แก้ไขเกมสำเร็จ! ✅', 'success');
@@ -159,7 +159,7 @@ function Admin() {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/admin/games/${id}`, {
+      await axiosInstance.delete(`/api/admin/games/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       showToast('ลบเกมสำเร็จ! 🗑️', 'success');
@@ -192,7 +192,7 @@ function Admin() {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/admin/add-stock', formData, {
+      await axiosInstance.post('/api/admin/add-stock', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       showToast('เพิ่มสินค้าสำเร็จ! 📦', 'success');
@@ -220,7 +220,7 @@ function Admin() {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:5000/api/admin/stocks/${editingStock.code_id}`, formData, {
+      await axiosInstance.put(`/api/admin/stocks/${editingStock.code_id}`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       showToast('แก้ไขสต็อกสำเร็จ! ✅', 'success');
@@ -237,7 +237,7 @@ function Admin() {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/admin/stocks/${id}`, {
+      await axiosInstance.delete(`/api/admin/stocks/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       showToast('ลบสต็อกสำเร็จ! 🗑️', 'success');
@@ -254,7 +254,7 @@ function Admin() {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/admin/add-coupon', couponForm, {
+      await axiosInstance.post('/api/admin/add-coupon', couponForm, {
         headers: { Authorization: `Bearer ${token}` }
       });
       showToast('เพิ่มคูปองสำเร็จ! 🎫', 'success');
@@ -272,7 +272,7 @@ function Admin() {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:5000/api/admin/coupons/${editingCoupon.coupon_id}`, {
+      await axiosInstance.put(`/api/admin/coupons/${editingCoupon.coupon_id}`, {
         code: editingCoupon.code,
         discount_amount: editingCoupon.discount_amount,
         usage_limit: editingCoupon.usage_limit
@@ -293,7 +293,7 @@ function Admin() {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/admin/coupons/${id}`, {
+      await axiosInstance.delete(`/api/admin/coupons/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       showToast('ลบคูปองสำเร็จ! 🗑️', 'success');
@@ -316,7 +316,7 @@ function Admin() {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/admin/add-gacha-box', formData, {
+      await axiosInstance.post('/api/admin/add-gacha-box', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       showToast('เพิ่มกล่องสำเร็จ! 🎁', 'success');
@@ -341,7 +341,7 @@ function Admin() {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:5000/api/admin/gacha-boxes/${editingGachaBox.box_id}`, formData, {
+      await axiosInstance.put(`/api/admin/gacha-boxes/${editingGachaBox.box_id}`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       showToast('แก้ไขกล่องสำเร็จ! ✅', 'success');
@@ -358,7 +358,7 @@ function Admin() {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/admin/gacha-boxes/${id}`, {
+      await axiosInstance.delete(`/api/admin/gacha-boxes/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       showToast('ลบกล่องสำเร็จ! 🗑️', 'success');

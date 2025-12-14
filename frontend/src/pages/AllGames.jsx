@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import { ArrowLeft, Search, Grid3x3, List, Package, Gamepad2, Filter, ArrowUpDown, Heart } from 'lucide-react';
 import { showToast } from '../components/ToastContainer';
 import { GameCardSkeleton } from '../components/LoadingSkeleton';
@@ -18,7 +18,10 @@ function AllGames() {
 
   useEffect(() => {
     fetchGames();
-    loadWishlist();
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetchWishlist();
+    }
   }, []);
 
   useEffect(() => {
@@ -56,24 +59,36 @@ function AllGames() {
     setFilteredGames(filtered);
   }, [searchQuery, games, selectedPlatform, sortBy]);
 
-  const loadWishlist = () => {
-    const saved = localStorage.getItem('wishlist');
-    if (saved) {
-      setWishlist(JSON.parse(saved));
+  const fetchWishlist = async () => {
+    try {
+      const res = await axiosInstance.get('/api/wishlist');
+      setWishlist(res.data.map(item => item.game_id));
+    } catch (err) {
+      console.error('Failed to fetch wishlist', err);
     }
   };
 
-  const toggleWishlist = (gameId) => {
-    const isInWishlist = wishlist.includes(gameId);
-    const newWishlist = isInWishlist
-      ? wishlist.filter(id => id !== gameId)
-      : [...wishlist, gameId];
-    setWishlist(newWishlist);
-    localStorage.setItem('wishlist', JSON.stringify(newWishlist));
-    showToast(
-      isInWishlist ? 'ลบออกจากรายการโปรดแล้ว' : 'เพิ่มในรายการโปรดแล้ว',
-      isInWishlist ? 'info' : 'success'
-    );
+  const toggleWishlist = async (gameId) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      showToast('กรุณาเข้าสู่ระบบก่อน', 'warning');
+      return;
+    }
+
+    try {
+      await axiosInstance.post(`/api/wishlist/toggle/${gameId}`);
+      const isInWishlist = wishlist.includes(gameId);
+      if (isInWishlist) {
+        setWishlist(wishlist.filter(id => id !== gameId));
+        showToast('ลบออกจากรายการโปรดแล้ว', 'info');
+      } else {
+        setWishlist([...wishlist, gameId]);
+        showToast('เพิ่มในรายการโปรดแล้ว', 'success');
+      }
+    } catch (err) {
+      console.error('Failed to toggle wishlist', err);
+      showToast('เกิดข้อผิดพลาด', 'error');
+    }
   };
 
   const getPlatforms = () => {
@@ -83,11 +98,19 @@ function AllGames() {
 
   const fetchGames = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/games');
-      setGames(res.data);
-      setFilteredGames(res.data);
+      const res = await axiosInstance.get('/api/games');
+      const gamesData = res.data.games || res.data || [];
+      
+      // กรองเกมซ้ำ
+      const uniqueGames = gamesData.filter((game, index, self) =>
+        index === self.findIndex(g => g.game_id === game.game_id)
+      );
+      
+      setGames(uniqueGames);
+      setFilteredGames(uniqueGames);
     } catch (err) {
-      console.error(err);
+      console.error('Failed to fetch games', err);
+      showToast('ไม่สามารถโหลดเกมได้', 'error');
     } finally {
       setLoading(false);
     }

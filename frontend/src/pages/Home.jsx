@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import { ShoppingCart, Search, Gift, CreditCard, Box, User, LogOut, ShieldAlert, Gamepad2, X, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { showToast } from '../components/ToastContainer';
@@ -18,30 +18,43 @@ function Home() {
   useEffect(() => {
     fetchGames();
     if (user) {
-      fetchUserBalance(); 
+      fetchUserBalance();
+      fetchWishlist();
     }
-    loadWishlist();
   }, []);
 
-  const loadWishlist = () => {
-    const saved = localStorage.getItem('wishlist');
-    if (saved) {
-      setWishlist(JSON.parse(saved));
+  const fetchWishlist = async () => {
+    try {
+      const res = await axiosInstance.get('/api/wishlist');
+      setWishlist(res.data.map(item => item.game_id));
+    } catch (err) {
+      console.error('Failed to fetch wishlist', err);
     }
   };
 
-  const toggleWishlist = (gameId, e) => {
+  const toggleWishlist = async (gameId, e) => {
     if (e) e.stopPropagation();
-    const isInWishlist = wishlist.includes(gameId);
-    const newWishlist = isInWishlist
-      ? wishlist.filter(id => id !== gameId)
-      : [...wishlist, gameId];
-    setWishlist(newWishlist);
-    localStorage.setItem('wishlist', JSON.stringify(newWishlist));
-    showToast(
-      isInWishlist ? 'ลบออกจากรายการโปรดแล้ว' : 'เพิ่มในรายการโปรดแล้ว',
-      isInWishlist ? 'info' : 'success'
-    );
+    const token = localStorage.getItem('token');
+    if (!token) {
+      showToast('กรุณาเข้าสู่ระบบก่อน', 'warning');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      await axiosInstance.post(`/api/wishlist/toggle/${gameId}`);
+      const isInWishlist = wishlist.includes(gameId);
+      if (isInWishlist) {
+        setWishlist(wishlist.filter(id => id !== gameId));
+        showToast('ลบออกจากรายการโปรดแล้ว', 'info');
+      } else {
+        setWishlist([...wishlist, gameId]);
+        showToast('เพิ่มในรายการโปรดแล้ว', 'success');
+      }
+    } catch (err) {
+      console.error('Failed to toggle wishlist', err);
+      showToast('เกิดข้อผิดพลาด', 'error');
+    }
   };
 
   // ฟิลเตอร์เกมตาม search query
@@ -60,13 +73,8 @@ function Home() {
 
   const fetchUserBalance = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-
-      const res = await axios.get('http://localhost:5000/api/wallet/me', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setBalance(res.data.wallet_balance); 
+      const res = await axiosInstance.get('/api/wallet/me');
+      setBalance(res.data.wallet_balance || 0); 
     } catch (err) {
       console.error("Failed to fetch balance", err);
     }
@@ -74,11 +82,20 @@ function Home() {
 
   const fetchGames = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/games');
-      setGames(res.data);
-      setFilteredGames(res.data);
+      const res = await axiosInstance.get('/api/games');
+      // รองรับทั้ง res.data.games และ res.data โดยตรง
+      const gamesData = res.data.games || res.data || [];
+      
+      // กรองเกมซ้ำ (ใช้ game_id เป็น unique key)
+      const uniqueGames = gamesData.filter((game, index, self) =>
+        index === self.findIndex(g => g.game_id === game.game_id)
+      );
+      
+      setGames(uniqueGames);
+      setFilteredGames(uniqueGames);
     } catch (err) {
-      console.error(err);
+      console.error('Failed to fetch games', err);
+      showToast('ไม่สามารถโหลดเกมได้', 'error');
     } finally {
       setLoading(false);
     }
@@ -106,9 +123,7 @@ function Home() {
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/api/wallet/daily', {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await axiosInstance.post('/api/wallet/daily', {});
       showToast(res.data.message, 'success'); 
       fetchUserBalance(); 
     } catch (err) {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import { ArrowLeft, ShoppingCart, Package, Eye, CheckCircle, AlertCircle, Ticket, X } from 'lucide-react';
 import { showToast } from '../components/ToastContainer';
 
@@ -25,7 +25,7 @@ function GameDetail() {
 
   const fetchGameDetail = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/games');
+      const res = await axiosInstance.get('/api/games');
       const foundGame = res.data.find(g => g.game_id === parseInt(id));
       setGame(foundGame);
     } catch (err) {
@@ -35,7 +35,7 @@ function GameDetail() {
 
   const fetchGameStocks = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/games/${id}/stock`);
+      const res = await axiosInstance.get(`/api/games/${id}/stock`);
       setStocks(res.data);
     } catch (err) {
       console.error(err);
@@ -53,7 +53,7 @@ function GameDetail() {
 
     setCheckingCoupon(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/coupons/check', {
+      const res = await axiosInstance.post('/api/coupons/check', {
         code: couponCode.toUpperCase()
       });
       
@@ -97,13 +97,12 @@ function GameDetail() {
 
     setPurchasing(true);
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/transactions/buy',
+      const res = await axiosInstance.post(
+        '/api/transactions/buy',
         { 
           code_id: codeId,
           coupon_code: couponValid ? couponCode.toUpperCase() : null
         },
-        { headers: { Authorization: `Bearer ${token}` } }
       );
       
       showToast(`ซื้อสำเร็จ! รหัสเกม: ${res.data.game_code}`, 'success');
@@ -137,13 +136,12 @@ function GameDetail() {
 
     setPurchasing(true);
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/transactions/buy',
+      const res = await axiosInstance.post(
+        '/api/transactions/buy',
         { 
           game_id: id,
           coupon_code: couponValid ? couponCode.toUpperCase() : null
         },
-        { headers: { Authorization: `Bearer ${token}` } }
       );
       
       showToast(`ซื้อสำเร็จ! รหัสเกม: ${res.data.game_code}`, 'success');

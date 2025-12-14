@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import { Gift, AlertCircle, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { showToast } from '../components/ToastContainer';
@@ -16,7 +16,7 @@ function Gacha() {
 
   const fetchBoxes = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/gacha');
+      const res = await axiosInstance.get('/api/gacha');
       setBoxes(res.data);
     } catch (err) {
       console.error(err);
@@ -42,8 +42,8 @@ function Gacha() {
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       // 2. ยิง API สุ่มจริง
-      const res = await axios.post(
-        'http://localhost:5000/api/gacha/spin',
+      const res = await axiosInstance.post(
+        '/api/gacha/spin',
         { box_id: boxId },
         { headers: { Authorization: `Bearer ${token}` } }
       );

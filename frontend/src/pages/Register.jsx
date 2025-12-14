@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { User, Mail, Lock, UserPlus, Eye, EyeOff, Gamepad2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import { showToast } from '../components/ToastContainer';
 
 function Register() {
@@ -40,7 +40,7 @@ function Register() {
     
     try {
       // 1. ยิง API สมัครสมาชิก
-      await axios.post('http://localhost:5000/api/auth/register', formData);
+      await axiosInstance.post('/api/auth/register', formData);
       
       showToast('สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ', 'success');
       

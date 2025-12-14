@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import { CreditCard, Wallet } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { showToast } from '../components/ToastContainer';
@@ -18,9 +18,7 @@ function TopUp() {
     try {
       const token = localStorage.getItem('token');
       if(!token) return;
-      const res = await axios.get('http://localhost:5000/api/wallet/me', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await axiosInstance.get('/api/wallet/me');
       setBalance(res.data.wallet_balance);
     } catch (err) {
       console.error(err);
@@ -33,7 +31,7 @@ function TopUp() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/wallet/topup', 
+      await axiosInstance.post('/api/wallet/topup', 
         { amount },
         { headers: { Authorization: `Bearer ${token}` } }
       );

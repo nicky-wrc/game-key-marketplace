@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import { Clock, Copy, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,9 +20,7 @@ function Inventory() {
         navigate('/login');
         return;
       }
-      const res = await axios.get('http://localhost:5000/api/transactions/history', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await axiosInstance.get('/api/transactions/history');
       setHistory(res.data);
     } catch (err) {
       console.error(err);

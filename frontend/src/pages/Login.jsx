@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Mail, Lock, LogIn, Gamepad2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import { showToast } from '../components/ToastContainer';
 
 function Login() {
@@ -21,7 +21,7 @@ function Login() {
     
     try {
       // 1. ยิง API ไปหา Backend ของเรา
-      const res = await axios.post('http://localhost:5000/api/auth/login', formData);
+      const res = await axiosInstance.post('/api/auth/login', formData);
       
       // 2. เก็บ Token และข้อมูล User ลงในเครื่อง
       localStorage.setItem('token', res.data.token);

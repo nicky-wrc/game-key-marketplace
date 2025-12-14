@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import { User, Mail, Shield, Lock, CreditCard, ShoppingBag, LogOut, Save, ArrowLeft, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { showToast } from '../components/ToastContainer';
@@ -18,7 +18,7 @@ function Profile() {
   useEffect(() => {
     fetchProfileData();
     fetchHistoryStats();
-    loadWishlist();
+    fetchWishlist();
   }, []);
 
   useEffect(() => {
@@ -27,29 +27,36 @@ function Profile() {
     }
   }, [wishlist]);
 
-  const loadWishlist = () => {
-    const saved = localStorage.getItem('wishlist');
-    if (saved) {
-      const ids = JSON.parse(saved);
-      setWishlist(ids);
+  const fetchWishlist = async () => {
+    try {
+      const res = await axiosInstance.get('/api/wishlist');
+      const gameIds = res.data.map(item => item.game_id);
+      setWishlist(gameIds);
+    } catch (err) {
+      console.error('Failed to fetch wishlist', err);
     }
   };
 
   const fetchWishlistGames = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/games');
-      const games = res.data.filter(g => wishlist.includes(g.game_id));
+      const res = await axiosInstance.get('/api/games');
+      const gamesData = res.data.games || res.data || [];
+      const games = gamesData.filter(g => wishlist.includes(g.game_id));
       setWishlistGames(games);
     } catch (err) {
-      console.error(err);
+      console.error('Failed to fetch wishlist games', err);
     }
   };
 
-  const removeFromWishlist = (gameId) => {
-    const newWishlist = wishlist.filter(id => id !== gameId);
-    setWishlist(newWishlist);
-    localStorage.setItem('wishlist', JSON.stringify(newWishlist));
-    showToast('ลบออกจากรายการโปรดแล้ว', 'info');
+  const removeFromWishlist = async (gameId) => {
+    try {
+      await axiosInstance.post(`/api/wishlist/toggle/${gameId}`);
+      setWishlist(wishlist.filter(id => id !== gameId));
+      showToast('ลบออกจากรายการโปรดแล้ว', 'info');
+    } catch (err) {
+      console.error('Failed to remove from wishlist', err);
+      showToast('เกิดข้อผิดพลาด', 'error');
+    }
   };
 
   const fetchProfileData = async () => {
@@ -57,9 +64,7 @@ function Profile() {
       const token = localStorage.getItem('token');
       if (!token) { navigate('/login'); return; }
 
-      const res = await axios.get('http://localhost:5000/api/wallet/me', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await axiosInstance.get('/api/wallet/me');
       setProfile(res.data);
     } catch (err) { console.error(err); }
   };
@@ -67,9 +72,7 @@ function Profile() {
   const fetchHistoryStats = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/transactions/history', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await axiosInstance.get('/api/transactions/history');
       
       // คำนวณยอดซื้อรวม และจำนวนของที่ซื้อ
       const history = res.data;
@@ -87,11 +90,9 @@ function Profile() {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/auth/change-password', {
+      await axiosInstance.post('/api/auth/change-password', {
         oldPassword: passForm.oldPassword,
         newPassword: passForm.newPassword
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       
       showToast('เปลี่ยนรหัสผ่านสำเร็จ!', 'success');
