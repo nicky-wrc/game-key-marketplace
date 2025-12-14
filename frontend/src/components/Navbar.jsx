@@ -35,6 +35,7 @@ function Navbar() {
       console.error('Error parsing user data:', err);
     }
     checkDarkMode();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
