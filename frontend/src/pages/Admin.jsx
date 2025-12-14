@@ -369,52 +369,52 @@ function Admin() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-gray-100 text-gray-900 p-6 font-sans">
       <div className="max-w-7xl mx-auto">
         
         {/* Header */}
-        <div className="flex justify-between items-center mb-8 border-b border-gray-700 pb-4">
+        <div className="flex justify-between items-center mb-8 border-b border-red-200 pb-4">
             <h1 className="text-3xl font-bold flex items-center gap-3 text-red-500">
               <ShieldAlert className="w-8 h-8" /> 
               Admin Control Panel
             </h1>
-            <button onClick={() => navigate('/')} className="flex items-center gap-2 text-gray-400 hover:text-white transition bg-gray-800 px-4 py-2 rounded-lg hover:bg-gray-700">
+            <button onClick={() => navigate('/')} className="flex items-center gap-2 text-white hover:text-red-100 transition bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 shadow-md">
                 <ArrowLeft size={20} /> กลับหน้าร้าน
             </button>
         </div>
 
         {/* Tabs */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
-          <button onClick={() => setActiveTab('dashboard')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'dashboard' ? 'bg-gradient-to-r from-indigo-600 to-indigo-800 text-white border-2 border-indigo-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+          <button onClick={() => setActiveTab('dashboard')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'dashboard' ? 'bg-gradient-to-r from-indigo-600 to-indigo-800 text-white border-2 border-indigo-400' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
             <BarChart3 size={20} /> Dashboard
           </button>
-          <button onClick={() => setActiveTab('manage-games')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-games' ? 'bg-gradient-to-r from-purple-600 to-purple-800 text-white border-2 border-purple-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+          <button onClick={() => setActiveTab('manage-games')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-games' ? 'bg-gradient-to-r from-purple-600 to-purple-800 text-white border-2 border-purple-400' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
             <Eye size={20} /> จัดการเกม
           </button>
-          <button onClick={() => setActiveTab('add-game')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-game' ? 'bg-gradient-to-r from-red-600 to-red-800 text-white border-2 border-red-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+          <button onClick={() => setActiveTab('add-game')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-game' ? 'bg-gradient-to-r from-red-600 to-red-800 text-white border-2 border-red-400' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
             <Plus size={20} /> เพิ่มเกม
           </button>
-          <button onClick={() => setActiveTab('manage-stocks')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-stocks' ? 'bg-gradient-to-r from-green-600 to-green-800 text-white border-2 border-green-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+          <button onClick={() => setActiveTab('manage-stocks')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-stocks' ? 'bg-gradient-to-r from-green-600 to-green-800 text-white border-2 border-green-400' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
             <Database size={20} /> จัดการสต็อก
           </button>
-          <button onClick={() => setActiveTab('add-stock')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-stock' ? 'bg-gradient-to-r from-blue-600 to-blue-800 text-white border-2 border-blue-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+          <button onClick={() => setActiveTab('add-stock')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-stock' ? 'bg-gradient-to-r from-blue-600 to-blue-800 text-white border-2 border-blue-400' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
             <Package size={20} /> เติมสต็อก
           </button>
-          <button onClick={() => setActiveTab('manage-coupons')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-coupons' ? 'bg-gradient-to-r from-yellow-600 to-yellow-800 text-white border-2 border-yellow-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+          <button onClick={() => setActiveTab('manage-coupons')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-coupons' ? 'bg-gradient-to-r from-yellow-600 to-yellow-800 text-white border-2 border-yellow-400' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
             <Ticket size={20} /> คูปอง
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          <button onClick={() => setActiveTab('manage-gacha')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-gacha' ? 'bg-gradient-to-r from-pink-600 to-pink-800 text-white border-2 border-pink-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+          <button onClick={() => setActiveTab('manage-gacha')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'manage-gacha' ? 'bg-gradient-to-r from-pink-600 to-pink-800 text-white border-2 border-pink-400' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
             <Gift size={20} /> จัดการ Gacha
           </button>
-          <button onClick={() => setActiveTab('add-gacha')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-gacha' ? 'bg-gradient-to-r from-rose-600 to-rose-800 text-white border-2 border-rose-400' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>
+          <button onClick={() => setActiveTab('add-gacha')} className={`py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition text-sm shadow-lg ${activeTab === 'add-gacha' ? 'bg-gradient-to-r from-rose-600 to-rose-800 text-white border-2 border-rose-400' : 'bg-white text-gray-600 hover:bg-red-50 border-2 border-red-200'}`}>
             <Plus size={20} /> เพิ่ม Gacha Box
           </button>
         </div>
 
         {/* Content */}
-        <div className="bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-700">
+        <div className="bg-gray-800 p-8 rounded-2xl shadow-2xl border border-red-200">
           {/* TAB: Dashboard */}
           {activeTab === 'dashboard' && (
             <div>
@@ -446,38 +446,38 @@ function Admin() {
 
                   {/* Stats Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-                    <div className="bg-gray-900 p-6 rounded-xl border border-gray-700">
-                      <div className="text-gray-400 text-sm mb-2">สต็อกทั้งหมด</div>
-                      <div className="text-2xl font-bold text-white">{dashboardStats.overview.totalStocks.toLocaleString()}</div>
-                      <div className="text-xs text-gray-500 mt-2">
+                    <div className="bg-white p-6 rounded-xl border border-red-200">
+                      <div className="text-gray-600 text-sm mb-2">สต็อกทั้งหมด</div>
+                      <div className="text-2xl font-bold text-red-600">{dashboardStats.overview.totalStocks.toLocaleString()}</div>
+                      <div className="text-xs text-gray-600 mt-2">
                         ขายได้: {dashboardStats.overview.soldStocks} | คงเหลือ: {dashboardStats.overview.availableStocks}
                       </div>
                     </div>
-                    <div className="bg-gray-900 p-6 rounded-xl border border-gray-700">
-                      <div className="text-gray-400 text-sm mb-2">คูปองทั้งหมด</div>
-                      <div className="text-2xl font-bold text-white">{dashboardStats.overview.totalCoupons.toLocaleString()}</div>
-                      <div className="text-xs text-gray-500 mt-2">
+                    <div className="bg-white p-6 rounded-xl border border-red-200">
+                      <div className="text-gray-600 text-sm mb-2">คูปองทั้งหมด</div>
+                      <div className="text-2xl font-bold text-red-600">{dashboardStats.overview.totalCoupons.toLocaleString()}</div>
+                      <div className="text-xs text-gray-600 mt-2">
                         ใช้แล้ว: {dashboardStats.overview.usedCoupons} | ใช้งานได้: {dashboardStats.overview.totalCoupons - dashboardStats.overview.usedCoupons}
                       </div>
                     </div>
-                    <div className="bg-gray-900 p-6 rounded-xl border border-gray-700">
-                      <div className="text-gray-400 text-sm mb-2">อัตราการขาย</div>
-                      <div className="text-2xl font-bold text-white">
+                    <div className="bg-white p-6 rounded-xl border border-red-200">
+                      <div className="text-gray-600 text-sm mb-2">อัตราการขาย</div>
+                      <div className="text-2xl font-bold text-red-600">
                         {dashboardStats.overview.totalStocks > 0 
                           ? ((dashboardStats.overview.soldStocks / dashboardStats.overview.totalStocks) * 100).toFixed(1)
                           : 0}%
                       </div>
-                      <div className="text-xs text-gray-500 mt-2">
+                      <div className="text-xs text-gray-600 mt-2">
                         {dashboardStats.overview.soldStocks} / {dashboardStats.overview.totalStocks} ชิ้น
                       </div>
                     </div>
                   </div>
 
                   {/* Top Games */}
-                  <div className="bg-gray-900 p-6 rounded-xl border border-gray-700 mb-8">
+                  <div className="bg-white p-6 rounded-xl border border-red-200 mb-8">
                     <h3 className="text-xl font-bold mb-4 text-red-400">🏆 เกมที่ขายดีที่สุด (Top 5)</h3>
                     {dashboardStats.topGames.length === 0 ? (
-                      <p className="text-gray-400">ยังไม่มีข้อมูลการขาย</p>
+                      <p className="text-gray-600">ยังไม่มีข้อมูลการขาย</p>
                     ) : (
                       <div className="space-y-3">
                         {dashboardStats.topGames.map((game, index) => (
@@ -504,7 +504,7 @@ function Admin() {
                   </div>
 
                   {/* Daily Revenue */}
-                  <div className="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                  <div className="bg-white p-6 rounded-xl border border-red-200">
                     <h3 className="text-xl font-bold mb-4 text-red-400">📊 รายได้รายวัน (7 วันล่าสุด)</h3>
                     {dashboardStats.dailyRevenue.length === 0 ? (
                       <p className="text-gray-400">ยังไม่มีข้อมูล</p>
@@ -581,30 +581,30 @@ function Admin() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label className="block text-sm text-gray-400 mb-1">ชื่อเกม</label>
-                    <input required placeholder="Ex. Valorant" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-red-500 outline-none transition" 
+                    <input required placeholder="Ex. Valorant" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-red-500 outline-none transition" 
                         value={gameForm.name} onChange={e => setGameForm({...gameForm, name: e.target.value})} />
                 </div>
                 <div>
                     <label className="block text-sm text-gray-400 mb-1">แพลตฟอร์ม</label>
-                    <input required placeholder="Ex. Steam" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-red-500 outline-none transition" 
+                    <input required placeholder="Ex. Steam" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-red-500 outline-none transition" 
                         value={gameForm.platform} onChange={e => setGameForm({...gameForm, platform: e.target.value})} />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label className="block text-sm text-gray-400 mb-1">ราคาขาย (บาท)</label>
-                    <input required type="number" placeholder="0.00" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-red-500 outline-none transition" 
+                    <input required type="number" placeholder="0.00" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-red-500 outline-none transition" 
                         value={gameForm.price} onChange={e => setGameForm({...gameForm, price: e.target.value})} />
                 </div>
                 <div>
                     <label className="block text-sm text-gray-400 mb-1">อัปโหลดรูปปกเกม</label>
-                    <input type="file" accept="image/*" className="w-full bg-gray-900 border border-gray-600 p-2 rounded-lg focus:border-red-500 text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer" 
+                    <input type="file" accept="image/*" className="w-full bg-white border border-red-200 p-2 rounded-lg focus:border-red-500 text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer" 
                         onChange={e => setGameForm({...gameForm, imageFile: e.target.files[0]})} />
                 </div>
               </div>
               <div>
                   <label className="block text-sm text-gray-400 mb-1">รายละเอียดเกม</label>
-                  <textarea required placeholder="คำอธิบายเกม..." className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg h-32 focus:border-red-500 outline-none transition" 
+                  <textarea required placeholder="คำอธิบายเกม..." className="w-full bg-white border border-red-200 p-3 rounded-lg h-32 focus:border-red-500 outline-none transition" 
                     value={gameForm.description} onChange={e => setGameForm({...gameForm, description: e.target.value})} />
               </div>
               <button type="submit" className="w-full bg-red-600 hover:bg-red-700 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-red-500/30 transition transform hover:-translate-y-1">+ บันทึกเกมลงหน้าร้าน</button>
@@ -673,7 +673,7 @@ function Admin() {
             <form onSubmit={handleAddStock} className="space-y-6">
               <h2 className="text-2xl font-bold mb-6 text-red-400 border-l-4 border-red-500 pl-4">เติมสต็อกสินค้า</h2>
               
-              <div className="flex items-center gap-2 mb-4 bg-gray-900 p-3 rounded-lg border border-gray-600">
+              <div className="flex items-center gap-2 mb-4 bg-white p-3 rounded-lg border border-red-200">
                   <input type="checkbox" id="is_public" className="w-5 h-5 accent-blue-500 cursor-pointer"
                     checked={stockForm.is_public}
                     onChange={e => setStockForm({...stockForm, is_public: e.target.checked})}
@@ -684,7 +684,7 @@ function Admin() {
               </div>
               <div>
                   <label className="block text-sm text-gray-400 mb-1">เลือกหมวดหมู่เกม</label>
-                  <select required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-red-500 outline-none cursor-pointer"
+                  <select required className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-red-500 outline-none cursor-pointer"
                     value={stockForm.game_id} onChange={e => setStockForm({...stockForm, game_id: e.target.value})}
                   >
                     <option value="">-- กรุณาเลือกเกม --</option>
@@ -694,23 +694,23 @@ function Admin() {
                   </select>
               </div>
               {stockForm.is_public && (
-                  <div className="space-y-4 p-4 bg-gray-900/50 rounded-xl border border-red-500/30">
+                  <div className="space-y-4 p-4 bg-white/50 rounded-xl border border-red-500/30">
                       <div>
                         <label className="block text-sm text-gray-400 mb-1">ชื่อสินค้า</label>
-                        <input required placeholder="ชื่อสินค้า..." className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg text-white outline-none focus:border-red-500"
+                        <input required placeholder="ชื่อสินค้า..." className="w-full bg-gray-800 border border-red-200 p-3 rounded-lg text-white outline-none focus:border-red-500"
                             value={stockForm.title} onChange={e => setStockForm({...stockForm, title: e.target.value})} />
                       </div>
                       
                       <div>
                         <label className="block text-sm text-gray-400 mb-1">อัปโหลดรูปไอดี</label>
                         <input type="file" accept="image/*"
-                            className="w-full bg-gray-800 border border-gray-600 p-2 rounded-lg text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer" 
+                            className="w-full bg-gray-800 border border-red-200 p-2 rounded-lg text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer" 
                             onChange={e => setStockForm({...stockForm, imageFile: e.target.files[0]})} 
                         />
                       </div>
                       <div>
                         <label className="block text-sm text-gray-400 mb-1">รายละเอียดไอดี</label>
-                        <textarea placeholder="รายละเอียด..." className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg h-24 text-white outline-none focus:border-red-500"
+                        <textarea placeholder="รายละเอียด..." className="w-full bg-gray-800 border border-red-200 p-3 rounded-lg h-24 text-white outline-none focus:border-red-500"
                             value={stockForm.description} onChange={e => setStockForm({...stockForm, description: e.target.value})} />
                       </div>
                   </div>
@@ -718,12 +718,12 @@ function Admin() {
               <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm text-gray-400 mb-1">รหัสลับ / ID-Pass</label>
-                    <input required placeholder="User: pass" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg font-mono text-green-400 outline-none focus:border-red-500"
+                    <input required placeholder="User: pass" className="w-full bg-white border border-red-200 p-3 rounded-lg font-mono text-green-400 outline-none focus:border-red-500"
                         value={stockForm.code} onChange={e => setStockForm({...stockForm, code: e.target.value})} />
                   </div>
                   <div>
                     <label className="block text-sm text-gray-400 mb-1">ราคาขาย (บาท)</label>
-                    <input required type="number" placeholder="0.00" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg outline-none focus:border-red-500"
+                    <input required type="number" placeholder="0.00" className="w-full bg-white border border-red-200 p-3 rounded-lg outline-none focus:border-red-500"
                         value={stockForm.price} onChange={e => setStockForm({...stockForm, price: e.target.value})} />
                   </div>
               </div>
@@ -788,23 +788,23 @@ function Admin() {
               )}
 
               {/* Form เพิ่มคูปอง */}
-              <div className="bg-gray-900/50 p-6 rounded-xl border border-yellow-500/30">
+              <div className="bg-white/50 p-6 rounded-xl border border-yellow-500/30">
                 <h3 className="text-xl font-bold mb-4 text-yellow-400">เพิ่มคูปองใหม่</h3>
                 <form onSubmit={handleAddCoupon} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-sm text-gray-400 mb-1">โค้ดคูปอง</label>
-                      <input required placeholder="Ex. SAVE50" className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg font-mono text-yellow-400 focus:border-yellow-500 outline-none" 
+                      <input required placeholder="Ex. SAVE50" className="w-full bg-gray-800 border border-red-200 p-3 rounded-lg font-mono text-yellow-400 focus:border-yellow-500 outline-none" 
                         value={couponForm.code} onChange={e => setCouponForm({...couponForm, code: e.target.value.toUpperCase()})} />
                     </div>
                     <div>
                       <label className="block text-sm text-gray-400 mb-1">ส่วนลด (บาท)</label>
-                      <input required type="number" placeholder="0.00" className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg focus:border-yellow-500 outline-none" 
+                      <input required type="number" placeholder="0.00" className="w-full bg-gray-800 border border-red-200 p-3 rounded-lg focus:border-yellow-500 outline-none" 
                         value={couponForm.discount_amount} onChange={e => setCouponForm({...couponForm, discount_amount: e.target.value})} />
                     </div>
                     <div>
                       <label className="block text-sm text-gray-400 mb-1">จำนวนครั้งที่ใช้ได้</label>
-                      <input required type="number" placeholder="100" className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg focus:border-yellow-500 outline-none" 
+                      <input required type="number" placeholder="100" className="w-full bg-gray-800 border border-red-200 p-3 rounded-lg focus:border-yellow-500 outline-none" 
                         value={couponForm.usage_limit} onChange={e => setCouponForm({...couponForm, usage_limit: e.target.value})} />
                     </div>
                   </div>
@@ -875,23 +875,23 @@ function Admin() {
               <h2 className="text-2xl font-bold mb-6 text-rose-400 border-l-4 border-rose-500 pl-4">เพิ่ม Gacha Box ใหม่</h2>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">ชื่อกล่อง</label>
-                <input required placeholder="Ex. Premium Box" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-rose-500 outline-none transition" 
+                <input required placeholder="Ex. Premium Box" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-rose-500 outline-none transition" 
                   value={gachaBoxForm.name} onChange={e => setGachaBoxForm({...gachaBoxForm, name: e.target.value})} />
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">รายละเอียด</label>
-                <textarea required placeholder="คำอธิบายกล่อง..." className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg h-32 focus:border-rose-500 outline-none transition" 
+                <textarea required placeholder="คำอธิบายกล่อง..." className="w-full bg-white border border-red-200 p-3 rounded-lg h-32 focus:border-rose-500 outline-none transition" 
                   value={gachaBoxForm.description} onChange={e => setGachaBoxForm({...gachaBoxForm, description: e.target.value})} />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm text-gray-400 mb-1">ราคา (บาท)</label>
-                  <input required type="number" placeholder="0.00" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-rose-500 outline-none transition" 
+                  <input required type="number" placeholder="0.00" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-rose-500 outline-none transition" 
                     value={gachaBoxForm.price} onChange={e => setGachaBoxForm({...gachaBoxForm, price: e.target.value})} />
                 </div>
                 <div>
                   <label className="block text-sm text-gray-400 mb-1">อัปโหลดรูปปกกล่อง</label>
-                  <input type="file" accept="image/*" className="w-full bg-gray-900 border border-gray-600 p-2 rounded-lg focus:border-rose-500 text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-600 file:text-white hover:file:bg-rose-700 cursor-pointer" 
+                  <input type="file" accept="image/*" className="w-full bg-white border border-red-200 p-2 rounded-lg focus:border-rose-500 text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-600 file:text-white hover:file:bg-rose-700 cursor-pointer" 
                     onChange={e => setGachaBoxForm({...gachaBoxForm, imageFile: e.target.files[0]})} />
                 </div>
               </div>
@@ -915,29 +915,29 @@ function Admin() {
             <form onSubmit={handleUpdateGame} className="space-y-4">
               <div>
                 <label className="block text-sm text-gray-400 mb-1">ชื่อเกม</label>
-                <input required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-red-500 outline-none" 
+                <input required className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-red-500 outline-none" 
                   value={editingGame.name} onChange={e => setEditingGame({...editingGame, name: e.target.value})} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-gray-400 mb-1">แพลตฟอร์ม</label>
-                  <input required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-red-500 outline-none" 
+                  <input required className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-red-500 outline-none" 
                     value={editingGame.platform} onChange={e => setEditingGame({...editingGame, platform: e.target.value})} />
                 </div>
                 <div>
                   <label className="block text-sm text-gray-400 mb-1">ราคา</label>
-                  <input required type="number" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-red-500 outline-none" 
+                  <input required type="number" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-red-500 outline-none" 
                     value={editingGame.price} onChange={e => setEditingGame({...editingGame, price: e.target.value})} />
                 </div>
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">รายละเอียด</label>
-                <textarea required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg h-24 focus:border-red-500 outline-none" 
+                <textarea required className="w-full bg-white border border-red-200 p-3 rounded-lg h-24 focus:border-red-500 outline-none" 
                   value={editingGame.description} onChange={e => setEditingGame({...editingGame, description: e.target.value})} />
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">เปลี่ยนรูป (ถ้าต้องการ)</label>
-                <input type="file" accept="image/*" className="w-full bg-gray-900 border border-gray-600 p-2 rounded-lg text-sm text-gray-300" 
+                <input type="file" accept="image/*" className="w-full bg-white border border-red-200 p-2 rounded-lg text-sm text-gray-300" 
                   onChange={e => setEditingGame({...editingGame, newImageFile: e.target.files[0]})} />
               </div>
               <div className="flex gap-4">
@@ -963,18 +963,18 @@ function Admin() {
             <form onSubmit={handleUpdateStock} className="space-y-4">
               <div>
                 <label className="block text-sm text-gray-400 mb-1">รหัส</label>
-                <input required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg font-mono text-green-400 focus:border-green-500 outline-none" 
+                <input required className="w-full bg-white border border-red-200 p-3 rounded-lg font-mono text-green-400 focus:border-green-500 outline-none" 
                   value={editingStock.code} onChange={e => setEditingStock({...editingStock, code: e.target.value})} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-gray-400 mb-1">ราคา</label>
-                  <input required type="number" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-green-500 outline-none" 
+                  <input required type="number" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-green-500 outline-none" 
                     value={editingStock.price} onChange={e => setEditingStock({...editingStock, price: e.target.value})} />
                 </div>
                 <div>
                   <label className="block text-sm text-gray-400 mb-1">สถานะ</label>
-                  <select required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-green-500 outline-none"
+                  <select required className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-green-500 outline-none"
                     value={editingStock.status} onChange={e => setEditingStock({...editingStock, status: e.target.value})}>
                     <option value="available">Available</option>
                     <option value="sold">Sold</option>
@@ -983,12 +983,12 @@ function Admin() {
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">ชื่อสินค้า (ถ้ามี)</label>
-                <input className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-green-500 outline-none" 
+                <input className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-green-500 outline-none" 
                   value={editingStock.title || ''} onChange={e => setEditingStock({...editingStock, title: e.target.value})} />
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">รายละเอียด (ถ้ามี)</label>
-                <textarea className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg h-20 focus:border-green-500 outline-none" 
+                <textarea className="w-full bg-white border border-red-200 p-3 rounded-lg h-20 focus:border-green-500 outline-none" 
                   value={editingStock.description || ''} onChange={e => setEditingStock({...editingStock, description: e.target.value})} />
               </div>
               <div className="flex items-center gap-2">
@@ -1002,7 +1002,7 @@ function Admin() {
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">เปลี่ยนรูป (ถ้าต้องการ)</label>
-                <input type="file" accept="image/*" className="w-full bg-gray-900 border border-gray-600 p-2 rounded-lg text-sm text-gray-300" 
+                <input type="file" accept="image/*" className="w-full bg-white border border-red-200 p-2 rounded-lg text-sm text-gray-300" 
                   onChange={e => setEditingStock({...editingStock, newImageFile: e.target.files[0]})} />
               </div>
               <div className="flex gap-4">
@@ -1028,18 +1028,18 @@ function Admin() {
             <form onSubmit={handleUpdateCoupon} className="space-y-4">
               <div>
                 <label className="block text-sm text-gray-400 mb-1">โค้ดคูปอง</label>
-                <input required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg font-mono text-yellow-400 focus:border-yellow-500 outline-none" 
+                <input required className="w-full bg-white border border-red-200 p-3 rounded-lg font-mono text-yellow-400 focus:border-yellow-500 outline-none" 
                   value={editingCoupon.code} onChange={e => setEditingCoupon({...editingCoupon, code: e.target.value.toUpperCase()})} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-gray-400 mb-1">ส่วนลด (บาท)</label>
-                  <input required type="number" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-yellow-500 outline-none" 
+                  <input required type="number" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-yellow-500 outline-none" 
                     value={editingCoupon.discount_amount} onChange={e => setEditingCoupon({...editingCoupon, discount_amount: e.target.value})} />
                 </div>
                 <div>
                   <label className="block text-sm text-gray-400 mb-1">จำนวนครั้งที่ใช้ได้</label>
-                  <input required type="number" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-yellow-500 outline-none" 
+                  <input required type="number" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-yellow-500 outline-none" 
                     value={editingCoupon.usage_limit} onChange={e => setEditingCoupon({...editingCoupon, usage_limit: e.target.value})} />
                 </div>
               </div>
@@ -1071,22 +1071,22 @@ function Admin() {
             <form onSubmit={handleUpdateGachaBox} className="space-y-4">
               <div>
                 <label className="block text-sm text-gray-400 mb-1">ชื่อกล่อง</label>
-                <input required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-pink-500 outline-none" 
+                <input required className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-pink-500 outline-none" 
                   value={editingGachaBox.name} onChange={e => setEditingGachaBox({...editingGachaBox, name: e.target.value})} />
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">รายละเอียด</label>
-                <textarea required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg h-24 focus:border-pink-500 outline-none" 
+                <textarea required className="w-full bg-white border border-red-200 p-3 rounded-lg h-24 focus:border-pink-500 outline-none" 
                   value={editingGachaBox.description} onChange={e => setEditingGachaBox({...editingGachaBox, description: e.target.value})} />
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">ราคา</label>
-                <input required type="number" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-pink-500 outline-none" 
+                <input required type="number" className="w-full bg-white border border-red-200 p-3 rounded-lg focus:border-pink-500 outline-none" 
                   value={editingGachaBox.price} onChange={e => setEditingGachaBox({...editingGachaBox, price: e.target.value})} />
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">เปลี่ยนรูป (ถ้าต้องการ)</label>
-                <input type="file" accept="image/*" className="w-full bg-gray-900 border border-gray-600 p-2 rounded-lg text-sm text-gray-300" 
+                <input type="file" accept="image/*" className="w-full bg-white border border-red-200 p-2 rounded-lg text-sm text-gray-300" 
                   onChange={e => setEditingGachaBox({...editingGachaBox, newImageFile: e.target.files[0]})} />
               </div>
               <div className="flex gap-4">

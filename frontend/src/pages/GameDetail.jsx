@@ -194,7 +194,7 @@ function GameDetail() {
           
           <div className="flex flex-col md:flex-row gap-8 items-start">
             {/* Game Cover */}
-            <div className="w-full md:w-64 h-80 bg-white rounded-xl overflow-hidden shadow-2xl border-2 border-red-500/30">
+            <div className="w-full md:w-64 h-80 bg-white rounded-xl overflow-hidden shadow-2xl border-2 border-red-500">
               <img 
                 src={game.image_url} 
                 alt={game.name}
@@ -204,24 +204,24 @@ function GameDetail() {
             
             {/* Game Info */}
             <div className="flex-1">
-              <div className="inline-block bg-red-600 text-gray-900 text-xs font-bold px-3 py-1 rounded-full mb-3 uppercase">
+              <div className="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-3 uppercase">
                 {game.platform}
               </div>
-              <h1 className="text-4xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-pink-600">
+              <h1 className="text-4xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800">
                 {game.name}
               </h1>
-              <p className="text-gray-600 mb-6 leading-relaxed max-w-2xl">
+              <p className="text-gray-700 mb-6 leading-relaxed max-w-2xl">
                 {game.description}
               </p>
               
-              <div className="flex items-center gap-6 bg-white/50 p-6 rounded-xl border border-red-200">
+              <div className="flex items-center gap-6 bg-white p-6 rounded-xl border-2 border-red-200 shadow-lg">
                 <div>
                   <div className="text-sm text-gray-600 mb-1">ราคาเริ่มต้น</div>
-                  <div className="text-3xl font-bold text-red-400">
+                  <div className="text-3xl font-bold text-red-600">
                     ฿{Number(game.price).toLocaleString()}
                   </div>
                 </div>
-                <div className="h-12 w-px bg-gray-700"></div>
+                <div className="h-12 w-px bg-red-200"></div>
                 <div>
                   <div className="text-sm text-gray-600 mb-1">ไอดีทั้งหมด</div>
                   <div className="text-3xl font-bold text-red-600 flex items-center gap-2">
@@ -232,10 +232,10 @@ function GameDetail() {
               </div>
 
               {/* ส่วนใส่คูปอง */}
-              <div className="mt-6 bg-gradient-to-r from-yellow-900/50 to-orange-900/50 p-4 rounded-xl border border-yellow-500/30">
+              <div className="mt-6 bg-gradient-to-r from-red-50 to-red-100 p-4 rounded-xl border-2 border-red-300 shadow-md">
                 <div className="flex items-center gap-2 mb-3">
-                  <Ticket className="text-yellow-400" size={20} />
-                  <h3 className="text-lg font-bold text-yellow-400">ใช้คูปองส่วนลด</h3>
+                  <Ticket className="text-red-600" size={20} />
+                  <h3 className="text-lg font-bold text-red-600">ใช้คูปองส่วนลด</h3>
                 </div>
                 <div className="flex gap-2">
                   <input
@@ -243,7 +243,7 @@ function GameDetail() {
                     placeholder="กรอกโค้ดคูปอง..."
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                    className="flex-1 bg-white border border-gray-600 px-4 py-2 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-yellow-500 font-mono"
+                    className="flex-1 bg-white border-2 border-red-200 px-4 py-2 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-red-500 font-mono"
                     disabled={checkingCoupon}
                   />
                   {couponValid ? (
@@ -440,10 +440,10 @@ function GameDetail() {
               </div>
 
               {/* ส่วนใส่คูปองใน Modal */}
-              <div className="bg-gradient-to-r from-yellow-900/50 to-orange-900/50 p-4 rounded-xl mb-6 border border-yellow-500/30">
+              <div className="bg-gradient-to-r from-red-50 to-red-100 p-4 rounded-xl mb-6 border-2 border-red-300 shadow-md">
                 <div className="flex items-center gap-2 mb-3">
-                  <Ticket className="text-yellow-400" size={18} />
-                  <h3 className="text-sm font-bold text-yellow-400">ใช้คูปองส่วนลด</h3>
+                  <Ticket className="text-red-600" size={18} />
+                  <h3 className="text-sm font-bold text-red-600">ใช้คูปองส่วนลด</h3>
                 </div>
                 <div className="flex gap-2">
                   <input
@@ -451,7 +451,7 @@ function GameDetail() {
                     placeholder="กรอกโค้ดคูปอง..."
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                    className="flex-1 bg-gradient-to-br from-red-50 to-gray-100 border border-gray-600 px-3 py-2 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-yellow-500 font-mono text-sm"
+                    className="flex-1 bg-white border-2 border-red-200 px-3 py-2 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-red-500 font-mono text-sm"
                     disabled={checkingCoupon}
                   />
                   {couponValid ? (
