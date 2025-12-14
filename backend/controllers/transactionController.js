@@ -107,9 +107,18 @@ exports.getMyHistory = async (req, res) => {
     const user_id = req.user.user_id;
     try {
         const result = await db.query(
-            `SELECT * FROM transactions 
-             WHERE buyer_id = $1 
-             ORDER BY transaction_date DESC`, 
+            `SELECT 
+                t.*,
+                g.name as game_name,
+                g.image_url as game_image,
+                g.platform,
+                g.original_price,
+                gc.code as game_code
+             FROM transactions t
+             LEFT JOIN games g ON t.game_id = g.game_id
+             LEFT JOIN game_codes gc ON t.game_code_id = gc.code_id
+             WHERE t.buyer_id = $1 
+             ORDER BY t.transaction_date DESC`, 
             [user_id]
         );
         res.json(result.rows);

@@ -13,15 +13,19 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [balance, setBalance] = useState(0);
   const [wishlist, setWishlist] = useState([]);
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user')); 
 
   useEffect(() => {
     fetchGames();
     fetchCategories();
+    fetchRecentlyViewed();
     if (user) {
       fetchUserBalance();
       fetchWishlist();
+      fetchRecommendations();
     }
   }, []);
 
@@ -90,6 +94,27 @@ function Home() {
       setCategories(res.data || []);
     } catch (err) {
       console.error('Failed to fetch categories', err);
+    }
+  };
+
+  const fetchRecentlyViewed = () => {
+    try {
+      const { getRecentlyViewed } = require('../utils/recentlyViewed');
+      const viewed = getRecentlyViewed();
+      setRecentlyViewed(viewed.slice(0, 8));
+    } catch (err) {
+      console.error('Failed to fetch recently viewed', err);
+    }
+  };
+
+  const fetchRecommendations = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await axiosInstance.get('/api/recommendations', { headers });
+      setRecommendations(res.data || []);
+    } catch (err) {
+      console.error('Failed to fetch recommendations', err);
     }
   };
 
@@ -205,6 +230,8 @@ function Home() {
                 <button onClick={() => navigate('/topup')} className="hover:text-red-600 transition">เติมเงิน</button>
                 <button onClick={() => navigate('/gacha')} className="hover:text-red-600 transition flex items-center gap-1"><Gift size={16}/> สุ่มของรางวัล</button>
                 <button onClick={() => navigate('/inventory')} className="hover:text-red-600 transition">คลังของฉัน</button>
+                {user && <button onClick={() => navigate('/orders')} className="hover:text-red-600 transition">ประวัติการสั่งซื้อ</button>}
+                <button onClick={() => navigate('/compare')} className="hover:text-red-600 transition">เปรียบเทียบเกม</button>
                 <button onClick={handleDailyReward} className="text-yellow-600 hover:text-yellow-700 transition flex items-center gap-1 animate-pulse">🎁 รับฟรี</button>
             </div>
 

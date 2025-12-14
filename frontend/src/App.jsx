@@ -10,6 +10,8 @@ import Profile from './pages/Profile';
 import GameDetail from './pages/GameDetail';
 import AllGames from './pages/AllGames';
 import Categories from './pages/Categories';
+import OrderHistory from './pages/OrderHistory';
+import CompareGames from './pages/CompareGames';
 import ToastContainer from './components/ToastContainer';
 
 function App() {
@@ -28,6 +30,8 @@ function App() {
         <Route path="/games/:id" element={<GameDetail />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/categories/:id" element={<Categories />} />
+        <Route path="/orders" element={<OrderHistory />} />
+        <Route path="/compare" element={<CompareGames />} />
       </Routes>
       <ToastContainer />
     </>

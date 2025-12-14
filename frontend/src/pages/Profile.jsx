@@ -9,6 +9,7 @@ function Profile() {
   const [stats, setStats] = useState({ totalSpent: 0, totalItems: 0 });
   const [wishlist, setWishlist] = useState([]);
   const [wishlistGames, setWishlistGames] = useState([]);
+  const [reviews, setReviews] = useState([]);
   
   // Form เปลี่ยนรหัสผ่าน
   const [passForm, setPassForm] = useState({ oldPassword: '', newPassword: '', confirmPassword: '' });
@@ -19,6 +20,7 @@ function Profile() {
     fetchProfileData();
     fetchHistoryStats();
     fetchWishlist();
+    fetchReviews();
   }, []);
 
   useEffect(() => {
@@ -79,6 +81,15 @@ function Profile() {
       const spent = history.reduce((sum, item) => sum + parseFloat(item.amount), 0);
       setStats({ totalSpent: spent, totalItems: history.length });
     } catch (err) { console.error(err); }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const res = await axiosInstance.get('/api/reviews/user/my-reviews');
+      setReviews(res.data || []);
+    } catch (err) {
+      console.error('Failed to fetch reviews', err);
+    }
   };
 
   const handleChangePassword = async (e) => {
@@ -265,17 +276,62 @@ function Profile() {
             {/* Reviews Section */}
             <div className="bg-white p-8 rounded-2xl shadow-lg">
                 <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                    <ShoppingBag className="text-red-600" size={20} /> รีวิวของฉัน
+                    <ShoppingBag className="text-red-600" size={20} /> รีวิวของฉัน ({reviews.length})
                 </h3>
-                <div className="text-center py-8 text-gray-500">
-                  <p>คุณยังไม่ได้รีวิวเกมใดๆ</p>
-                  <button 
-                    onClick={() => navigate('/games')}
-                    className="mt-4 bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition font-bold"
-                  >
-                    ไปซื้อเกมและรีวิว
-                  </button>
-                </div>
+                {reviews.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <p>คุณยังไม่ได้รีวิวเกมใดๆ</p>
+                    <button 
+                      onClick={() => navigate('/games')}
+                      className="mt-4 bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition font-bold"
+                    >
+                      ไปซื้อเกมและรีวิว
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {reviews.map((review) => (
+                      <div key={review.review_id} className="border-b pb-4 last:border-b-0">
+                        <div className="flex items-start gap-4">
+                          {review.game_image && (
+                            <img
+                              src={review.game_image}
+                              alt={review.game_name}
+                              className="w-20 h-20 object-cover rounded-lg cursor-pointer"
+                              onClick={() => navigate(`/games/${review.game_id}`)}
+                              onError={(e) => {
+                                e.target.src = 'https://via.placeholder.com/150';
+                              }}
+                            />
+                          )}
+                          <div className="flex-1">
+                            <h4 
+                              className="font-bold text-lg cursor-pointer hover:text-red-600 transition"
+                              onClick={() => navigate(`/games/${review.game_id}`)}
+                            >
+                              {review.game_name}
+                            </h4>
+                            <p className="text-sm text-gray-500 mb-2">{review.platform}</p>
+                            <div className="flex items-center gap-2 mb-2">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <span
+                                  key={star}
+                                  className={star <= review.rating ? 'text-yellow-400' : 'text-gray-300'}
+                                >
+                                  ★
+                                </span>
+                              ))}
+                            </div>
+                            <p className="text-gray-700">{review.comment || 'ไม่มีความคิดเห็น'}</p>
+                            <p className="text-sm text-gray-500 mt-2">
+                              {new Date(review.created_at).toLocaleDateString('th-TH')}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
             </div>
 
           </div>

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axiosInstance from '../utils/axios';
 import { ArrowLeft, ShoppingCart, Package, Eye, CheckCircle, AlertCircle, Ticket, X } from 'lucide-react';
 import { showToast } from '../components/ToastContainer';
+import ReviewSection from '../components/ReviewSection';
 
 function GameDetail() {
   const { id } = useParams();
@@ -17,11 +18,31 @@ function GameDetail() {
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [couponValid, setCouponValid] = useState(false);
   const [checkingCoupon, setCheckingCoupon] = useState(false);
+  const [similarGames, setSimilarGames] = useState([]);
 
   useEffect(() => {
     fetchGameDetail();
     fetchGameStocks();
+    fetchSimilarGames();
   }, [id]);
+
+  const fetchSimilarGames = async () => {
+    try {
+      const res = await axiosInstance.get(`/api/recommendations/similar/${id}`);
+      setSimilarGames(res.data || []);
+    } catch (err) {
+      console.error('Failed to fetch similar games', err);
+    }
+  };
+
+  useEffect(() => {
+    // Save to recently viewed when game is loaded
+    if (game) {
+      import('../utils/recentlyViewed').then(({ addRecentlyViewed }) => {
+        addRecentlyViewed(game);
+      });
+    }
+  }, [game]);
 
   const fetchGameDetail = async () => {
     try {
@@ -302,6 +323,14 @@ function GameDetail() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Reviews Section */}
+      <div className="max-w-7xl mx-auto px-4 mt-12">
+        <ReviewSection 
+          gameId={id} 
+          userId={localStorage.getItem('token') ? JSON.parse(atob(localStorage.getItem('token').split('.')[1])).user_id : null}
+        />
       </div>
 
       {/* Stock Grid */}

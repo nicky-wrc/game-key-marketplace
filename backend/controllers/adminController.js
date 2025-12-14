@@ -64,7 +64,12 @@ exports.updateGame = async (req, res) => {
             return res.status(404).json({ message: 'ไม่พบเกมนี้' });
         }
 
-        res.json({ message: 'แก้ไขเกมสำเร็จ!', game: result.rows[0] });
+        // Return updated game with full image URL
+        const updatedGame = result.rows[0];
+        if (updatedGame.image_url && !updatedGame.image_url.startsWith('http')) {
+            updatedGame.image_url = `http://localhost:5000${updatedGame.image_url}`;
+        }
+        res.json({ message: 'แก้ไขเกมสำเร็จ!', game: updatedGame });
     } catch (err) {
         console.error('Error updating game:', err);
         res.status(500).json({ message: 'Server error', error: err.message });

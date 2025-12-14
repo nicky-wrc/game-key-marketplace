@@ -142,12 +142,12 @@ function Admin() {
 
     try {
       const token = localStorage.getItem('token');
-      await axiosInstance.put(`/api/admin/games/${editingGame.game_id}`, formData, {
-        headers: { Authorization: `Bearer ${token}` }
+      const res = await axiosInstance.put(`/api/admin/games/${editingGame.game_id}`, formData, {
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
       showToast('แก้ไขเกมสำเร็จ! ✅', 'success');
       setEditingGame(null);
-      fetchGames();
+      fetchGames(); // Refresh games list
     } catch (err) {
       showToast(err.response?.data?.message || 'แก้ไขไม่สำเร็จ', 'error');
     }
