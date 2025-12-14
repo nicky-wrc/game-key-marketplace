@@ -164,29 +164,29 @@ function GameDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white text-xl">กำลังโหลดข้อมูล...</div>
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-gray-100 flex items-center justify-center">
+        <div className="text-gray-900 text-xl">กำลังโหลดข้อมูล...</div>
       </div>
     );
   }
 
   if (!game) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white text-xl">ไม่พบข้อมูลเกมนี้</div>
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-gray-100 flex items-center justify-center">
+        <div className="text-gray-900 text-xl">ไม่พบข้อมูลเกมนี้</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-gray-100 text-gray-900 pb-20">
       
       {/* Header */}
-      <div className="bg-gradient-to-r from-red-900 to-black border-b border-gray-800">
+      <div className="bg-gradient-to-r from-red-600 to-red-800 border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <button 
             onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-gray-400 hover:text-white transition mb-4"
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition mb-4"
           >
             <ArrowLeft size={20} />
             <span>กลับหน้าหลัก</span>
@@ -194,7 +194,7 @@ function GameDetail() {
           
           <div className="flex flex-col md:flex-row gap-8 items-start">
             {/* Game Cover */}
-            <div className="w-full md:w-64 h-80 bg-gray-800 rounded-xl overflow-hidden shadow-2xl border-2 border-red-500/30">
+            <div className="w-full md:w-64 h-80 bg-white rounded-xl overflow-hidden shadow-2xl border-2 border-red-500/30">
               <img 
                 src={game.image_url} 
                 alt={game.name}
@@ -204,27 +204,27 @@ function GameDetail() {
             
             {/* Game Info */}
             <div className="flex-1">
-              <div className="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-3 uppercase">
+              <div className="inline-block bg-red-600 text-gray-900 text-xs font-bold px-3 py-1 rounded-full mb-3 uppercase">
                 {game.platform}
               </div>
               <h1 className="text-4xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-pink-600">
                 {game.name}
               </h1>
-              <p className="text-gray-400 mb-6 leading-relaxed max-w-2xl">
+              <p className="text-gray-600 mb-6 leading-relaxed max-w-2xl">
                 {game.description}
               </p>
               
-              <div className="flex items-center gap-6 bg-gray-800/50 p-6 rounded-xl border border-gray-700">
+              <div className="flex items-center gap-6 bg-white/50 p-6 rounded-xl border border-red-200">
                 <div>
-                  <div className="text-sm text-gray-400 mb-1">ราคาเริ่มต้น</div>
+                  <div className="text-sm text-gray-600 mb-1">ราคาเริ่มต้น</div>
                   <div className="text-3xl font-bold text-red-400">
                     ฿{Number(game.price).toLocaleString()}
                   </div>
                 </div>
                 <div className="h-12 w-px bg-gray-700"></div>
                 <div>
-                  <div className="text-sm text-gray-400 mb-1">ไอดีทั้งหมด</div>
-                  <div className="text-3xl font-bold text-green-400 flex items-center gap-2">
+                  <div className="text-sm text-gray-600 mb-1">ไอดีทั้งหมด</div>
+                  <div className="text-3xl font-bold text-red-600 flex items-center gap-2">
                     <Package size={28} />
                     {stocks.length} รายการ
                   </div>
@@ -243,7 +243,7 @@ function GameDetail() {
                     placeholder="กรอกโค้ดคูปอง..."
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                    className="flex-1 bg-gray-800 border border-gray-600 px-4 py-2 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 font-mono"
+                    className="flex-1 bg-white border border-gray-600 px-4 py-2 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-yellow-500 font-mono"
                     disabled={checkingCoupon}
                   />
                   {couponValid ? (
@@ -266,10 +266,10 @@ function GameDetail() {
                 </div>
                 {couponValid && (
                   <div className="mt-3 bg-green-900/30 border border-green-500/50 p-3 rounded-lg">
-                    <p className="text-green-400 font-bold">
+                    <p className="text-red-600 font-bold">
                       ✅ คูปองใช้ได้! ส่วนลด {couponDiscount.toLocaleString()} บาท
                     </p>
-                    <p className="text-sm text-gray-400 mt-1">
+                    <p className="text-sm text-gray-600 mt-1">
                       ราคาเดิม: ฿{Number(game.price).toLocaleString()} → ราคาสุทธิ: ฿{Math.max(0, Number(game.price) - couponDiscount).toLocaleString()}
                     </p>
                   </div>
@@ -281,7 +281,7 @@ function GameDetail() {
                 <button
                   onClick={handleBuyRandom}
                   disabled={purchasing}
-                  className="mt-4 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white px-8 py-4 rounded-xl font-bold transition active:scale-95 shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="mt-4 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-gray-900 px-8 py-4 rounded-xl font-bold transition active:scale-95 shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {purchasing ? (
                     <>
@@ -314,14 +314,14 @@ function GameDetail() {
         {stocks.length === 0 ? (
           <div className="text-center py-20">
             <Package className="w-20 h-20 text-gray-600 mx-auto mb-4" />
-            <p className="text-gray-400 text-xl">ไอดีหมดชั่วคราว กรุณาติดตามอัปเดต</p>
+            <p className="text-gray-600 text-xl">ไอดีหมดชั่วคราว กรุณาติดตามอัปเดต</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {stocks.map((stock) => (
               <div 
                 key={stock.code_id}
-                className="bg-gray-800 rounded-2xl overflow-hidden border border-gray-700 hover:border-red-500 transition duration-300 group shadow-lg hover:shadow-red-500/20"
+                className="bg-white rounded-2xl overflow-hidden border border-red-200 hover:border-red-500 transition duration-300 group shadow-lg hover:shadow-red-500/20"
               >
                 {/* Image */}
                 <div className="h-48 bg-gray-700 relative overflow-hidden">
@@ -353,7 +353,7 @@ function GameDetail() {
                     {stock.title || `${game.name} ID`}
                   </h3>
                   
-                  <p className="text-sm text-gray-400 mb-4 h-10 line-clamp-2">
+                  <p className="text-sm text-gray-600 mb-4 h-10 line-clamp-2">
                     {stock.description || 'พร้อมใช้งานทันที'}
                   </p>
 
@@ -364,7 +364,7 @@ function GameDetail() {
                     <button
                       onClick={() => handleBuySpecific(stock.code_id)}
                       disabled={purchasing}
-                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-bold transition active:scale-95 flex items-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="bg-red-600 hover:bg-red-700 text-gray-900 px-4 py-2 rounded-xl font-bold transition active:scale-95 flex items-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <ShoppingCart size={18} />
                       ซื้อ
@@ -384,11 +384,11 @@ function GameDetail() {
           onClick={closeDetailModal}
         >
           <div 
-            className="bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-red-500/30 shadow-2xl"
+            className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-red-500/30 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Image */}
-            <div className="h-80 bg-gray-900 relative">
+            <div className="h-80 bg-gradient-to-br from-red-50 to-gray-100 relative">
               {selectedStock.image_url ? (
                 <img 
                   src={selectedStock.image_url}
@@ -408,25 +408,25 @@ function GameDetail() {
                 {selectedStock.title || `${game.name} ID`}
               </h2>
               
-              <div className="bg-gray-900/50 p-4 rounded-xl mb-6 border border-gray-700">
-                <div className="text-sm text-gray-400 mb-2">รายละเอียดไอดี</div>
-                <p className="text-white leading-relaxed whitespace-pre-line">
+              <div className="bg-gradient-to-br from-red-50 to-gray-100/50 p-4 rounded-xl mb-6 border border-red-200">
+                <div className="text-sm text-gray-600 mb-2">รายละเอียดไอดี</div>
+                <p className="text-gray-900 leading-relaxed whitespace-pre-line">
                   {selectedStock.description || 'ไม่มีรายละเอียดเพิ่มเติม'}
                 </p>
               </div>
 
               <div className="flex items-center justify-between bg-gradient-to-r from-red-900/50 to-pink-900/50 p-6 rounded-xl mb-4 border border-red-500/30">
                 <div>
-                  <div className="text-sm text-gray-400 mb-1">ราคา</div>
+                  <div className="text-sm text-gray-600 mb-1">ราคา</div>
                   {couponValid ? (
                     <div>
-                      <div className="text-lg text-gray-400 line-through mb-1">
+                      <div className="text-lg text-gray-600 line-through mb-1">
                         ฿{Number(selectedStock.price).toLocaleString()}
                       </div>
                       <div className="text-4xl font-black text-red-400">
                         ฿{Math.max(0, Number(selectedStock.price) - couponDiscount).toLocaleString()}
                       </div>
-                      <div className="text-sm text-green-400 mt-1">
+                      <div className="text-sm text-red-600 mt-1">
                         ส่วนลด ฿{couponDiscount.toLocaleString()}
                       </div>
                     </div>
@@ -451,7 +451,7 @@ function GameDetail() {
                     placeholder="กรอกโค้ดคูปอง..."
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                    className="flex-1 bg-gray-900 border border-gray-600 px-3 py-2 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 font-mono text-sm"
+                    className="flex-1 bg-gradient-to-br from-red-50 to-gray-100 border border-gray-600 px-3 py-2 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-yellow-500 font-mono text-sm"
                     disabled={checkingCoupon}
                   />
                   {couponValid ? (
@@ -474,7 +474,7 @@ function GameDetail() {
                 </div>
                 {couponValid && (
                   <div className="mt-2 bg-green-900/30 border border-green-500/50 p-2 rounded-lg">
-                    <p className="text-green-400 font-bold text-sm">
+                    <p className="text-red-600 font-bold text-sm">
                       ✅ ส่วนลด {couponDiscount.toLocaleString()} บาท
                     </p>
                   </div>
@@ -484,14 +484,14 @@ function GameDetail() {
               <div className="flex gap-4">
                 <button
                   onClick={closeDetailModal}
-                  className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-xl font-bold transition"
+                  className="flex-1 bg-gray-700 hover:bg-gray-600 text-gray-900 py-3 rounded-xl font-bold transition"
                 >
                   ปิด
                 </button>
                 <button
                   onClick={() => handleBuySpecific(selectedStock.code_id)}
                   disabled={purchasing}
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold transition flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-gray-900 py-3 rounded-xl font-bold transition flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {purchasing ? (
                     <>

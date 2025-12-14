@@ -475,7 +475,7 @@ function Admin() {
 
                   {/* Top Games */}
                   <div className="bg-gray-900 p-6 rounded-xl border border-gray-700 mb-8">
-                    <h3 className="text-xl font-bold mb-4 text-purple-400">🏆 เกมที่ขายดีที่สุด (Top 5)</h3>
+                    <h3 className="text-xl font-bold mb-4 text-red-400">🏆 เกมที่ขายดีที่สุด (Top 5)</h3>
                     {dashboardStats.topGames.length === 0 ? (
                       <p className="text-gray-400">ยังไม่มีข้อมูลการขาย</p>
                     ) : (
@@ -505,7 +505,7 @@ function Admin() {
 
                   {/* Daily Revenue */}
                   <div className="bg-gray-900 p-6 rounded-xl border border-gray-700">
-                    <h3 className="text-xl font-bold mb-4 text-blue-400">📊 รายได้รายวัน (7 วันล่าสุด)</h3>
+                    <h3 className="text-xl font-bold mb-4 text-red-400">📊 รายได้รายวัน (7 วันล่าสุด)</h3>
                     {dashboardStats.dailyRevenue.length === 0 ? (
                       <p className="text-gray-400">ยังไม่มีข้อมูล</p>
                     ) : (
@@ -530,14 +530,14 @@ function Admin() {
           {/* TAB: จัดการเกม */}
           {activeTab === 'manage-games' && (
             <div>
-              <h2 className="text-2xl font-bold mb-6 text-purple-400 border-l-4 border-purple-500 pl-4">จัดการเกมทั้งหมด</h2>
+              <h2 className="text-2xl font-bold mb-6 text-red-400 border-l-4 border-red-500 pl-4">จัดการเกมทั้งหมด</h2>
               
               {games.length === 0 ? (
                 <p className="text-gray-400 text-center py-10">ยังไม่มีเกมในระบบ</p>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left">
-                    <thead className="bg-purple-900/30 text-purple-300 text-sm">
+                    <thead className="bg-red-900/30 text-red-300 text-sm">
                       <tr>
                         <th className="p-3">รูป</th>
                         <th className="p-3">ชื่อเกม</th>
@@ -557,7 +557,7 @@ function Admin() {
                           <td className="p-3 text-green-400 font-bold">฿{Number(game.price).toLocaleString()}</td>
                           <td className="p-3 text-center">
                             <div className="flex gap-2 justify-center">
-                              <button onClick={() => setEditingGame(game)} className="bg-blue-600 hover:bg-blue-700 p-2 rounded-lg transition" title="แก้ไข">
+                              <button onClick={() => setEditingGame(game)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="แก้ไข">
                                 <Edit2 size={16} />
                               </button>
                               <button onClick={() => handleDeleteGame(game.game_id, game.name)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="ลบ">
@@ -645,13 +645,13 @@ function Admin() {
                             </span>
                           </td>
                           <td className="p-3">
-                            <span className={`text-xs px-2 py-1 rounded-full ${stock.is_public ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-500/20 text-gray-400'}`}>
+                            <span className={`text-xs px-2 py-1 rounded-full ${stock.is_public ? 'bg-blue-500/20 text-red-400' : 'bg-gray-500/20 text-gray-400'}`}>
                               {stock.is_public ? 'ขายแยก' : 'สุ่ม'}
                             </span>
                           </td>
                           <td className="p-3 text-center">
                             <div className="flex gap-2 justify-center">
-                              <button onClick={() => setEditingStock(stock)} className="bg-blue-600 hover:bg-blue-700 p-2 rounded-lg transition" title="แก้ไข">
+                              <button onClick={() => setEditingStock(stock)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="แก้ไข">
                                 <Edit2 size={14} />
                               </button>
                               <button onClick={() => handleDeleteStock(stock.code_id)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="ลบ">
@@ -671,7 +671,7 @@ function Admin() {
           {/* TAB: เติมสต็อก */}
           {activeTab === 'add-stock' && (
             <form onSubmit={handleAddStock} className="space-y-6">
-              <h2 className="text-2xl font-bold mb-6 text-blue-400 border-l-4 border-blue-500 pl-4">เติมสต็อกสินค้า</h2>
+              <h2 className="text-2xl font-bold mb-6 text-red-400 border-l-4 border-red-500 pl-4">เติมสต็อกสินค้า</h2>
               
               <div className="flex items-center gap-2 mb-4 bg-gray-900 p-3 rounded-lg border border-gray-600">
                   <input type="checkbox" id="is_public" className="w-5 h-5 accent-blue-500 cursor-pointer"
@@ -684,7 +684,7 @@ function Admin() {
               </div>
               <div>
                   <label className="block text-sm text-gray-400 mb-1">เลือกหมวดหมู่เกม</label>
-                  <select required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-blue-500 outline-none cursor-pointer"
+                  <select required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-red-500 outline-none cursor-pointer"
                     value={stockForm.game_id} onChange={e => setStockForm({...stockForm, game_id: e.target.value})}
                   >
                     <option value="">-- กรุณาเลือกเกม --</option>
@@ -694,10 +694,10 @@ function Admin() {
                   </select>
               </div>
               {stockForm.is_public && (
-                  <div className="space-y-4 p-4 bg-gray-900/50 rounded-xl border border-blue-500/30">
+                  <div className="space-y-4 p-4 bg-gray-900/50 rounded-xl border border-red-500/30">
                       <div>
                         <label className="block text-sm text-gray-400 mb-1">ชื่อสินค้า</label>
-                        <input required placeholder="ชื่อสินค้า..." className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg text-white outline-none focus:border-blue-500"
+                        <input required placeholder="ชื่อสินค้า..." className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg text-white outline-none focus:border-red-500"
                             value={stockForm.title} onChange={e => setStockForm({...stockForm, title: e.target.value})} />
                       </div>
                       
@@ -710,7 +710,7 @@ function Admin() {
                       </div>
                       <div>
                         <label className="block text-sm text-gray-400 mb-1">รายละเอียดไอดี</label>
-                        <textarea placeholder="รายละเอียด..." className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg h-24 text-white outline-none focus:border-blue-500"
+                        <textarea placeholder="รายละเอียด..." className="w-full bg-gray-800 border border-gray-600 p-3 rounded-lg h-24 text-white outline-none focus:border-red-500"
                             value={stockForm.description} onChange={e => setStockForm({...stockForm, description: e.target.value})} />
                       </div>
                   </div>
@@ -718,17 +718,17 @@ function Admin() {
               <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm text-gray-400 mb-1">รหัสลับ / ID-Pass</label>
-                    <input required placeholder="User: pass" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg font-mono text-green-400 outline-none focus:border-blue-500"
+                    <input required placeholder="User: pass" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg font-mono text-green-400 outline-none focus:border-red-500"
                         value={stockForm.code} onChange={e => setStockForm({...stockForm, code: e.target.value})} />
                   </div>
                   <div>
                     <label className="block text-sm text-gray-400 mb-1">ราคาขาย (บาท)</label>
-                    <input required type="number" placeholder="0.00" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg outline-none focus:border-blue-500"
+                    <input required type="number" placeholder="0.00" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg outline-none focus:border-red-500"
                         value={stockForm.price} onChange={e => setStockForm({...stockForm, price: e.target.value})} />
                   </div>
               </div>
               
-              <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl font-bold text-lg shadow-lg transition">
+              <button type="submit" className="w-full bg-red-600 hover:bg-red-700 py-4 rounded-xl font-bold text-lg shadow-lg transition">
                 {stockForm.is_public ? 'ลงขายไอดีนี้' : 'เติม Key เข้าสต็อกกลาง'}
               </button>
             </form>
@@ -772,7 +772,7 @@ function Admin() {
                           </td>
                           <td className="p-3 text-center">
                             <div className="flex gap-2 justify-center">
-                              <button onClick={() => setEditingCoupon(coupon)} className="bg-blue-600 hover:bg-blue-700 p-2 rounded-lg transition" title="แก้ไข">
+                              <button onClick={() => setEditingCoupon(coupon)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="แก้ไข">
                                 <Edit2 size={14} />
                               </button>
                               <button onClick={() => handleDeleteCoupon(coupon.coupon_id)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="ลบ">
@@ -808,7 +808,7 @@ function Admin() {
                         value={couponForm.usage_limit} onChange={e => setCouponForm({...couponForm, usage_limit: e.target.value})} />
                     </div>
                   </div>
-                  <button type="submit" className="w-full bg-yellow-600 hover:bg-yellow-700 py-3 rounded-xl font-bold text-lg shadow-lg transition">
+                  <button type="submit" className="w-full bg-red-600 hover:bg-red-700 py-3 rounded-xl font-bold text-lg shadow-lg transition">
                     + เพิ่มคูปอง
                   </button>
                 </form>
@@ -852,7 +852,7 @@ function Admin() {
                           <td className="p-3 text-yellow-400 font-bold">฿{Number(box.price).toLocaleString()}</td>
                           <td className="p-3 text-center">
                             <div className="flex gap-2 justify-center">
-                              <button onClick={() => setEditingGachaBox(box)} className="bg-blue-600 hover:bg-blue-700 p-2 rounded-lg transition" title="แก้ไข">
+                              <button onClick={() => setEditingGachaBox(box)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="แก้ไข">
                                 <Edit2 size={16} />
                               </button>
                               <button onClick={() => handleDeleteGachaBox(box.box_id)} className="bg-red-600 hover:bg-red-700 p-2 rounded-lg transition" title="ลบ">
@@ -904,9 +904,9 @@ function Admin() {
       {/* Modal แก้ไขเกม */}
       {editingGame && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setEditingGame(null)}>
-          <div className="bg-gray-800 rounded-2xl max-w-2xl w-full p-8 border-2 border-purple-500/30" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-gray-800 rounded-2xl max-w-2xl w-full p-8 border-2 border-red-500/30" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-purple-400">แก้ไขเกม</h3>
+              <h3 className="text-2xl font-bold text-red-400">แก้ไขเกม</h3>
               <button onClick={() => setEditingGame(null)} className="text-gray-400 hover:text-white">
                 <X size={24} />
               </button>
@@ -915,24 +915,24 @@ function Admin() {
             <form onSubmit={handleUpdateGame} className="space-y-4">
               <div>
                 <label className="block text-sm text-gray-400 mb-1">ชื่อเกม</label>
-                <input required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-purple-500 outline-none" 
+                <input required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-red-500 outline-none" 
                   value={editingGame.name} onChange={e => setEditingGame({...editingGame, name: e.target.value})} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-gray-400 mb-1">แพลตฟอร์ม</label>
-                  <input required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-purple-500 outline-none" 
+                  <input required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-red-500 outline-none" 
                     value={editingGame.platform} onChange={e => setEditingGame({...editingGame, platform: e.target.value})} />
                 </div>
                 <div>
                   <label className="block text-sm text-gray-400 mb-1">ราคา</label>
-                  <input required type="number" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-purple-500 outline-none" 
+                  <input required type="number" className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg focus:border-red-500 outline-none" 
                     value={editingGame.price} onChange={e => setEditingGame({...editingGame, price: e.target.value})} />
                 </div>
               </div>
               <div>
                 <label className="block text-sm text-gray-400 mb-1">รายละเอียด</label>
-                <textarea required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg h-24 focus:border-purple-500 outline-none" 
+                <textarea required className="w-full bg-gray-900 border border-gray-600 p-3 rounded-lg h-24 focus:border-red-500 outline-none" 
                   value={editingGame.description} onChange={e => setEditingGame({...editingGame, description: e.target.value})} />
               </div>
               <div>
@@ -1050,7 +1050,7 @@ function Admin() {
               </div>
               <div className="flex gap-4">
                 <button type="button" onClick={() => setEditingCoupon(null)} className="flex-1 bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold">ยกเลิก</button>
-                <button type="submit" className="flex-1 bg-yellow-600 hover:bg-yellow-700 py-3 rounded-xl font-bold">บันทึก</button>
+                <button type="submit" className="flex-1 bg-red-600 hover:bg-red-700 py-3 rounded-xl font-bold">บันทึก</button>
               </div>
             </form>
           </div>

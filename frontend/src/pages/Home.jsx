@@ -8,6 +8,7 @@ import { GameCardSkeleton } from '../components/LoadingSkeleton';
 function Home() {
   const [games, setGames] = useState([]);
   const [filteredGames, setFilteredGames] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [balance, setBalance] = useState(0);
@@ -17,6 +18,7 @@ function Home() {
 
   useEffect(() => {
     fetchGames();
+    fetchCategories();
     if (user) {
       fetchUserBalance();
       fetchWishlist();
@@ -77,6 +79,15 @@ function Home() {
       setBalance(res.data.wallet_balance || 0); 
     } catch (err) {
       console.error("Failed to fetch balance", err);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const res = await axiosInstance.get('/api/categories');
+      setCategories(res.data || []);
+    } catch (err) {
+      console.error('Failed to fetch categories', err);
     }
   };
 
@@ -352,7 +363,39 @@ function Home() {
         </div>
       )}
 
-      {/* 5. Game List - แก้ไขให้กดไปหน้ารายละเอียดได้ */}
+      {/* 5. Categories Section */}
+      {!searchQuery && categories.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
+            <h3 className="text-2xl font-bold text-gray-800 uppercase italic">
+              หมวดหมู่ <span className="text-red-600">เกม</span>
+            </h3>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {categories.slice(0, 6).map((category) => (
+              <div
+                key={category.category_id}
+                onClick={() => navigate(`/categories/${category.category_id}`)}
+                className="bg-white rounded-xl shadow-md p-4 hover:shadow-xl transition cursor-pointer border-2 border-transparent hover:border-red-500 group text-center"
+              >
+                <div
+                  className="w-16 h-16 mx-auto mb-3 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: category.color || '#EF4444' }}
+                >
+                  <Gamepad2 className="w-8 h-8 text-white group-hover:scale-110 transition-transform" />
+                </div>
+                <h4 className="font-bold text-sm text-gray-800 group-hover:text-red-600 transition mb-1">
+                  {category.name_th || category.name}
+                </h4>
+                <p className="text-xs text-gray-500">{category.game_count || 0} เกม</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 6. Game List - แก้ไขให้กดไปหน้ารายละเอียดได้ */}
       <main className="max-w-7xl mx-auto px-4 pb-20">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">

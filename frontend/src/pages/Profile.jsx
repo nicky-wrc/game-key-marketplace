@@ -262,6 +262,22 @@ function Profile() {
                 )}
             </div>
 
+            {/* Reviews Section */}
+            <div className="bg-white p-8 rounded-2xl shadow-lg">
+                <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <ShoppingBag className="text-red-600" size={20} /> รีวิวของฉัน
+                </h3>
+                <div className="text-center py-8 text-gray-500">
+                  <p>คุณยังไม่ได้รีวิวเกมใดๆ</p>
+                  <button 
+                    onClick={() => navigate('/games')}
+                    className="mt-4 bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition font-bold"
+                  >
+                    ไปซื้อเกมและรีวิว
+                  </button>
+                </div>
+            </div>
+
           </div>
         </div>
       </div>
