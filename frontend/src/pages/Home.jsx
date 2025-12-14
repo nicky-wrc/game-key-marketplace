@@ -424,7 +424,116 @@ function Home() {
         </div>
       )}
 
-      {/* 6. Game List - แก้ไขให้กดไปหน้ารายละเอียดได้ */}
+      {/* 6. Recently Viewed */}
+      {!searchQuery && recentlyViewed.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
+              <h3 className="text-2xl font-bold text-gray-800 uppercase italic">
+                เกมที่ดู <span className="text-red-600">ล่าสุด</span>
+              </h3>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {recentlyViewed.map((game) => (
+              <div
+                key={game.game_id}
+                onClick={() => navigate(`/games/${game.game_id}`)}
+                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition cursor-pointer group"
+              >
+                <div className="h-32 overflow-hidden">
+                  <img
+                    src={game.image_url}
+                    alt={game.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+                    onError={(e) => {
+                      e.target.src = 'https://via.placeholder.com/150';
+                    }}
+                  />
+                </div>
+                <div className="p-3">
+                  <h4 className="font-bold text-sm text-gray-800 truncate">{game.name}</h4>
+                  <p className="text-xs text-red-600 font-bold mt-1">฿{Number(game.price || 0).toLocaleString()}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 7. Recommendations */}
+      {!searchQuery && recommendations.length > 0 && user && (
+        <div className="max-w-7xl mx-auto px-4 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
+              <h3 className="text-2xl font-bold text-gray-800 uppercase italic">
+                เกมที่ <span className="text-red-600">แนะนำสำหรับคุณ</span>
+              </h3>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {recommendations.slice(0, 8).map((game) => (
+              <div
+                key={game.game_id}
+                onClick={() => navigate(`/games/${game.game_id}`)}
+                className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition duration-300 group border border-gray-100 cursor-pointer"
+              >
+                <div className="h-48 overflow-hidden relative">
+                  <img
+                    src={game.image_url}
+                    alt={game.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+                    onError={(e) => {
+                      e.target.src = 'https://via.placeholder.com/150';
+                    }}
+                  />
+                  <div className="absolute top-3 left-3 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm">
+                    แนะนำ
+                  </div>
+                  <button
+                    onClick={(e) => toggleWishlist(game.game_id, e)}
+                    className={`absolute top-3 right-3 p-2 rounded-full transition ${
+                      wishlist.includes(parseInt(game.game_id))
+                        ? 'bg-red-600 text-white'
+                        : 'bg-white/80 text-gray-600 hover:bg-white'
+                    }`}
+                  >
+                    <Heart
+                      size={16}
+                      className={wishlist.includes(parseInt(game.game_id)) ? 'fill-current' : ''}
+                    />
+                  </button>
+                </div>
+                <div className="p-5">
+                  <h4 className="font-extrabold text-lg text-gray-800 truncate mb-1">{game.name}</h4>
+                  <p className="text-xs text-gray-500 mb-4 h-8 line-clamp-2">{game.description}</p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      {game.original_price && parseFloat(game.original_price) > parseFloat(game.price) && (
+                        <p className="text-[10px] text-gray-400 line-through">฿{Number(game.original_price).toFixed(0)}</p>
+                      )}
+                      <p className="text-xl font-black text-red-600">฿{Number(game.price).toLocaleString()}</p>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/games/${game.game_id}`);
+                      }}
+                      className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition font-bold text-sm flex items-center gap-1"
+                    >
+                      <ShoppingCart size={16} /> ซื้อ
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 8. Game List - แก้ไขให้กดไปหน้ารายละเอียดได้ */}
       <main className="max-w-7xl mx-auto px-4 pb-20">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">

@@ -325,6 +325,43 @@ function GameDetail() {
         </div>
       </div>
 
+      {/* Similar Games */}
+      {similarGames.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 mt-12">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <div className="w-1 h-8 bg-red-600 rounded-full"></div>
+            เกมที่คล้ายกัน
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {similarGames.map((similarGame) => (
+              <div
+                key={similarGame.game_id}
+                onClick={() => {
+                  navigate(`/games/${similarGame.game_id}`);
+                  window.location.reload();
+                }}
+                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition cursor-pointer group"
+              >
+                <div className="h-32 overflow-hidden">
+                  <img
+                    src={similarGame.image_url}
+                    alt={similarGame.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+                    onError={(e) => {
+                      e.target.src = 'https://via.placeholder.com/150';
+                    }}
+                  />
+                </div>
+                <div className="p-3">
+                  <h4 className="font-bold text-sm text-gray-800 truncate">{similarGame.name}</h4>
+                  <p className="text-xs text-red-600 font-bold mt-1">฿{Number(similarGame.price || 0).toLocaleString()}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Reviews Section */}
       <div className="max-w-7xl mx-auto px-4 mt-12">
         <ReviewSection 
