@@ -24,8 +24,10 @@ ON CONFLICT (category_id) DO NOTHING;
 -- 2. Users (Admin + Test Users)
 -- =============================================
 -- Password: admin123 (hashed with bcrypt)
+-- Hash: $2a$10$rQnM1k8yVPZXKODvUKQXXeJXYM3zl1UQ0jFzPqF8W5iJX7vKxVbPa
 INSERT INTO users (username, email, password_hash, role, wallet_balance) VALUES
 ('admin', 'admin@nickykey.com', '$2a$10$rQnM1k8yVPZXKODvUKQXXeJXYM3zl1UQ0jFzPqF8W5iJX7vKxVbPa', 'admin', 99999.00),
+('admin2', 'adnicky@admin.com', '$2a$10$rQnM1k8yVPZXKODvUKQXXeJXYM3zl1UQ0jFzPqF8W5iJX7vKxVbPa', 'admin', 99999.00),
 ('seller01', 'seller@nickykey.com', '$2a$10$rQnM1k8yVPZXKODvUKQXXeJXYM3zl1UQ0jFzPqF8W5iJX7vKxVbPa', 'seller', 5000.00),
 ('testuser', 'test@nickykey.com', '$2a$10$rQnM1k8yVPZXKODvUKQXXeJXYM3zl1UQ0jFzPqF8W5iJX7vKxVbPa', 'user', 1000.00)
 ON CONFLICT (email) DO NOTHING;
