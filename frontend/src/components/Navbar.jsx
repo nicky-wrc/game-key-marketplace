@@ -37,15 +37,6 @@ function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (searchQuery.length > 2) {
-      performSearch();
-    } else {
-      setSearchResults([]);
-      setShowSearchResults(false);
-    }
-  }, [searchQuery]);
-
-  useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setShowSearchResults(false);
@@ -58,7 +49,6 @@ function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-
   const fetchUserData = async () => {
     try {
       const res = await axiosInstance.get('/api/wallet/me');
@@ -68,20 +58,54 @@ function Navbar() {
     }
   };
 
-  const performSearch = async () => {
+  const performSearch = async (query) => {
+    if (!query || query.trim().length < 1) {
+      setSearchResults([]);
+      setShowSearchResults(false);
+      return;
+    }
+
     try {
       const res = await axiosInstance.get('/api/games');
-      const games = Array.isArray(res.data) ? res.data : (res.data.games || []);
-      const filtered = games.filter(game =>
-        game.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        game.platform.toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 5);
+      const games = Array.isArray(res.data) ? res.data : (res.data?.games || []);
+      
+      if (!games || games.length === 0) {
+        setSearchResults([]);
+        setShowSearchResults(false);
+        return;
+      }
+
+      const searchLower = query.toLowerCase().trim();
+      const filtered = games.filter(game => {
+        if (!game || !game.name) return false;
+        return (
+          game.name.toLowerCase().includes(searchLower) ||
+          (game.platform && game.platform.toLowerCase().includes(searchLower)) ||
+          (game.description && game.description.toLowerCase().includes(searchLower))
+        );
+      }).slice(0, 5);
+      
       setSearchResults(filtered);
       setShowSearchResults(filtered.length > 0);
     } catch (err) {
       console.error('Search failed', err);
+      setSearchResults([]);
+      setShowSearchResults(false);
     }
   };
+
+  // Handle search query changes
+  useEffect(() => {
+    if (searchQuery && searchQuery.trim().length > 0) {
+      const timeoutId = setTimeout(() => {
+        performSearch(searchQuery);
+      }, 300); // Debounce 300ms
+      return () => clearTimeout(timeoutId);
+    } else {
+      setSearchResults([]);
+      setShowSearchResults(false);
+    }
+  }, [searchQuery]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -388,7 +412,16 @@ function Navbar() {
                   type="text"
                   placeholder="ค้นหาเกม..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSearchQuery(value);
+                    if (value.trim().length > 0) {
+                      performSearch(value);
+                    } else {
+                      setSearchResults([]);
+                      setShowSearchResults(false);
+                    }
+                  }}
                   className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-full border-2 border-transparent focus:border-red-500 focus:outline-none text-gray-900"
                 />
               </div>

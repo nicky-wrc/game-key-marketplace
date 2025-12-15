@@ -25,15 +25,24 @@ function AllGames() {
   }, []);
 
   useEffect(() => {
+    if (!games || games.length === 0) {
+      setFilteredGames([]);
+      return;
+    }
+
     let filtered = [...games];
 
     // กรองตามคำค้นหา
-    if (searchQuery.trim() !== '') {
-      filtered = filtered.filter(game => 
-        game.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        game.platform.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (game.description && game.description.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
+    if (searchQuery && searchQuery.trim() !== '') {
+      const searchLower = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(game => {
+        if (!game || !game.name) return false;
+        return (
+          game.name.toLowerCase().includes(searchLower) ||
+          (game.platform && game.platform.toLowerCase().includes(searchLower)) ||
+          (game.description && game.description.toLowerCase().includes(searchLower))
+        );
+      });
     }
 
     // กรองตามแพลตฟอร์ม
