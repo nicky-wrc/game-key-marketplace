@@ -6,8 +6,19 @@
 -- =============================================
 -- 1. Categories (8 หมวดหมู่)
 -- =============================================
--- Note: Categories already exist in database (category_id 41-48)
+-- Insert categories first before inserting games
 -- Mapping: 41=Action, 42=RPG, 43=Sports, 44=Racing, 45=Shooter, 46=Adventure, 47=Strategy, 48=Simulation
+
+INSERT INTO categories (category_id, name, name_th, icon, color) VALUES
+(41, 'Action', 'แอ็คชั่น', 'sword', 'red'),
+(42, 'RPG', 'บทบาทสมมติ', 'dice', 'blue'),
+(43, 'Sports', 'กีฬา', 'trophy', 'green'),
+(44, 'Racing', 'แข่งรถ', 'car', 'yellow'),
+(45, 'Shooter', 'ยิงปืน', 'target', 'orange'),
+(46, 'Adventure', 'ผจญภัย', 'compass', 'purple'),
+(47, 'Strategy', 'วางแผน', 'chess', 'indigo'),
+(48, 'Simulation', 'จำลอง', 'building', 'pink')
+ON CONFLICT (category_id) DO NOTHING;
 
 -- =============================================
 -- 2. Users (Admin + Test Users)
