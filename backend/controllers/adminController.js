@@ -1,9 +1,21 @@
 const db = require('../db');
 
+// Helper function to get base URL
+const getBaseUrl = () => {
+    // ใน production ใช้ environment variable
+    if (process.env.BASE_URL) {
+        return process.env.BASE_URL;
+    }
+    // ใน development ใช้ localhost
+    return process.env.NODE_ENV === 'production' 
+        ? 'https://game-key-marketplace.onrender.com' 
+        : 'http://localhost:5000';
+};
+
 // ===== เพิ่มเกม =====
 exports.addGame = async (req, res) => {
     const { name, platform, description, price } = req.body;
-    const image_url = req.file ? `http://localhost:5000/uploads/${req.file.filename}` : '';
+    const image_url = req.file ? `${getBaseUrl()}/uploads/${req.file.filename}` : '';
 
     if (!name || !price) {
         return res.status(400).json({ message: 'กรุณากรอกข้อมูลให้ครบ' });
@@ -42,7 +54,7 @@ exports.updateGame = async (req, res) => {
     // ถ้ามีไฟล์ใหม่ให้ใช้ไฟล์ใหม่ ถ้าไม่มีให้ใช้ existing_image
     let image_url;
     if (req.file) {
-        image_url = `http://localhost:5000/uploads/${req.file.filename}`;
+        image_url = `${getBaseUrl()}/uploads/${req.file.filename}`;
     } else if (existing_image) {
         image_url = existing_image;
     } else {
@@ -67,7 +79,7 @@ exports.updateGame = async (req, res) => {
         // Return updated game with full image URL
         const updatedGame = result.rows[0];
         if (updatedGame.image_url && !updatedGame.image_url.startsWith('http')) {
-            updatedGame.image_url = `http://localhost:5000${updatedGame.image_url}`;
+            updatedGame.image_url = `${getBaseUrl()}${updatedGame.image_url}`;
         }
         res.json({ message: 'แก้ไขเกมสำเร็จ!', game: updatedGame });
     } catch (err) {
@@ -102,7 +114,7 @@ exports.deleteGame = async (req, res) => {
 exports.addStock = async (req, res) => {
     const { game_id, code, price, title, description, is_public } = req.body;
     const admin_id = req.user.user_id;
-    const image_url = req.file ? `http://localhost:5000/uploads/${req.file.filename}` : '';
+    const image_url = req.file ? `${getBaseUrl()}/uploads/${req.file.filename}` : '';
 
     try {
         const result = await db.query(
@@ -382,7 +394,7 @@ exports.getAllGachaBoxes = async (req, res) => {
 // ===== เพิ่ม Gacha Box =====
 exports.addGachaBox = async (req, res) => {
     const { name, description, price } = req.body;
-    const image_url = req.file ? `http://localhost:5000/uploads/${req.file.filename}` : null;
+    const image_url = req.file ? `${getBaseUrl()}/uploads/${req.file.filename}` : null;
 
     if (!name || !price) {
         return res.status(400).json({ message: 'กรุณากรอกข้อมูลให้ครบ' });
