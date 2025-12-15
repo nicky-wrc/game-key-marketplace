@@ -7,6 +7,7 @@ import { GameCardSkeleton } from '../components/LoadingSkeleton';
 import Navbar from '../components/Navbar';
 import QuickFilters from '../components/QuickFilters';
 import { getRecentlyViewed } from '../utils/recentlyViewed';
+import { smallPlaceholder } from '../utils/imagePlaceholder';
 
 function Home() {
   const [games, setGames] = useState([]);
@@ -424,7 +425,7 @@ function Home() {
                     alt={game.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                     onError={(e) => {
-                      e.target.src = 'https://via.placeholder.com/150';
+                      e.target.src = smallPlaceholder;
                     }}
                   />
                 </div>
@@ -462,7 +463,7 @@ function Home() {
                     alt={game.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                     onError={(e) => {
-                      e.target.src = 'https://via.placeholder.com/150';
+                      e.target.src = smallPlaceholder;
                     }}
                   />
                   <div className="absolute top-3 left-3 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm">
@@ -579,6 +580,9 @@ function Home() {
                         src={game.image_url} 
                         alt={game.name} 
                         className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+                        onError={(e) => {
+                          e.target.src = smallPlaceholder;
+                        }}
                     />
                     <div className="absolute top-3 left-3 bg-black/80 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm uppercase">
                         {game.platform}

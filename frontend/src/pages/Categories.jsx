@@ -4,6 +4,7 @@ import axiosInstance from '../utils/axios';
 import { ArrowLeft, Gamepad2, Package } from 'lucide-react';
 import { GameCardSkeleton } from '../components/LoadingSkeleton';
 import StarRating from '../components/StarRating';
+import { gamePlaceholder } from '../utils/imagePlaceholder';
 
 function Categories() {
   const navigate = useNavigate();
@@ -134,7 +135,7 @@ function Categories() {
                     <div className="h-48 overflow-hidden relative">
                       <img
                         src={game.image_url}
-                        onError={(e) => { e.target.src = 'https://via.placeholder.com/400x300?text=No+Image'; }}
+                        onError={(e) => { e.target.src = gamePlaceholder; }}
                         alt={game.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                       />

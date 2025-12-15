@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../utils/axios';
 import { ArrowLeft, Plus, X, ShoppingCart, Star, DollarSign, Package, TrendingUp } from 'lucide-react';
 import { showToast } from '../components/ToastContainer';
+import { smallPlaceholder } from '../utils/imagePlaceholder';
 
 function CompareGames() {
   const navigate = useNavigate();
@@ -115,7 +116,7 @@ function CompareGames() {
                           alt={game.name}
                           className="w-12 h-12 object-cover rounded"
                           onError={(e) => {
-                            e.target.src = 'https://via.placeholder.com/150';
+                            e.target.src = smallPlaceholder;
                           }}
                         />
                       )}
@@ -157,7 +158,7 @@ function CompareGames() {
                               alt={game.name}
                               className="w-24 h-24 object-cover rounded-lg mx-auto mb-2"
                               onError={(e) => {
-                                e.target.src = 'https://via.placeholder.com/150';
+                                e.target.src = smallPlaceholder;
                               }}
                             />
                           )}

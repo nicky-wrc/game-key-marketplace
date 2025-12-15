@@ -3,6 +3,7 @@ import axiosInstance from '../utils/axios';
 import { User, Mail, Shield, Lock, CreditCard, ShoppingBag, LogOut, Save, ArrowLeft, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { showToast } from '../components/ToastContainer';
+import { smallPlaceholder } from '../utils/imagePlaceholder';
 
 function Profile() {
   const [profile, setProfile] = useState(null);
@@ -248,7 +249,7 @@ function Profile() {
                         <div className="flex items-start gap-3">
                           <img 
                             src={game.image_url}
-                            onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=No+Image'; }} 
+                            onError={(e) => { e.target.src = smallPlaceholder; }} 
                             alt={game.name}
                             className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
                           />
@@ -301,7 +302,7 @@ function Profile() {
                               className="w-20 h-20 object-cover rounded-lg cursor-pointer"
                               onClick={() => navigate(`/games/${review.game_id}`)}
                               onError={(e) => {
-                                e.target.src = 'https://via.placeholder.com/150';
+                                e.target.src = smallPlaceholder;
                               }}
                             />
                           )}

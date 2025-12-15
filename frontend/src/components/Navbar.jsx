@@ -7,6 +7,7 @@ import {
   ChevronDown, Settings, Package, History, GitCompare
 } from 'lucide-react';
 import { showToast } from './ToastContainer';
+import { smallPlaceholder } from '../utils/imagePlaceholder';
 
 function Navbar() {
   const navigate = useNavigate();
@@ -234,7 +235,7 @@ function Navbar() {
                           src={game.image_url}
                           alt={game.name}
                           className="w-16 h-16 object-cover rounded-lg"
-                          onError={(e) => { e.target.src = 'https://via.placeholder.com/150'; }}
+                          onError={(e) => { e.target.src = smallPlaceholder; }}
                         />
                         <div className="flex-1">
                           <h4 className="font-bold text-gray-900">{game.name}</h4>

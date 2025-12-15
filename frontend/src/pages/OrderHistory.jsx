@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../utils/axios';
 import { ArrowLeft, Package, Calendar, DollarSign, CheckCircle, XCircle, Clock, Search, Filter } from 'lucide-react';
 import { showToast } from '../components/ToastContainer';
+import { smallPlaceholder } from '../utils/imagePlaceholder';
 
 function OrderHistory() {
   const navigate = useNavigate();
@@ -204,7 +205,7 @@ function OrderHistory() {
                               alt={order.game_name}
                               className="w-16 h-16 object-cover rounded-lg"
                               onError={(e) => {
-                                e.target.src = 'https://via.placeholder.com/150';
+                                e.target.src = smallPlaceholder;
                               }}
                             />
                           )}

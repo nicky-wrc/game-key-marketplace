@@ -3,6 +3,7 @@ import axiosInstance from '../utils/axios';
 import { Plus, Database, ShieldAlert, Package, ArrowLeft, Edit2, Trash2, Eye, X, Ticket, BarChart3, Gift } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { showToast } from '../components/ToastContainer';
+import { smallPlaceholder } from '../utils/imagePlaceholder';
 
 function Admin() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -550,7 +551,7 @@ function Admin() {
                       {games.map((game) => (
                         <tr key={game.game_id} className="hover:bg-red-50 transition">
                           <td className="p-3">
-                            <img src={game.image_url} alt={game.name} className="w-16 h-16 object-cover rounded-lg" onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=No+Image'; }} />
+                            <img src={game.image_url} alt={game.name} className="w-16 h-16 object-cover rounded-lg" onError={(e) => { e.target.src = smallPlaceholder; }} />
                           </td>
                           <td className="p-3 font-bold text-gray-900">{game.name}</td>
                           <td className="p-3 text-gray-600 text-sm">{game.platform}</td>

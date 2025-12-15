@@ -35,11 +35,31 @@ exports.addGame = async (req, res) => {
     }
 };
 
+// Helper function to ensure image URLs are full URLs
+const ensureFullImageUrl = (image_url) => {
+    if (!image_url) return '';
+    if (image_url.startsWith('http://') || image_url.startsWith('https://')) {
+        return image_url;
+    }
+    // If it's a relative path, prepend base URL
+    if (image_url.startsWith('/uploads/')) {
+        return `${getBaseUrl()}${image_url}`;
+    }
+    return `${getBaseUrl()}/uploads/${image_url}`;
+};
+
 // ===== ดึงเกมทั้งหมด (สำหรับ Admin) =====
 exports.getAllGames = async (req, res) => {
     try {
         const result = await db.query('SELECT * FROM games ORDER BY game_id DESC');
-        res.json(result.rows);
+        
+        // Ensure all image URLs are full URLs
+        const games = result.rows.map(game => ({
+            ...game,
+            image_url: ensureFullImageUrl(game.image_url)
+        }));
+        
+        res.json(games);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server error' });

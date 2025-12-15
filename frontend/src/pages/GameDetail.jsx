@@ -5,6 +5,7 @@ import { ArrowLeft, ShoppingCart, Package, Eye, CheckCircle, AlertCircle, Ticket
 import { showToast } from '../components/ToastContainer';
 import ReviewSection from '../components/ReviewSection';
 import { addRecentlyViewed } from '../utils/recentlyViewed';
+import { largePlaceholder, smallPlaceholder } from '../utils/imagePlaceholder';
 
 function GameDetail() {
   const { id } = useParams();
@@ -221,7 +222,7 @@ function GameDetail() {
             <div className="w-full md:w-64 h-80 bg-white rounded-xl overflow-hidden shadow-2xl border-2 border-red-500">
               <img 
                 src={game.image_url}
-                onError={(e) => { e.target.src = 'https://via.placeholder.com/800x600?text=Game+Image'; }} 
+                onError={(e) => { e.target.src = largePlaceholder; }} 
                 alt={game.name}
                 className="w-full h-full object-cover"
               />
@@ -351,8 +352,8 @@ function GameDetail() {
                     src={similarGame.image_url}
                     alt={similarGame.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
-                    onError={(e) => {
-                      e.target.src = 'https://via.placeholder.com/150';
+                      onError={(e) => {
+                        e.target.src = smallPlaceholder;
                     }}
                   />
                 </div>
