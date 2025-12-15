@@ -188,8 +188,21 @@ function Navbar() {
                   type="text"
                   placeholder="ค้นหาเกม, แพลตฟอร์ม..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => searchQuery.length > 2 && setShowSearchResults(true)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSearchQuery(value);
+                    if (value.trim().length > 0) {
+                      performSearch(value);
+                    } else {
+                      setSearchResults([]);
+                      setShowSearchResults(false);
+                    }
+                  }}
+                  onFocus={() => {
+                    if (searchQuery && searchQuery.trim().length > 0) {
+                      performSearch(searchQuery);
+                    }
+                  }}
                   className="w-full pl-12 pr-4 py-3 bg-gray-100 rounded-full border-2 border-transparent focus:border-red-500 focus:outline-none text-gray-900 transition"
                 />
                 {searchQuery && (
