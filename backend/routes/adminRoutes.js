@@ -1,13 +1,28 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
 const adminController = require('../controllers/adminController');
 const authMiddleware = require('../middleware/authMiddleware');
 const adminMiddleware = require('../middleware/adminMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 
+// Error handling middleware for multer
+const handleUploadError = (err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json({ message: 'ไฟล์รูปภาพใหญ่เกินไป (สูงสุด 5MB)' });
+        }
+        return res.status(400).json({ message: 'เกิดข้อผิดพลาดในการอัพโหลดไฟล์: ' + err.message });
+    }
+    if (err) {
+        return res.status(400).json({ message: err.message || 'เกิดข้อผิดพลาดในการอัพโหลดไฟล์' });
+    }
+    next();
+};
+
 router.get('/games', [authMiddleware, adminMiddleware], adminController.getAllGames);
-router.post('/add-game', [authMiddleware, adminMiddleware, upload.single('image')], adminController.addGame);
-router.put('/games/:id', [authMiddleware, adminMiddleware, upload.single('image')], adminController.updateGame);
+router.post('/add-game', [authMiddleware, adminMiddleware, upload.single('image'), handleUploadError], adminController.addGame);
+router.put('/games/:id', [authMiddleware, adminMiddleware, upload.single('image'), handleUploadError], adminController.updateGame);
 router.delete('/games/:id', [authMiddleware, adminMiddleware], adminController.deleteGame);
 
 router.get('/stocks', [authMiddleware, adminMiddleware], adminController.getAllStocks);

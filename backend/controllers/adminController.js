@@ -48,22 +48,30 @@ exports.getAllGames = async (req, res) => {
 
 // ===== แก้ไขเกม =====
 exports.updateGame = async (req, res) => {
-    const { id } = req.params;
-    const { name, platform, description, price, existing_image } = req.body;
-    
-    // ถ้ามีไฟล์ใหม่ให้ใช้ไฟล์ใหม่ ถ้าไม่มีให้ใช้ existing_image
-    let image_url;
-    if (req.file) {
-        image_url = `${getBaseUrl()}/uploads/${req.file.filename}`;
-    } else if (existing_image) {
-        image_url = existing_image;
-    } else {
-        // ถ้าไม่มีทั้งสองอย่าง ให้ดึงจาก database
-        const currentGame = await db.query('SELECT image_url FROM games WHERE game_id = $1', [id]);
-        image_url = currentGame.rows[0]?.image_url || '';
-    }
-
     try {
+        const { id } = req.params;
+        const { name, platform, description, price, existing_image } = req.body;
+        
+        // Validate required fields
+        if (!name || !price) {
+            return res.status(400).json({ message: 'กรุณากรอกชื่อเกมและราคา' });
+        }
+
+        // ถ้ามีไฟล์ใหม่ให้ใช้ไฟล์ใหม่ ถ้าไม่มีให้ใช้ existing_image
+        let image_url;
+        if (req.file) {
+            image_url = `${getBaseUrl()}/uploads/${req.file.filename}`;
+            console.log('New image uploaded:', req.file.filename);
+        } else if (existing_image) {
+            image_url = existing_image;
+            console.log('Using existing image:', existing_image);
+        } else {
+            // ถ้าไม่มีทั้งสองอย่าง ให้ดึงจาก database
+            const currentGame = await db.query('SELECT image_url FROM games WHERE game_id = $1', [id]);
+            image_url = currentGame.rows[0]?.image_url || '';
+            console.log('Using database image:', image_url);
+        }
+
         const result = await db.query(
             `UPDATE games 
              SET name = $1, platform = $2, description = $3, price = $4, image_url = $5 
