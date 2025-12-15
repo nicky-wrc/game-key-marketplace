@@ -285,6 +285,7 @@ function AllGames() {
                     <div className="h-48 overflow-hidden relative">
                       <img
                         src={game.image_url}
+                        onError={(e) => { e.target.src = 'https://via.placeholder.com/400x300?text=No+Image'; }}
                         alt={game.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                       />
@@ -351,6 +352,7 @@ function AllGames() {
                       <div className="md:w-64 h-48 md:h-auto overflow-hidden relative flex-shrink-0">
                         <img
                           src={game.image_url}
+                        onError={(e) => { e.target.src = 'https://via.placeholder.com/400x300?text=No+Image'; }}
                           alt={game.name}
                           className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                         />

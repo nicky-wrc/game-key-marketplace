@@ -247,7 +247,8 @@ function Profile() {
                       >
                         <div className="flex items-start gap-3">
                           <img 
-                            src={game.image_url} 
+                            src={game.image_url}
+                            onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=No+Image'; }} 
                             alt={game.name}
                             className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
                           />

@@ -217,7 +217,8 @@ function GameDetail() {
             {/* Game Cover */}
             <div className="w-full md:w-64 h-80 bg-white rounded-xl overflow-hidden shadow-2xl border-2 border-red-500">
               <img 
-                src={game.image_url} 
+                src={game.image_url}
+                onError={(e) => { e.target.src = 'https://via.placeholder.com/800x600?text=Game+Image'; }} 
                 alt={game.name}
                 className="w-full h-full object-cover"
               />

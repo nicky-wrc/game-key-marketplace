@@ -550,7 +550,7 @@ function Admin() {
                       {games.map((game) => (
                         <tr key={game.game_id} className="hover:bg-red-50 transition">
                           <td className="p-3">
-                            <img src={game.image_url} alt={game.name} className="w-16 h-16 object-cover rounded-lg" />
+                            <img src={game.image_url} alt={game.name} className="w-16 h-16 object-cover rounded-lg" onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=No+Image'; }} />
                           </td>
                           <td className="p-3 font-bold text-gray-900">{game.name}</td>
                           <td className="p-3 text-gray-600 text-sm">{game.platform}</td>
