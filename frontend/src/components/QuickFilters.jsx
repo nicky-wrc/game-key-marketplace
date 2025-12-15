@@ -144,3 +144,5 @@ function QuickFilters({ onFilterChange, games = [] }) {
 
 export default QuickFilters;
 
+
+

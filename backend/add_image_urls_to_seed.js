@@ -107,3 +107,5 @@ seedContent = seedContent.replace(gameNamePattern, (match, categoryId, name, pla
 fs.writeFileSync(seedPath, seedContent, 'utf8');
 console.log('✅ เพิ่ม image_url ให้กับทุกเกมใน seed.sql แล้ว!');
 
+
+

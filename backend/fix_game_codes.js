@@ -84,3 +84,5 @@ for (const [gameName, info] of Object.entries(gameMapping)) {
 fs.writeFileSync('seed_fixed.sql', fixedContent);
 console.log('✅ สร้าง seed_fixed.sql แล้ว! ใช้ไฟล์นี้แทน seed.sql');
 
+
+
