@@ -4,6 +4,7 @@ import axiosInstance from '../utils/axios';
 import { ArrowLeft, ShoppingCart, Package, Eye, CheckCircle, AlertCircle, Ticket, X } from 'lucide-react';
 import { showToast } from '../components/ToastContainer';
 import ReviewSection from '../components/ReviewSection';
+import { addRecentlyViewed } from '../utils/recentlyViewed';
 
 function GameDetail() {
   const { id } = useParams();
@@ -38,9 +39,11 @@ function GameDetail() {
   useEffect(() => {
     // Save to recently viewed when game is loaded
     if (game) {
-      import('../utils/recentlyViewed').then(({ addRecentlyViewed }) => {
+      try {
         addRecentlyViewed(game);
-      });
+      } catch (err) {
+        console.error('Failed to save recently viewed', err);
+      }
     }
   }, [game]);
 

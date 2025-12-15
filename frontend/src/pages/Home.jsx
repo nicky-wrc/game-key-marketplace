@@ -6,6 +6,7 @@ import { showToast } from '../components/ToastContainer';
 import { GameCardSkeleton } from '../components/LoadingSkeleton';
 import Navbar from '../components/Navbar';
 import QuickFilters from '../components/QuickFilters';
+import { getRecentlyViewed } from '../utils/recentlyViewed';
 
 function Home() {
   const [games, setGames] = useState([]);
@@ -160,11 +161,11 @@ function Home() {
 
   const fetchRecentlyViewed = () => {
     try {
-      const { getRecentlyViewed } = require('../utils/recentlyViewed');
       const viewed = getRecentlyViewed();
       setRecentlyViewed(viewed.slice(0, 8));
     } catch (err) {
       console.error('Failed to fetch recently viewed', err);
+      setRecentlyViewed([]);
     }
   };
 
